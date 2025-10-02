@@ -1,5 +1,4 @@
 # LostItem-Project
-# Lost Item Project README
 
 **Platform Barang Hilang Mahasiswa**  
 Helping students reclaim their lost items through a smart reporting and tracking system.
