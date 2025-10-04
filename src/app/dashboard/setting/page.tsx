@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
+import SettingSkeleton from "@/components/SettingSkeleton";
 import { useToast } from "@/contexts/ToastContext";
 
 interface UserSettings {
@@ -193,12 +194,7 @@ export default function SettingPage() {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 mb-4" style={{ borderTopColor: 'rgba(17, 77, 145)', borderBottomColor: 'rgba(17, 77, 145)' }}></div>
-            <p className="text-xl text-gray-700">Memuat pengaturan...</p>
-          </div>
-        </div>
+        <SettingSkeleton />
       </DashboardLayout>
     );
   }

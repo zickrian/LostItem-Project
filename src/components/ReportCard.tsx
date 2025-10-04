@@ -2,99 +2,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import CommentSection from "@/components/CommentSection";
-
-// Fungsi untuk mendapatkan emoji berdasarkan kategori
-const getCategoryEmoji = (category: string): string => {
-  const categoryLower = category.toLowerCase().trim();
-  
-  // Switch case untuk exact match dulu
-  switch (categoryLower) {
-    // Elektronik
-    case "elektronik":
-    case "hp":
-    case "handphone":
-    case "smartphone":
-      return "📱";
-    case "laptop":
-    case "notebook":
-      return "💻";
-    
-    // Dokumen
-    case "dokumen":
-    case "surat":
-      return "📄";
-    case "ktp":
-    case "kartu":
-    case "id card":
-      return "🪪";
-    
-    // Kunci
-    case "kunci":
-      return "🔑";
-    
-    // Tas & Dompet
-    case "tas":
-    case "ransel":
-    case "backpack":
-      return "🎒";
-    case "dompet":
-    case "wallet":
-      return "👛";
-    
-    // Pakaian
-    case "pakaian":
-    case "baju":
-    case "kaos":
-    case "kemeja":
-      return "👕";
-    case "sepatu":
-    case "sandal":
-      return "👟";
-    
-    // Aksesoris
-    case "jam":
-    case "jam tangan":
-    case "watch":
-      return "⌚";
-    case "kacamata":
-    case "glasses":
-      return "🕶️";
-    
-    // Buku & Alat Tulis
-    case "buku":
-    case "novel":
-    case "book":
-      return "📚";
-    case "alat tulis":
-    case "pensil":
-    case "pulpen":
-      return "✏️";
-    
-    // Lainnya
-    case "lainnya":
-    case "other":
-      return "📦";
-  }
-  
-  // Fallback dengan includes untuk partial match
-  if (categoryLower.includes("kunci")) return "🔑";
-  if (categoryLower.includes("hp") || categoryLower.includes("handphone")) return "📱";
-  if (categoryLower.includes("laptop")) return "💻";
-  if (categoryLower.includes("elektronik")) return "📱";
-  if (categoryLower.includes("dokumen") || categoryLower.includes("surat")) return "📄";
-  if (categoryLower.includes("ktp") || categoryLower.includes("kartu")) return "🪪";
-  if (categoryLower.includes("tas")) return "🎒";
-  if (categoryLower.includes("dompet")) return "👛";
-  if (categoryLower.includes("baju") || categoryLower.includes("pakaian")) return "👕";
-  if (categoryLower.includes("sepatu")) return "👟";
-  if (categoryLower.includes("jam")) return "⌚";
-  if (categoryLower.includes("kacamata")) return "🕶️";
-  if (categoryLower.includes("buku")) return "📚";
-  if (categoryLower.includes("pensil") || categoryLower.includes("alat tulis")) return "✏️";
-  
-  // Default
-  return "📦";
-};
+import OptimizedImage from "@/components/OptimizedImage";
+import { getCategoryEmoji } from "@/lib/categoryEmoji";
 
 export interface Report {
   id: string;
@@ -151,19 +60,16 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit }: 
       <div className="p-4 border-b">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={report.user.avatar_url || "/default-avatar.svg"}
-              alt={report.user.name}
-              className="h-10 w-10 rounded-full border-2 object-cover"
-              style={{ borderColor: 'rgba(17, 77, 145)' }}
-              loading="lazy"
-              referrerPolicy="no-referrer"
-              onError={(event) => {
-                event.currentTarget.onerror = null;
-                event.currentTarget.src = "/default-avatar.svg";
-              }}
-            />
+            <div className="relative h-10 w-10 rounded-full border-2 overflow-hidden" style={{ borderColor: 'rgba(17, 77, 145)' }}>
+              <Image
+                src={report.user.avatar_url || "/default-avatar.svg"}
+                alt={report.user.name}
+                width={40}
+                height={40}
+                className="object-cover"
+                loading="lazy"
+              />
+            </div>
             <div>
               <p className="font-semibold text-gray-900">{report.user.name}</p>
               <p className="text-xs text-gray-500">{formatDate(report.created_at)}</p>
@@ -255,23 +161,25 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit }: 
           )}
         </div>
 
-        {/* Image or Icon */}
-        {report.image_url ? (
-          <div className="relative w-full h-64 mb-3 rounded-lg overflow-hidden bg-gray-100">
-            <Image
+        {/* Image or Icon - Optimized for LCP */}
+        <div className="relative w-full h-64 mb-3 rounded-lg overflow-hidden bg-gray-100">
+          {report.image_url ? (
+            <OptimizedImage
               src={report.image_url}
               alt={report.title}
               fill
+              priority={false}
               className="object-cover"
+              fallbackEmoji={getCategoryEmoji(report.category)}
             />
-          </div>
-        ) : (
-          <div className="relative w-full h-64 mb-3 rounded-lg overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-            <div className="text-8xl">
-              {getCategoryEmoji(report.category)}
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+              <div className="text-8xl">
+                {getCategoryEmoji(report.category)}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Comment Button */}
         <button

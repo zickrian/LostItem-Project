@@ -4,8 +4,8 @@ import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
 import SearchBar from "@/components/SearchBar";
-import ReportCard, { Report } from "@/components/ReportCard";
-import ReportGrid, { GridReport } from "@/components/ReportGrid";
+import ReportGrid from "@/components/ReportGrid";
+import ReportGridSkeleton from "@/components/ReportGridSkeleton";
 import { MagnifyingGlassIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 import { useToast } from "@/contexts/ToastContext";
 
@@ -17,6 +17,23 @@ interface User {
   email: string;
   avatar_url?: string;
   role: string;
+}
+
+interface Report {
+  id: string;
+  user_id: string;
+  title: string;
+  description: string;
+  category: string;
+  location?: string;
+  type: "hilang" | "temuan";
+  image_url?: string;
+  status: "aktif" | "selesai";
+  created_at: string;
+  user: {
+    name: string;
+    avatar_url?: string;
+  };
 }
 
 export default function DashboardPage() {
@@ -173,11 +190,26 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 mb-4" style={{ borderTopColor: 'rgba(17, 77, 145)', borderBottomColor: 'rgba(17, 77, 145)' }}></div>
-            <p className="text-xl text-gray-700">Memuat dashboard...</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          {/* Header */}
+          <div className="mb-6 sm:mb-8">
+            <div className="h-10 w-48 bg-gray-200 rounded animate-pulse mb-2"></div>
+            <div className="h-5 w-96 bg-gray-200 rounded animate-pulse"></div>
           </div>
+
+          {/* Search Bar Skeleton */}
+          <div className="mb-4 sm:mb-6">
+            <div className="h-12 w-full bg-gray-200 rounded-lg animate-pulse"></div>
+          </div>
+
+          {/* Tab Skeleton */}
+          <div className="flex gap-2 sm:gap-4 mb-4 sm:mb-6 border-b border-gray-200">
+            <div className="h-10 w-40 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-10 w-40 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+
+          {/* Reports Grid Skeleton */}
+          <ReportGridSkeleton count={6} />
         </div>
       </DashboardLayout>
     );

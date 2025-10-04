@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { uploadImage } from "@/lib/supabaseStorage";
 import { useRouter, useSearchParams } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
-import ReportGrid, { GridReport } from "@/components/ReportGrid";
+import ReportGrid from "@/components/ReportGrid";
 import Image from "next/image";
 import { useToast } from "@/contexts/ToastContext";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
@@ -350,10 +350,20 @@ function LaporanContent() {
   if (loading) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-4"></div>
-            <p className="text-xl text-gray-700">Memuat...</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          {/* Header Skeleton */}
+          <div className="flex items-center justify-between mb-6 sm:mb-8">
+            <div className="h-10 w-48 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-12 w-40 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+
+          {/* Content Skeleton */}
+          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6">
+            <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mb-4"></div>
+            <div className="flex gap-2 mb-4">
+              <div className="h-10 w-32 bg-gray-200 rounded animate-pulse"></div>
+              <div className="h-10 w-32 bg-gray-200 rounded animate-pulse"></div>
+            </div>
           </div>
         </div>
       </DashboardLayout>

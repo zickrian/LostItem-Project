@@ -1,101 +1,9 @@
 "use client";
 import { useState } from "react";
-import Image from "next/image";
 import { PencilIcon, CheckIcon, TrashIcon } from "@heroicons/react/24/solid";
 import CommentSection from "@/components/CommentSection";
-
-// Fungsi untuk mendapatkan emoji berdasarkan kategori
-const getCategoryEmoji = (category: string): string => {
-  const categoryLower = category.toLowerCase().trim();
-  
-  // Switch case untuk exact match dulu
-  switch (categoryLower) {
-    // Elektronik
-    case "elektronik":
-    case "hp":
-    case "handphone":
-    case "smartphone":
-      return "📱";
-    case "laptop":
-    case "notebook":
-      return "💻";
-    
-    // Dokumen
-    case "dokumen":
-    case "surat":
-      return "📄";
-    case "ktp":
-    case "kartu":
-    case "id card":
-      return "🪪";
-    
-    // Kunci
-    case "kunci":
-      return "🔑";
-    
-    // Tas & Dompet
-    case "tas":
-    case "ransel":
-    case "backpack":
-      return "🎒";
-    case "dompet":
-    case "wallet":
-      return "👛";
-    
-    // Pakaian
-    case "pakaian":
-    case "baju":
-    case "kaos":
-    case "kemeja":
-      return "👕";
-    case "sepatu":
-    case "sandal":
-      return "👟";
-    
-    // Aksesoris
-    case "jam":
-    case "jam tangan":
-    case "watch":
-      return "⌚";
-    case "kacamata":
-    case "glasses":
-      return "🕶️";
-    
-    // Buku & Alat Tulis
-    case "buku":
-    case "novel":
-    case "book":
-      return "📚";
-    case "alat tulis":
-    case "pensil":
-    case "pulpen":
-      return "✏️";
-    
-    // Lainnya
-    case "lainnya":
-    case "other":
-      return "📦";
-  }
-  
-  // Fallback dengan includes untuk partial match
-  if (categoryLower.includes("kunci")) return "🔑";
-  if (categoryLower.includes("hp") || categoryLower.includes("handphone")) return "📱";
-  if (categoryLower.includes("laptop")) return "💻";
-  if (categoryLower.includes("elektronik")) return "📱";
-  if (categoryLower.includes("dokumen") || categoryLower.includes("surat")) return "📄";
-  if (categoryLower.includes("ktp") || categoryLower.includes("kartu")) return "🪪";
-  if (categoryLower.includes("tas")) return "🎒";
-  if (categoryLower.includes("dompet")) return "👛";
-  if (categoryLower.includes("baju") || categoryLower.includes("pakaian")) return "👕";
-  if (categoryLower.includes("sepatu")) return "👟";
-  if (categoryLower.includes("jam")) return "⌚";
-  if (categoryLower.includes("kacamata")) return "🕶️";
-  if (categoryLower.includes("buku")) return "📚";
-  if (categoryLower.includes("pensil") || categoryLower.includes("alat tulis")) return "✏️";
-  
-  // Default
-  return "📦";
-};
+import OptimizedImage from "@/components/OptimizedImage";
+import { getCategoryEmoji } from "@/lib/categoryEmoji";
 
 export interface GridReport {
   id: string;
@@ -185,14 +93,16 @@ export default function ReportGrid({
           key={report.id}
           className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group w-full"
         >
-          {/* Image Thumbnail */}
+          {/* Image Thumbnail - Optimized for LCP */}
           <div className="relative w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200">
             {report.image_url ? (
-              <Image
+              <OptimizedImage
                 src={report.image_url}
                 alt={report.title}
                 fill
+                priority={false}
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
+                fallbackEmoji={getCategoryEmoji(report.category)}
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -203,7 +113,7 @@ export default function ReportGrid({
             )}
             
             {/* Status Badge */}
-            <div className="absolute top-3 right-3">
+            <div className="absolute top-3 right-3 z-10">
               <span
                 className={`px-3 py-1.5 rounded-full text-xs font-bold shadow-lg ${
                   report.type === "hilang"

@@ -87,7 +87,7 @@ export default function LoginPage() {
                   </div>
                   
                   <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-blue-700 bg-clip-text text-transparent mb-2 sm:mb-3 animate-fade-in px-2">
-                    Selamat Datang! 🌊
+                    Selamat Datang
                   </h2>
                   <p className="text-gray-700 text-xs sm:text-sm leading-relaxed px-4">
                     Login menggunakan akun Google kampus Anda
