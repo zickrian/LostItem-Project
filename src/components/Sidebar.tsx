@@ -39,56 +39,38 @@ export default function Sidebar({ user }: SidebarProps) {
   return (
     <>
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+      <div className="lg:hidden fixed top-0 left-0 right-0 bg-white shadow-sm z-50 border-b">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-gray-700"
-              style={{ color: isMobileMenuOpen ? 'rgba(17, 77, 145)' : undefined }}
-              onMouseEnter={(e) => e.currentTarget.style.color = 'rgba(17, 77, 145)'}
-              onMouseLeave={(e) => e.currentTarget.style.color = isMobileMenuOpen ? 'rgba(17, 77, 145)' : 'rgb(55, 65, 81)'}
+              className="hover:bg-gray-100 p-2 rounded-lg transition-all duration-300"
+              style={{ color: 'rgba(17, 77, 145)' }}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
             <span className="text-xl font-bold" style={{ color: 'rgba(17, 77, 145)' }}>Lost&Found</span>
           </div>
-          <div className="flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              key={user.avatar_url}
-              src={user.avatar_url || "/default-avatar.svg"}
-              alt="Avatar"
-              className="h-8 w-8 rounded-full border-2 object-cover"
-              style={{ borderColor: 'rgba(17, 77, 145)' }}
-              loading="lazy"
-              referrerPolicy="no-referrer"
-              onError={(event) => {
-                event.currentTarget.onerror = null;
-                event.currentTarget.src = "/default-avatar.svg";
-              }}
-            />
-          </div>
         </div>
       </div>
 
-      {/* Mobile Drawer Overlay - Transparent clickable area */}
+      {/* Mobile Drawer Overlay - Improved */}
       {isMobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-40"
+          className="lg:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-40 animate-fade-in"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
-      {/* Sidebar - Desktop & Mobile Drawer */}
+      {/* Sidebar - Desktop & Mobile Drawer - Improved */}
       <aside
         className={`
-          fixed top-0 left-0 h-full bg-white shadow-lg z-50 transition-transform duration-300
-          lg:translate-x-0 lg:w-64
+          fixed top-0 left-0 h-full bg-white shadow-2xl z-50 transition-all duration-300 border-r-2 border-gray-200
+          lg:translate-x-0 lg:w-72
           ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-          w-64
+          w-72
         `}
       >
         <div className="flex flex-col h-full">
@@ -98,15 +80,14 @@ export default function Sidebar({ user }: SidebarProps) {
           </div>
 
           {/* User Info */}
-          <div className="p-4 border-b">
+          <div className="p-6 border-b">
             <div className="flex items-center gap-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 key={user.avatar_url}
                 src={user.avatar_url || "/default-avatar.svg"}
                 alt="Avatar"
-                className="h-12 w-12 rounded-full border-2 object-cover"
-                style={{ borderColor: 'rgba(17, 77, 145)' }}
+                className="h-12 w-12 rounded-full object-cover"
                 loading="lazy"
                 referrerPolicy="no-referrer"
                 onError={(event) => {
@@ -116,13 +97,16 @@ export default function Sidebar({ user }: SidebarProps) {
               />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
-                <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                <p className="text-xs text-gray-600 truncate">{user.email}</p>
               </div>
             </div>
           </div>
 
-          {/* Navigation Menu */}
-          <nav className="flex-1 p-4 overflow-y-auto">
+          {/* Navigation Menu - Improved */}
+          <nav className="flex-1 p-5 overflow-y-auto">
+            <div className="mb-3">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider px-3 mb-2">Menu Utama</p>
+            </div>
             <ul className="space-y-2">
               {menuItems.map((item) => {
                 const isActive = pathname === item.path;
@@ -132,26 +116,31 @@ export default function Sidebar({ user }: SidebarProps) {
                     <Link
                       href={item.path}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center gap-3 p-2 rounded-lg font-medium transition-colors"
+                      className="flex items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-300 group relative overflow-hidden"
                       style={{
                         backgroundColor: isActive ? 'rgba(17, 77, 145)' : 'transparent',
-                        color: isActive ? 'white' : 'rgba(17, 77, 145)'
+                        color: isActive ? 'white' : 'rgb(75, 85, 99)',
+                        boxShadow: isActive ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)' : 'none',
+                        transform: isActive ? 'translateX(4px)' : 'translateX(0)'
                       }}
                       onMouseEnter={(e) => {
                         if (!isActive) {
-                          e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.05)';
-                          e.currentTarget.style.color = 'rgba(17, 77, 145, 0.9)';
+                          e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.1)';
+                          e.currentTarget.style.color = 'rgba(17, 77, 145)';
+                          e.currentTarget.style.transform = 'translateX(4px)';
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (!isActive) {
                           e.currentTarget.style.backgroundColor = 'transparent';
-                          e.currentTarget.style.color = 'rgba(17, 77, 145)';
+                          e.currentTarget.style.color = 'rgb(75, 85, 99)';
+                          e.currentTarget.style.transform = 'translateX(0)';
                         }
                       }}
                     >
-                      <IconComponent className="h-6 w-6" />
-                      <span>{item.name}</span>
+
+                      <IconComponent className="h-6 w-6 flex-shrink-0" />
+                      <span className="text-sm">{item.name}</span>
                     </Link>
                   </li>
                 );
@@ -159,11 +148,11 @@ export default function Sidebar({ user }: SidebarProps) {
             </ul>
           </nav>
 
-          {/* Logout Button */}
-          <div className="p-4 border-t">
+          {/* Logout Button - Improved */}
+          <div className="p-5 bg-gradient-to-r from-red-50 to-pink-50 border-t-2 border-red-200">
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 p-2 rounded-lg font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+              className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl font-bold text-red-600 bg-white hover:bg-red-600 hover:text-white transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 border-2 border-red-200 hover:border-red-600"
             >
               <ArrowRightOnRectangleIcon className="h-6 w-6" />
               <span>Keluar</span>
@@ -173,7 +162,7 @@ export default function Sidebar({ user }: SidebarProps) {
       </aside>
 
       {/* Spacer for desktop */}
-      <div className="hidden lg:block w-64 flex-shrink-0" />
+      <div className="hidden lg:block w-72 flex-shrink-0" />
     </>
   );
 }
