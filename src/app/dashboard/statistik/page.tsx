@@ -153,37 +153,76 @@ export default function StatistikPage() {
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6 sm:mb-8">Statistik Laporan</h1>
+        {/* Header - Improved */}
+        <div className="mb-6 sm:mb-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 p-6 sm:p-8 rounded-2xl border-2 border-blue-100 shadow-sm">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent mb-3">
+            Statistik Laporan
+          </h1>
+          <p className="text-sm sm:text-base lg:text-lg text-gray-700 font-medium">
+            Analisis data dan insights dari seluruh laporan di sistem
+          </p>
+        </div>
 
-        {/* Summary Cards */}
+        {/* Summary Cards - Improved with Icons and Better Design */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <div className="bg-gradient-to-r from-blue-400 to-blue-500 text-white p-4 sm:p-6 rounded-xl shadow-md">
-            <p className="text-xs sm:text-sm opacity-90 mb-1">Total Laporan</p>
-            <p className="text-2xl sm:text-3xl font-bold">{stats.totalReports}</p>
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-4 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-blue-400">
+            <div className="flex items-start justify-between mb-3">
+              <p className="text-xs sm:text-sm font-bold opacity-90">Total Laporan</p>
+              <svg className="w-6 h-6 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <p className="text-3xl sm:text-4xl font-black">{stats.totalReports}</p>
           </div>
-          <div className="bg-gradient-to-r from-red-400 to-pink-500 text-white p-4 sm:p-6 rounded-xl shadow-md">
-            <p className="text-xs sm:text-sm opacity-90 mb-1">Barang Hilang</p>
-            <p className="text-2xl sm:text-3xl font-bold">{stats.totalHilang}</p>
+          <div className="bg-gradient-to-br from-red-500 to-pink-600 text-white p-4 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-red-400">
+            <div className="flex items-start justify-between mb-3">
+              <p className="text-xs sm:text-sm font-bold opacity-90">Barang Hilang</p>
+              <svg className="w-6 h-6 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <p className="text-3xl sm:text-4xl font-black">{stats.totalHilang}</p>
           </div>
-          <div className="bg-gradient-to-r from-green-400 to-green-500 text-white p-4 sm:p-6 rounded-xl shadow-md">
-            <p className="text-xs sm:text-sm opacity-90 mb-1">Barang Ditemukan</p>
-            <p className="text-2xl sm:text-3xl font-bold">{stats.totalTemuan}</p>
+          <div className="bg-gradient-to-br from-green-500 to-emerald-600 text-white p-4 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-green-400">
+            <div className="flex items-start justify-between mb-3">
+              <p className="text-xs sm:text-sm font-bold opacity-90">Barang Ditemukan</p>
+              <svg className="w-6 h-6 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <p className="text-3xl sm:text-4xl font-black">{stats.totalTemuan}</p>
           </div>
-          <div className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white p-4 sm:p-6 rounded-xl shadow-md">
-            <p className="text-xs sm:text-sm opacity-90 mb-1">Laporan Aktif</p>
-            <p className="text-2xl sm:text-3xl font-bold">{stats.totalAktif}</p>
+          <div className="bg-gradient-to-br from-yellow-500 to-orange-500 text-white p-4 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-yellow-400">
+            <div className="flex items-start justify-between mb-3">
+              <p className="text-xs sm:text-sm font-bold opacity-90">Laporan Aktif</p>
+              <svg className="w-6 h-6 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <p className="text-3xl sm:text-4xl font-black">{stats.totalAktif}</p>
           </div>
-          <div className="bg-gradient-to-r from-purple-400 to-purple-500 text-white p-4 sm:p-6 rounded-xl shadow-md">
-            <p className="text-xs sm:text-sm opacity-90 mb-1">Selesai</p>
-            <p className="text-2xl sm:text-3xl font-bold">{stats.totalSelesai}</p>
+          <div className="bg-gradient-to-br from-purple-500 to-indigo-600 text-white p-4 sm:p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border-2 border-purple-400">
+            <div className="flex items-start justify-between mb-3">
+              <p className="text-xs sm:text-sm font-bold opacity-90">Selesai</p>
+              <svg className="w-6 h-6 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <p className="text-3xl sm:text-4xl font-black">{stats.totalSelesai}</p>
           </div>
         </div>
 
-        {/* Charts Grid */}
+        {/* Charts Grid - Improved */}
         <div className="grid md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
           {/* Category Chart */}
-          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Kategori Paling Sering</h2>
+          <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 p-4 sm:p-6 hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div>
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 mb-1">Kategori Paling Sering</h2>
+                <p className="text-xs sm:text-sm text-gray-600 font-medium">Top 8 kategori barang</p>
+              </div>
+              <span className="text-3xl">🏷️</span>
+            </div>
             {stats.categoryData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
@@ -194,7 +233,7 @@ export default function StatistikPage() {
                     labelLine={false}
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     label={({ name, percent }: any) => `${name} (${(percent * 100).toFixed(0)}%)`}
-                    outerRadius={80}
+                    outerRadius={90}
                     fill="#8884d8"
                     dataKey="value"
                   >
@@ -202,27 +241,58 @@ export default function StatistikPage() {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: 'white', border: '1px solid #ccc', borderRadius: '8px', color: '#000' }} itemStyle={{ color: '#000' }} labelStyle={{ color: '#000', fontWeight: 'bold' }} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'white', 
+                      border: '2px solid rgba(17, 77, 145, 0.2)', 
+                      borderRadius: '12px', 
+                      color: '#000',
+                      fontWeight: '600',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }} 
+                    itemStyle={{ color: '#000', fontWeight: 'bold' }} 
+                    labelStyle={{ color: '#000', fontWeight: 'bold' }} 
+                  />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <p className="text-center text-gray-500 py-12">Belum ada data</p>
+              <div className="text-center py-12 bg-gray-50 rounded-xl">
+                <div className="text-5xl mb-3">📊</div>
+                <p className="text-gray-500 font-semibold">Belum ada data kategori</p>
+              </div>
             )}
           </div>
 
           {/* Monthly Trend Chart */}
-          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Tren Laporan (6 Bulan Terakhir)</h2>
+          <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 p-4 sm:p-6 hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div>
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 mb-1">Tren Laporan</h2>
+                <p className="text-xs sm:text-sm text-gray-600 font-medium">6 bulan terakhir</p>
+              </div>
+              <span className="text-3xl">📈</span>
+            </div>
             {stats.monthlyData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={stats.monthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip contentStyle={{ backgroundColor: 'white', border: '1px solid #ccc', borderRadius: '8px', color: '#000' }} itemStyle={{ color: '#000' }} labelStyle={{ color: '#000', fontWeight: 'bold' }} />
-                  <Legend />
-                  <Bar dataKey="hilang" fill="url(#colorHilang)" name="Hilang" />
-                  <Bar dataKey="temuan" fill="url(#colorTemuan)" name="Temuan" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="month" style={{ fontSize: '12px', fontWeight: '600' }} />
+                  <YAxis style={{ fontSize: '12px', fontWeight: '600' }} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'white', 
+                      border: '2px solid rgba(17, 77, 145, 0.2)', 
+                      borderRadius: '12px', 
+                      color: '#000',
+                      fontWeight: '600',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }} 
+                    itemStyle={{ color: '#000', fontWeight: 'bold' }} 
+                    labelStyle={{ color: '#000', fontWeight: 'bold' }} 
+                  />
+                  <Legend wrapperStyle={{ fontWeight: '600' }} />
+                  <Bar dataKey="hilang" fill="url(#colorHilang)" name="Hilang" radius={[8, 8, 0, 0]} />
+                  <Bar dataKey="temuan" fill="url(#colorTemuan)" name="Temuan" radius={[8, 8, 0, 0]} />
                   <defs>
                     <linearGradient id="colorHilang" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="#F87171" stopOpacity={1} />
@@ -236,94 +306,135 @@ export default function StatistikPage() {
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <p className="text-center text-gray-500 py-12">Belum ada data</p>
+              <div className="text-center py-12 bg-gray-50 rounded-xl">
+                <div className="text-5xl mb-3">📈</div>
+                <p className="text-gray-500 font-semibold">Belum ada data bulanan</p>
+              </div>
             )}
           </div>
 
           {/* Location Chart */}
-          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Lokasi Paling Sering (Top 5)</h2>
+          <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 p-4 sm:p-6 hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div>
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 mb-1">Lokasi Paling Sering</h2>
+                <p className="text-xs sm:text-sm text-gray-600 font-medium">Top 5 lokasi kejadian</p>
+              </div>
+              <span className="text-3xl">📍</span>
+            </div>
             {stats.locationData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={stats.locationData} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
-                  <YAxis dataKey="name" type="category" width={100} />
-                  <Tooltip contentStyle={{ backgroundColor: 'white', border: '1px solid #ccc', borderRadius: '8px', color: '#000' }} itemStyle={{ color: '#000' }} labelStyle={{ color: '#000', fontWeight: 'bold' }} />
-                  <Bar dataKey="value" fill="url(#colorLokasi)" name="Jumlah" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis type="number" style={{ fontSize: '12px', fontWeight: '600' }} />
+                  <YAxis dataKey="name" type="category" width={100} style={{ fontSize: '12px', fontWeight: '600' }} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'white', 
+                      border: '2px solid rgba(17, 77, 145, 0.2)', 
+                      borderRadius: '12px', 
+                      color: '#000',
+                      fontWeight: '600',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }} 
+                    itemStyle={{ color: '#000', fontWeight: 'bold' }} 
+                    labelStyle={{ color: '#000', fontWeight: 'bold' }} 
+                  />
+                  <Bar dataKey="value" fill="url(#colorLokasi)" name="Jumlah" radius={[0, 8, 8, 0]} />
                   <defs>
                     <linearGradient id="colorLokasi" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#60A5FA" stopOpacity={1} />
+                      <stop offset="0%" stopColor="rgba(17, 77, 145)" stopOpacity={1} />
                       <stop offset="100%" stopColor="#3B82F6" stopOpacity={1} />
                     </linearGradient>
                   </defs>
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <p className="text-center text-gray-500 py-12">Belum ada data lokasi</p>
+              <div className="text-center py-12 bg-gray-50 rounded-xl">
+                <div className="text-5xl mb-3">📍</div>
+                <p className="text-gray-500 font-semibold">Belum ada data lokasi</p>
+              </div>
             )}
           </div>
 
           {/* Success Rate Card */}
-          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6">
-            <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Tingkat Penyelesaian</h2>
+          <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 p-4 sm:p-6 hover:shadow-xl transition-all duration-300">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div>
+                <h2 className="text-lg sm:text-xl font-black text-gray-900 mb-1">Tingkat Penyelesaian</h2>
+                <p className="text-xs sm:text-sm text-gray-600 font-medium">Persentase laporan selesai</p>
+              </div>
+              <span className="text-3xl">🎯</span>
+            </div>
             <div className="flex items-center justify-center h-[300px]">
               <div className="text-center">
-                <div className="relative w-48 h-48 mx-auto mb-4">
-                  <svg className="transform -rotate-90 w-48 h-48">
+                <div className="relative w-52 h-52 mx-auto mb-4">
+                  <svg className="transform -rotate-90 w-52 h-52">
                     <circle
-                      cx="96"
-                      cy="96"
-                      r="80"
+                      cx="104"
+                      cy="104"
+                      r="88"
                       stroke="#E5E7EB"
-                      strokeWidth="16"
+                      strokeWidth="20"
                       fill="none"
                     />
                     <circle
-                      cx="96"
-                      cy="96"
-                      r="80"
-                      stroke="#10B981"
-                      strokeWidth="16"
+                      cx="104"
+                      cy="104"
+                      r="88"
+                      stroke="url(#successGradient)"
+                      strokeWidth="20"
                       fill="none"
                       strokeDasharray={`${
                         stats.totalReports > 0
-                          ? (stats.totalSelesai / stats.totalReports) * 502.4
+                          ? (stats.totalSelesai / stats.totalReports) * 552.9
                           : 0
-                      } 502.4`}
+                      } 552.9`}
                       strokeLinecap="round"
+                      className="transition-all duration-1000"
                     />
+                    <defs>
+                      <linearGradient id="successGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#10B981" />
+                        <stop offset="100%" stopColor="#34D399" />
+                      </linearGradient>
+                    </defs>
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <p className="text-4xl font-bold text-gray-900">
+                    <div className="text-center bg-white rounded-full p-6">
+                      <p className="text-5xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-1">
                         {stats.totalReports > 0
                           ? Math.round((stats.totalSelesai / stats.totalReports) * 100)
                           : 0}
                         %
                       </p>
-                      <p className="text-sm text-gray-500">Selesai</p>
+                      <p className="text-xs font-bold text-gray-500">Selesai</p>
                     </div>
                   </div>
                 </div>
-                <p className="text-gray-600">
-                  {stats.totalSelesai} dari {stats.totalReports} laporan telah diselesaikan
-                </p>
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border-2 border-green-200">
+                  <p className="text-gray-900 font-bold text-sm">
+                    <span className="text-green-600 text-2xl font-black">{stats.totalSelesai}</span> dari <span className="text-gray-600 text-2xl font-black">{stats.totalReports}</span>
+                  </p>
+                  <p className="text-xs text-gray-600 font-semibold mt-1">laporan telah diselesaikan</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Additional Info */}
-        <div className="mt-6 sm:mt-8 bg-blue-50 border border-blue-200 rounded-xl p-4 sm:p-6">
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">📊</span>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-1">Informasi Statistik</h3>
-              <p className="text-sm text-gray-600">
-                Data statistik ini diperbarui secara real-time berdasarkan laporan yang masuk ke sistem.
+        {/* Additional Info - Improved */}
+        <div className="mt-6 sm:mt-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 border-2 border-blue-200 rounded-2xl p-5 sm:p-7 shadow-md">
+          <div className="flex items-start gap-4">
+            <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-2xl shadow-lg">
+              �
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-black text-gray-900 mb-2">Informasi Statistik</h3>
+              <p className="text-sm text-gray-700 leading-relaxed font-medium">
+                Data statistik ini <span className="font-bold text-blue-700">diperbarui secara real-time</span> berdasarkan laporan yang masuk ke sistem.
                 Gunakan informasi ini untuk mengidentifikasi pola kehilangan barang dan meningkatkan awareness
-                di kampus.
+                di kampus. <span className="font-bold text-blue-700">Semua data akurat hingga detik ini!</span>
               </p>
             </div>
           </div>

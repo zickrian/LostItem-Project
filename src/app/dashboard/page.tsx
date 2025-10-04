@@ -218,92 +218,160 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Header */}
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Dashboard</h1>
-          <p className="text-sm sm:text-base text-gray-600">Temukan atau laporkan barang hilang/ditemukan</p>
+        {/* Header dengan gradient background */}
+        <div className="mb-6 sm:mb-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 p-6 sm:p-8 rounded-2xl border-2 border-blue-100 shadow-sm">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent mb-3">
+            Dashboard
+          </h1>
+          <p className="text-sm sm:text-base lg:text-lg text-gray-700 font-medium">
+            Kehilangan atau menemukan barang di kampus? 
+Laporkan sekarang dengan klik tombol &quot;Buat Laporan&quot; dan bantu teman-temanmu menemukan barang mereka kembali.
+          </p>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm">
+              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              <span className="text-sm font-semibold text-gray-700">Total: {reports.length} laporan</span>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm">
+              <MagnifyingGlassIcon className="w-5 h-5 text-red-600" />
+              <span className="text-sm font-semibold text-gray-700">Hilang: {reports.filter(r => r.type === "hilang").length}</span>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm">
+              <CheckCircleIcon className="w-5 h-5 text-green-600" />
+              <span className="text-sm font-semibold text-gray-700">Temuan: {reports.filter(r => r.type === "temuan").length}</span>
+            </div>
+          </div>
         </div>
 
-        {/* Search Bar */}
-        <div className="mb-4 sm:mb-6">
+        {/* Search Bar dengan spacing lebih baik */}
+        <div className="mb-6 sm:mb-8">
           <SearchBar onSearch={handleSearch} />
         </div>
 
-        {/* Tab Switcher */}
-        <div className="flex gap-2 sm:gap-4 mb-4 sm:mb-6 border-b border-gray-200 overflow-x-auto">
+        {/* Tab Switcher dengan design modern */}
+        <div className="flex gap-2 sm:gap-3 mb-6 sm:mb-8 bg-gray-100 p-1.5 rounded-xl overflow-x-auto">
           <button
             onClick={() => setActiveTab("hilang")}
-            className="flex items-center gap-1.5 sm:gap-2 pb-2 sm:pb-3 px-3 sm:px-4 font-semibold transition-all duration-200 whitespace-nowrap text-sm sm:text-base"
+            className="flex-1 min-w-fit flex items-center justify-center gap-2 py-3 px-4 font-bold transition-all duration-300 rounded-lg whitespace-nowrap text-sm sm:text-base"
             style={{
-              color: activeTab === "hilang" ? 'rgba(17, 77, 145)' : 'rgb(107, 114, 128)',
-              borderBottom: activeTab === "hilang" ? '2px solid rgba(17, 77, 145)' : 'none'
+              backgroundColor: activeTab === "hilang" ? 'rgba(17, 77, 145)' : 'transparent',
+              color: activeTab === "hilang" ? 'white' : 'rgb(107, 114, 128)',
+              boxShadow: activeTab === "hilang" ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)' : 'none'
             }}
             onMouseEnter={(e) => {
               if (activeTab !== "hilang") {
-                e.currentTarget.style.color = 'rgba(17, 77, 145, 0.8)';
+                e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.1)';
+                e.currentTarget.style.color = 'rgba(17, 77, 145, 0.9)';
               }
             }}
             onMouseLeave={(e) => {
               if (activeTab !== "hilang") {
+                e.currentTarget.style.backgroundColor = 'transparent';
                 e.currentTarget.style.color = 'rgb(107, 114, 128)';
               }
             }}
           >
             <MagnifyingGlassIcon className="h-5 w-5 sm:h-6 sm:w-6" />
             <span>Barang Hilang</span>
+            <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs font-bold">
+              {reports.filter(r => r.type === "hilang").length}
+            </span>
           </button>
           <button
             onClick={() => setActiveTab("temuan")}
-            className="flex items-center gap-1.5 sm:gap-2 pb-2 sm:pb-3 px-3 sm:px-4 font-semibold transition-all duration-200 whitespace-nowrap text-sm sm:text-base"
+            className="flex-1 min-w-fit flex items-center justify-center gap-2 py-3 px-4 font-bold transition-all duration-300 rounded-lg whitespace-nowrap text-sm sm:text-base"
             style={{
-              color: activeTab === "temuan" ? 'rgba(17, 77, 145)' : 'rgb(107, 114, 128)',
-              borderBottom: activeTab === "temuan" ? '2px solid rgba(17, 77, 145)' : 'none'
+              backgroundColor: activeTab === "temuan" ? 'rgba(17, 77, 145)' : 'transparent',
+              color: activeTab === "temuan" ? 'white' : 'rgb(107, 114, 128)',
+              boxShadow: activeTab === "temuan" ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)' : 'none'
             }}
             onMouseEnter={(e) => {
               if (activeTab !== "temuan") {
-                e.currentTarget.style.color = 'rgba(17, 77, 145, 0.8)';
+                e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.1)';
+                e.currentTarget.style.color = 'rgba(17, 77, 145, 0.9)';
               }
             }}
             onMouseLeave={(e) => {
               if (activeTab !== "temuan") {
+                e.currentTarget.style.backgroundColor = 'transparent';
                 e.currentTarget.style.color = 'rgb(107, 114, 128)';
               }
             }}
           >
             <CheckCircleIcon className="h-5 w-5 sm:h-6 sm:w-6" />
             <span>Barang Temuan</span>
+            <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs font-bold">
+              {reports.filter(r => r.type === "temuan").length}
+            </span>
           </button>
         </div>
 
-        {/* Reports Grid */}
+        {/* Reports Grid atau Empty State */}
         {filteredReports.length === 0 ? (
-          <div className="text-center py-12 sm:py-16 px-4">
-            <div className="text-5xl sm:text-6xl mb-3 sm:mb-4">
-              {activeTab === "hilang" ? "🔍" : "✅"}
+          <div className="text-center py-16 sm:py-20 px-4">
+            <div className="max-w-md mx-auto">
+              {/* Empty State dengan design menarik */}
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-3xl p-8 sm:p-12 shadow-lg border-2 border-blue-200">
+                <div className="mb-6 flex justify-center">
+                  {activeTab === "hilang" ? (
+                    <MagnifyingGlassIcon className="w-24 h-24 sm:w-32 sm:h-32 text-blue-600 opacity-50" />
+                  ) : (
+                    <CheckCircleIcon className="w-24 h-24 sm:w-32 sm:h-32 text-green-600 opacity-50" />
+                  )}
+                </div>
+                <h3 className="text-xl sm:text-2xl font-black text-gray-900 mb-3">
+                  {searchQuery ? "Tidak Ditemukan" : "Belum Ada Laporan"}
+                </h3>
+                <p className="text-sm sm:text-base text-gray-700 font-medium mb-6">
+                  {searchQuery 
+                    ? "Coba gunakan kata kunci lain untuk mencari" 
+                    : `Belum ada laporan ${activeTab === "hilang" ? "barang hilang" : "barang ditemukan"}`}
+                </p>
+                {!searchQuery && (
+                  <button
+                    onClick={() => router.push("/dashboard/laporan")}
+                    className="inline-flex items-center gap-2 px-6 py-3 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                    style={{ backgroundColor: 'rgba(17, 77, 145)' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.9)'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)'}
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Buat Laporan Pertama
+                  </button>
+                )}
+              </div>
             </div>
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">
-              Tidak ada laporan {activeTab === "hilang" ? "barang hilang" : "barang ditemukan"}
-            </h3>
-            <p className="text-sm sm:text-base text-gray-500">
-              {searchQuery ? "Coba kata kunci lain" : "Jadilah yang pertama membuat laporan!"}
-            </p>
           </div>
         ) : (
-          <ReportGrid
-            reports={filteredReports.map((report) => ({
-              id: report.id,
-              title: report.title,
-              description: report.description,
-              category: report.category || "Lainnya",
-              location: report.location,
-              type: report.type,
-              status: report.status,
-              image_url: report.image_url,
-              created_at: report.created_at,
-            }))}
-            showActions={false}
-            currentUserId={user?.id}
-          />
+          <div>
+            {/* Result count */}
+            <div className="mb-4 flex items-center justify-between px-2">
+              <p className="text-sm sm:text-base text-gray-600 font-medium">
+                Menampilkan <span className="font-bold text-gray-900">{filteredReports.length}</span> laporan
+                {searchQuery && <span> untuk &quot;<span className="font-bold text-blue-600">{searchQuery}</span>&quot;</span>}
+              </p>
+            </div>
+            
+            <ReportGrid
+              reports={filteredReports.map((report) => ({
+                id: report.id,
+                title: report.title,
+                description: report.description,
+                category: report.category || "Lainnya",
+                location: report.location,
+                type: report.type,
+                status: report.status,
+                image_url: report.image_url,
+                created_at: report.created_at,
+              }))}
+              showActions={false}
+              currentUserId={user?.id}
+            />
+          </div>
         )}
       </div>
     </DashboardLayout>

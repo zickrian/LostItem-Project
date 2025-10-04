@@ -8,6 +8,7 @@ interface SearchBarProps {
 
 export default function SearchBar({ onSearch, placeholder = "Cari barang, kategori, lokasi, atau nama..." }: SearchBarProps) {
   const [query, setQuery] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,21 +24,29 @@ export default function SearchBar({ onSearch, placeholder = "Cari barang, katego
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-full">
-      <div className="relative w-full">
+      <div className="relative w-full group">
         <input
           type="text"
           value={query}
           onChange={handleChange}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
-          // thicker blue outline on focus (matches navbar) and typed text black
-          className="w-full px-3 sm:px-4 py-2 sm:py-3 pl-10 sm:pl-12 pr-10 sm:pr-4 border-2 border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-600 placeholder:text-gray-400 text-black transition-all duration-200 text-sm sm:text-base"
+          className="w-full px-3 sm:px-4 py-3 sm:py-4 pl-12 sm:pl-14 pr-12 sm:pr-14 border-2 rounded-xl focus:outline-none transition-all duration-300 text-gray-900 placeholder:text-gray-400 text-sm sm:text-base shadow-sm hover:shadow-md font-medium"
+          style={{
+            borderColor: isFocused ? 'rgba(17, 77, 145)' : '#e5e7eb',
+            backgroundColor: isFocused ? 'rgba(17, 77, 145, 0.02)' : 'white'
+          }}
         />
-        <div className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
-          <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div 
+          className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 transition-colors duration-300"
+          style={{ color: isFocused ? 'rgba(17, 77, 145)' : '#9ca3af' }}
+        >
+          <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
+              strokeWidth={2.5}
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             />
           </svg>
@@ -49,12 +58,17 @@ export default function SearchBar({ onSearch, placeholder = "Cari barang, katego
               setQuery("");
               onSearch("");
             }}
-            className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors duration-200 bg-gray-100 hover:bg-red-50 rounded-full p-1.5"
           >
-            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
+        )}
+        
+        {/* Search indicator */}
+        {query && (
+          <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50" />
         )}
       </div>
     </form>
