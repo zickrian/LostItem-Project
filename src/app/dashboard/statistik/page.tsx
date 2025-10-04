@@ -17,7 +17,7 @@ interface StatsData {
   locationData: { name: string; value: number }[];
 }
 
-const COLORS = ["#3B82F6", "#EF4444", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899", "#14B8A6", "#F97316"];
+const COLORS = ["#60A5FA", "#F87171", "#34D399", "#FBBF24", "#A78BFA", "#F472B6", "#2DD4BF", "#FB923C"];
 
 export default function StatistikPage() {
   const router = useRouter();
@@ -161,23 +161,23 @@ export default function StatistikPage() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-4 sm:p-6 rounded-lg sm:rounded-xl shadow-md">
+          <div className="bg-gradient-to-r from-blue-400 to-blue-500 text-white p-4 sm:p-6 rounded-xl shadow-md">
             <p className="text-xs sm:text-sm opacity-90 mb-1">Total Laporan</p>
             <p className="text-2xl sm:text-3xl font-bold">{stats.totalReports}</p>
           </div>
-          <div className="bg-gradient-to-br from-red-500 to-red-600 text-white p-4 sm:p-6 rounded-lg sm:rounded-xl shadow-md">
+          <div className="bg-gradient-to-r from-red-400 to-pink-500 text-white p-4 sm:p-6 rounded-xl shadow-md">
             <p className="text-xs sm:text-sm opacity-90 mb-1">Barang Hilang</p>
             <p className="text-2xl sm:text-3xl font-bold">{stats.totalHilang}</p>
           </div>
-          <div className="bg-gradient-to-br from-green-500 to-green-600 text-white p-4 sm:p-6 rounded-lg sm:rounded-xl shadow-md">
+          <div className="bg-gradient-to-r from-green-400 to-green-500 text-white p-4 sm:p-6 rounded-xl shadow-md">
             <p className="text-xs sm:text-sm opacity-90 mb-1">Barang Ditemukan</p>
             <p className="text-2xl sm:text-3xl font-bold">{stats.totalTemuan}</p>
           </div>
-          <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 text-white p-4 sm:p-6 rounded-lg sm:rounded-xl shadow-md">
+          <div className="bg-gradient-to-r from-yellow-400 to-orange-400 text-white p-4 sm:p-6 rounded-xl shadow-md">
             <p className="text-xs sm:text-sm opacity-90 mb-1">Laporan Aktif</p>
             <p className="text-2xl sm:text-3xl font-bold">{stats.totalAktif}</p>
           </div>
-          <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-4 sm:p-6 rounded-lg sm:rounded-xl shadow-md">
+          <div className="bg-gradient-to-r from-purple-400 to-purple-500 text-white p-4 sm:p-6 rounded-xl shadow-md">
             <p className="text-xs sm:text-sm opacity-90 mb-1">Selesai</p>
             <p className="text-2xl sm:text-3xl font-bold">{stats.totalSelesai}</p>
           </div>
@@ -206,7 +206,7 @@ export default function StatistikPage() {
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip contentStyle={{ backgroundColor: 'white', border: '1px solid #ccc', borderRadius: '8px', color: '#000' }} itemStyle={{ color: '#000' }} labelStyle={{ color: '#000', fontWeight: 'bold' }} />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
@@ -223,10 +223,20 @@ export default function StatistikPage() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
-                  <Tooltip />
+                  <Tooltip contentStyle={{ backgroundColor: 'white', border: '1px solid #ccc', borderRadius: '8px', color: '#000' }} itemStyle={{ color: '#000' }} labelStyle={{ color: '#000', fontWeight: 'bold' }} />
                   <Legend />
-                  <Bar dataKey="hilang" fill="#EF4444" name="Hilang" />
-                  <Bar dataKey="temuan" fill="#10B981" name="Temuan" />
+                  <Bar dataKey="hilang" fill="url(#colorHilang)" name="Hilang" />
+                  <Bar dataKey="temuan" fill="url(#colorTemuan)" name="Temuan" />
+                  <defs>
+                    <linearGradient id="colorHilang" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#F87171" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#F472B6" stopOpacity={1} />
+                    </linearGradient>
+                    <linearGradient id="colorTemuan" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#34D399" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#10B981" stopOpacity={1} />
+                    </linearGradient>
+                  </defs>
                 </BarChart>
               </ResponsiveContainer>
             ) : (
@@ -243,8 +253,14 @@ export default function StatistikPage() {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis type="number" />
                   <YAxis dataKey="name" type="category" width={100} />
-                  <Tooltip />
-                  <Bar dataKey="value" fill="#3B82F6" name="Jumlah" />
+                  <Tooltip contentStyle={{ backgroundColor: 'white', border: '1px solid #ccc', borderRadius: '8px', color: '#000' }} itemStyle={{ color: '#000' }} labelStyle={{ color: '#000', fontWeight: 'bold' }} />
+                  <Bar dataKey="value" fill="url(#colorLokasi)" name="Jumlah" />
+                  <defs>
+                    <linearGradient id="colorLokasi" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#60A5FA" stopOpacity={1} />
+                      <stop offset="100%" stopColor="#3B82F6" stopOpacity={1} />
+                    </linearGradient>
+                  </defs>
                 </BarChart>
               </ResponsiveContainer>
             ) : (
