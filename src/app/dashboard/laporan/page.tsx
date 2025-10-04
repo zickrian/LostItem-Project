@@ -331,7 +331,10 @@ function LaporanContent() {
               setEditMode(false);
               setShowModal(true);
             }}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-md hover:shadow-lg"
+            className="text-white px-6 py-3 rounded-lg transition-colors font-semibold shadow-md hover:shadow-lg"
+            style={{ backgroundColor: 'rgba(17, 77, 145)' }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.9)'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)'}
           >
             + Buat Laporan
           </button>
@@ -349,21 +352,41 @@ function LaporanContent() {
               <div className="flex gap-2 mb-4">
                 <button
                   onClick={() => setStatusFilter("aktif")}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    statusFilter === "aktif"
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                  style={{
+                    backgroundColor: statusFilter === "aktif" ? 'rgba(17, 77, 145)' : 'rgb(243, 244, 246)',
+                    color: statusFilter === "aktif" ? 'white' : 'rgb(55, 65, 81)'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (statusFilter !== "aktif") {
+                      e.currentTarget.style.backgroundColor = 'rgb(229, 231, 235)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (statusFilter !== "aktif") {
+                      e.currentTarget.style.backgroundColor = 'rgb(243, 244, 246)';
+                    }
+                  }}
                 >
                   Aktif ({myReports.filter((r) => r.status === "aktif").length})
                 </button>
                 <button
                   onClick={() => setStatusFilter("selesai")}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    statusFilter === "selesai"
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                  style={{
+                    backgroundColor: statusFilter === "selesai" ? 'rgba(17, 77, 145)' : 'rgb(243, 244, 246)',
+                    color: statusFilter === "selesai" ? 'white' : 'rgb(55, 65, 81)'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (statusFilter !== "selesai") {
+                      e.currentTarget.style.backgroundColor = 'rgb(229, 231, 235)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (statusFilter !== "selesai") {
+                      e.currentTarget.style.backgroundColor = 'rgb(243, 244, 246)';
+                    }
+                  }}
                 >
                   Selesai ({myReports.filter((r) => r.status === "selesai").length})
                 </button>
@@ -417,7 +440,10 @@ function LaporanContent() {
                             loadReportForEdit(report.id);
                             setShowModal(true);
                           }}
-                          className="flex-1 px-3 py-1.5 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                          className="flex-1 px-3 py-1.5 text-white rounded text-sm transition-colors"
+                          style={{ backgroundColor: 'rgba(17, 77, 145)' }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.9)'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)'}
                         >
                           Edit
                         </button>
@@ -586,7 +612,10 @@ function LaporanContent() {
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-semibold"
+                      className="flex-1 text-white px-6 py-3 rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-semibold"
+                      style={{ backgroundColor: submitting ? undefined : 'rgba(17, 77, 145)' }}
+                      onMouseEnter={(e) => !submitting && (e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.9)')}
+                      onMouseLeave={(e) => !submitting && (e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)')}
                     >
                       {submitting ? "Menyimpan..." : editMode ? "Update Laporan" : "Buat Laporan"}
                     </button>

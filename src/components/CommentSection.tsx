@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 
 interface Comment {
@@ -151,12 +150,17 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
         ) : (
           comments.map((comment) => (
             <div key={comment.id} className="flex gap-3">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={comment.user.avatar_url || "/default-avatar.svg"}
                 alt={comment.user.name}
-                width={32}
-                height={32}
-                className="rounded-full border border-gray-300 object-cover flex-shrink-0"
+                className="h-8 w-8 rounded-full border border-gray-300 object-cover flex-shrink-0"
+                loading="lazy"
+                referrerPolicy="no-referrer"
+                onError={(event) => {
+                  event.currentTarget.onerror = null;
+                  event.currentTarget.src = "/default-avatar.svg";
+                }}
               />
               <div className="flex-1 min-w-0">
                 <div className="bg-white rounded-lg px-3 py-2 shadow-sm">
@@ -187,13 +191,30 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Tulis komentar..."
-          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-transparent text-sm"
+          onFocus={(e) => {
+            e.currentTarget.style.boxShadow = '0 0 0 2px rgba(17, 77, 145, 0.5)';
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.boxShadow = 'none';
+          }}
           disabled={submitting}
         />
         <button
           type="submit"
           disabled={!newComment.trim() || submitting}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 text-sm font-medium"
+          className="px-4 py-2 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 text-sm font-medium"
+          style={{ backgroundColor: !newComment.trim() || submitting ? undefined : 'rgba(17, 77, 145)' }}
+          onMouseEnter={(e) => {
+            if (newComment.trim() && !submitting) {
+              e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.9)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (newComment.trim() && !submitting) {
+              e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)';
+            }
+          }}
         >
           {submitting ? "..." : "Kirim"}
         </button>

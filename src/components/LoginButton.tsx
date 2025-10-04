@@ -40,7 +40,10 @@ export default function LoginButton() {
       <button
         onClick={handleLogin}
         disabled={loading}
-        className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center gap-3 mx-auto disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-full justify-center"
+        className="text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center gap-3 mx-auto disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-full justify-center"
+        style={{ backgroundColor: 'rgba(17, 77, 145)' }}
+        onMouseEnter={(e) => !loading && (e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.9)')}
+        onMouseLeave={(e) => !loading && (e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)')}
       >
         {loading ? (
           <>

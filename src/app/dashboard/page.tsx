@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
 import SearchBar from "@/components/SearchBar";
 import ReportCard, { Report } from "@/components/ReportCard";
+import { MagnifyingGlassIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 
 type TabType = "hilang" | "temuan";
 
@@ -170,7 +171,7 @@ export default function DashboardPage() {
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-4"></div>
+            <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 mb-4" style={{ borderTopColor: 'rgba(17, 77, 145)', borderBottomColor: 'rgba(17, 77, 145)' }}></div>
             <p className="text-xl text-gray-700">Memuat dashboard...</p>
           </div>
         </div>
@@ -196,23 +197,45 @@ export default function DashboardPage() {
         <div className="flex gap-4 mb-6 border-b border-gray-200">
           <button
             onClick={() => setActiveTab("hilang")}
-            className={`pb-3 px-4 font-semibold transition-all duration-200 ${
-              activeTab === "hilang"
-                ? "text-red-600 border-b-2 border-red-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
+            className="flex items-center gap-2 pb-3 px-4 font-semibold transition-all duration-200"
+            style={{
+              color: activeTab === "hilang" ? 'rgba(17, 77, 145)' : 'rgb(107, 114, 128)',
+              borderBottom: activeTab === "hilang" ? '2px solid rgba(17, 77, 145)' : 'none'
+            }}
+            onMouseEnter={(e) => {
+              if (activeTab !== "hilang") {
+                e.currentTarget.style.color = 'rgba(17, 77, 145, 0.8)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== "hilang") {
+                e.currentTarget.style.color = 'rgb(107, 114, 128)';
+              }
+            }}
           >
-            🔍 Barang Hilang
+            <MagnifyingGlassIcon className="h-6 w-6" />
+            <span>Barang Hilang</span>
           </button>
           <button
             onClick={() => setActiveTab("temuan")}
-            className={`pb-3 px-4 font-semibold transition-all duration-200 ${
-              activeTab === "temuan"
-                ? "text-green-600 border-b-2 border-green-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
+            className="flex items-center gap-2 pb-3 px-4 font-semibold transition-all duration-200"
+            style={{
+              color: activeTab === "temuan" ? 'rgba(17, 77, 145)' : 'rgb(107, 114, 128)',
+              borderBottom: activeTab === "temuan" ? '2px solid rgba(17, 77, 145)' : 'none'
+            }}
+            onMouseEnter={(e) => {
+              if (activeTab !== "temuan") {
+                e.currentTarget.style.color = 'rgba(17, 77, 145, 0.8)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== "temuan") {
+                e.currentTarget.style.color = 'rgb(107, 114, 128)';
+              }
+            }}
           >
-            ✅ Barang Ditemukan
+            <CheckCircleIcon className="h-6 w-6" />
+            <span>Barang Ditemukan</span>
           </button>
         </div>
 

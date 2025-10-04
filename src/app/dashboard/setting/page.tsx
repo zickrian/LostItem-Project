@@ -1,10 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { uploadAvatar } from "@/lib/supabaseStorage";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
-import Image from "next/image";
 
 interface UserSettings {
   id: string;
@@ -34,8 +32,6 @@ export default function SettingPage() {
 
   // Profile form state
   const [name, setName] = useState("");
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState("");
 
   // Danger zone state
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
@@ -65,31 +61,15 @@ export default function SettingPage() {
 
       if (userError) throw userError;
 
-      console.log("👤 User data fetched:", { 
-        userId: userData.id, 
-        name: userData.name, 
-        avatar_url: userData.avatar_url 
+      console.log("👤 User data in Settings:", {
+        id: userData.id,
+        name: userData.name,
+        email: userData.email,
+        avatar_url: userData.avatar_url,
       });
 
       setUser(userData);
       setName(userData.name);
-      
-      // Add cache busting timestamp ONLY for Supabase Storage URLs (custom uploads)
-      // Keep Google photos as-is (no cache busting needed)
-      let avatarUrl = userData.avatar_url || "";
-      
-      if (avatarUrl && avatarUrl.includes('supabase.co/storage')) {
-        // Custom uploaded avatar -> add cache busting
-        avatarUrl = `${avatarUrl}?t=${Date.now()}`;
-        console.log("🖼️ Using custom avatar with cache busting:", avatarUrl);
-      } else if (avatarUrl) {
-        // Google photo or other external URL -> use as-is
-        console.log("🖼️ Using Google/external avatar:", avatarUrl);
-      } else {
-        console.log("🖼️ No avatar found, will use default");
-      }
-      
-      setAvatarPreview(avatarUrl);
 
       // Fetch notification settings
       const { data: notifData } = await supabase
@@ -111,122 +91,63 @@ export default function SettingPage() {
     }
   }
 
-  function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Validate file size (max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      alert("Ukuran file maksimal 2MB");
-      return;
-    }
-
-    setAvatarFile(file);
-    setAvatarPreview(URL.createObjectURL(file));
-  }
-
-  async function handleUpdateProfile(e: React.FormEvent) {
+  async function handleSaveSettings(e: React.FormEvent) {
     e.preventDefault();
     if (!user || saving) return;
 
-    if (!name.trim()) {
+    const trimmedName = name.trim();
+    if (!trimmedName) {
       alert("Nama tidak boleh kosong!");
       return;
     }
 
     setSaving(true);
     try {
-      let newAvatarUrl = user.avatar_url;
-
-      // Upload new avatar if selected
-      if (avatarFile) {
-        console.log("🔄 Uploading avatar...", { userId: user.id, fileName: avatarFile.name });
-        const uploadedUrl = await uploadAvatar(avatarFile, user.id, user.avatar_url || undefined);
-        
-        if (uploadedUrl) {
-          console.log("✅ Avatar uploaded successfully:", uploadedUrl);
-          newAvatarUrl = uploadedUrl;
-        } else {
-          console.error("❌ Avatar upload failed - uploadedUrl is null");
-          alert("Gagal upload avatar. Cek console untuk detail error.");
-          setSaving(false);
-          return;
-        }
-      }
-
-      console.log("📝 Updating user profile in database...", {
-        userId: user.id,
-        name: name.trim(),
-        avatar_url: newAvatarUrl
-      });
-
-      // Update user profile
-      const { error } = await supabase
+      // Update user profile (name only, avatar tetap mengikuti Google)
+      const { error: profileError } = await supabase
         .from("users")
         .update({
-          name: name.trim(),
-          avatar_url: newAvatarUrl,
+          name: trimmedName,
         })
         .eq("id", user.id);
 
-      if (error) {
-        console.error("❌ Database update error:", error);
-        throw error;
-      }
+      if (profileError) throw profileError;
 
-      console.log("✅ Profile updated successfully!");
-      alert("Profil berhasil diperbarui!");
-      
-      // Refresh data and clear preview
-      await fetchUserData();
-      setAvatarFile(null);
-      
-      // Force refresh to update avatar everywhere (Sidebar, etc.)
-      router.refresh();
-    } catch (error) {
-      console.error("❌ Error updating profile:", error);
-      alert("Gagal memperbarui profil. Silakan coba lagi.");
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  async function handleUpdateNotifications() {
-    if (!user || saving) return;
-
-    setSaving(true);
-    try {
-      // Check if notifications record exists
-      const { data: existingNotif } = await supabase
+      // Pastikan pengaturan notifikasi ikut tersimpan
+      const { data: existingNotif, error: notifFetchError } = await supabase
         .from("notifications")
         .select("id")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
+
+      if (notifFetchError) throw notifFetchError;
+
+      let notifError = null;
 
       if (existingNotif) {
-        // Update existing
         const { error } = await supabase
           .from("notifications")
           .update(notifications)
           .eq("user_id", user.id);
-
-        if (error) throw error;
+        notifError = error;
       } else {
-        // Insert new
         const { error } = await supabase
           .from("notifications")
           .insert({
             user_id: user.id,
             ...notifications,
           });
-
-        if (error) throw error;
+        notifError = error;
       }
 
-      alert("Pengaturan notifikasi berhasil diperbarui!");
+      if (notifError) throw notifError;
+
+      alert("Pengaturan berhasil diperbarui!");
+      await fetchUserData();
+      router.refresh();
     } catch (error) {
-      console.error("Error updating notifications:", error);
-      alert("Gagal memperbarui pengaturan notifikasi.");
+      console.error("Error saving settings:", error);
+      alert("Gagal menyimpan pengaturan. Silakan coba lagi.");
     } finally {
       setSaving(false);
     }
@@ -273,7 +194,7 @@ export default function SettingPage() {
       <DashboardLayout>
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-4"></div>
+            <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 mb-4" style={{ borderTopColor: 'rgba(17, 77, 145)', borderBottomColor: 'rgba(17, 77, 145)' }}></div>
             <p className="text-xl text-gray-700">Memuat pengaturan...</p>
           </div>
         </div>
@@ -296,155 +217,172 @@ export default function SettingPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-4xl font-bold text-gray-900 mb-8">Pengaturan</h1>
 
-        {/* Profile Settings */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Profil Saya</h2>
-          
-          <form onSubmit={handleUpdateProfile} className="space-y-6">
-            {/* Avatar */}
-            <div className="flex items-center gap-6">
-              <div className="relative w-24 h-24 flex-shrink-0">
-                <Image
-                  key={avatarPreview} // Force re-render when avatar changes
-                  src={avatarPreview || "/default-avatar.svg"}
-                  alt="Avatar"
-                  width={96}
-                  height={96}
-                  className="rounded-full border-4 border-blue-600 object-cover"
-                  unoptimized // Disable Next.js image optimization to prevent caching issues
-                />
+        <form onSubmit={handleSaveSettings} className="space-y-6">
+          {/* Profile Settings */}
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Profil Saya</h2>
+
+            <div className="space-y-6">
+              {/* Avatar - Read Only (from Google) */}
+              <div className="flex items-center gap-6">
+                <div className="relative w-24 h-24 flex-shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={user.avatar_url || "/default-avatar.svg"}
+                    alt="Avatar"
+                    className="h-24 w-24 rounded-full border-4 object-cover"
+                    style={{ borderColor: 'rgba(17, 77, 145)' }}
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                    onError={(event) => {
+                      console.error("❌ Failed to load avatar (settings):", user.avatar_url);
+                      event.currentTarget.onerror = null;
+                      event.currentTarget.src = "/default-avatar.svg";
+                    }}
+                  />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-700 mb-1">Foto Profil</p>
+                  <p className="text-xs text-gray-500">Foto profil diambil dari akun Google Anda</p>
+                </div>
               </div>
-              <div className="flex-1">
+
+              {/* Name */}
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Foto Profil
+                  Nama Lengkap <span className="text-red-500">*</span>
                 </label>
                 <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleAvatarChange}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                  required
                 />
-                <p className="text-xs text-gray-500 mt-1">Maksimal 2MB, format: JPG, PNG</p>
               </div>
-            </div>
 
-            {/* Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nama Lengkap <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-                required
-              />
-            </div>
-
-            {/* Email (Read-only) */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-              <input
-                type="email"
-                value={user.email}
-                disabled
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
-              />
-              <p className="text-xs text-gray-500 mt-1">Email tidak dapat diubah</p>
-            </div>
-
-            {/* Role (Read-only) */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
-              <input
-                type="text"
-                value={user.role}
-                disabled
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed capitalize"
-              />
-            </div>
-
-            {/* Account Info */}
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-sm text-gray-600 mb-1">
-                <span className="font-semibold">Bergabung sejak:</span>{" "}
-                {new Date(user.created_at).toLocaleDateString("id-ID", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </p>
-              <p className="text-sm text-gray-600">
-                <span className="font-semibold">Login terakhir:</span>{" "}
-                {new Date(user.last_login).toLocaleString("id-ID")}
-              </p>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={saving}
-              className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-semibold"
-            >
-              {saving ? "Menyimpan..." : "Simpan Perubahan"}
-            </button>
-          </form>
-        </div>
-
-        {/* Notification Settings */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Notifikasi</h2>
-          
-          <div className="space-y-4">
-            <div className="flex items-center justify-between py-3 border-b">
+              {/* Email (Read-only) */}
               <div>
-                <p className="font-medium text-gray-900">Notifikasi Email</p>
-                <p className="text-sm text-gray-500">Terima notifikasi melalui email</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
                 <input
-                  type="checkbox"
-                  checked={notifications.email_notif}
-                  onChange={(e) =>
-                    setNotifications({ ...notifications, email_notif: e.target.checked })
-                  }
-                  className="sr-only peer"
+                  type="email"
+                  value={user.email}
+                  disabled
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
+                <p className="text-xs text-gray-500 mt-1">Email tidak dapat diubah</p>
+              </div>
 
-            <div className="flex items-center justify-between py-3 border-b">
+              {/* Role (Read-only) */}
               <div>
-                <p className="font-medium text-gray-900">Notifikasi Web</p>
-                <p className="text-sm text-gray-500">Terima notifikasi di browser</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
                 <input
-                  type="checkbox"
-                  checked={notifications.web_notif}
-                  onChange={(e) =>
-                    setNotifications({ ...notifications, web_notif: e.target.checked })
-                  }
-                  className="sr-only peer"
+                  type="text"
+                  value={user.role}
+                  disabled
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed capitalize"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
+              </div>
 
-            <button
-              onClick={handleUpdateNotifications}
-              disabled={saving}
-              className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-semibold mt-4"
-            >
-              {saving ? "Menyimpan..." : "Simpan Pengaturan Notifikasi"}
-            </button>
+              {/* Account Info */}
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="text-sm text-gray-600 mb-1">
+                  <span className="font-semibold">Bergabung sejak:</span>{" "}
+                  {new Date(user.created_at).toLocaleDateString("id-ID", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </p>
+                <p className="text-sm text-gray-600">
+                  <span className="font-semibold">Login terakhir:</span>{" "}
+                  {new Date(user.last_login).toLocaleString("id-ID")}
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
+
+          {/* Notification Settings */}
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Notifikasi</h2>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between py-3 border-b">
+                <div>
+                  <p className="font-medium text-gray-900">Notifikasi Email</p>
+                  <p className="text-sm text-gray-500">Terima notifikasi melalui email</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={notifications.email_notif}
+                    onChange={(e) =>
+                      setNotifications({ ...notifications, email_notif: e.target.checked })
+                    }
+                    className="sr-only peer"
+                  />
+                  <div 
+                    className="w-11 h-6 rounded-full peer transition-all relative"
+                    style={{
+                      backgroundColor: notifications.email_notif ? 'rgba(17, 77, 145)' : 'rgb(229, 231, 235)'
+                    }}
+                  >
+                    <div 
+                      className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
+                      style={{
+                        transform: notifications.email_notif ? 'translateX(20px)' : 'translateX(0)'
+                      }}
+                    />
+                  </div>
+                </label>
+              </div>
+
+              <div className="flex items-center justify-between py-3 border-b">
+                <div>
+                  <p className="font-medium text-gray-900">Notifikasi Web</p>
+                  <p className="text-sm text-gray-500">Terima notifikasi di browser</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={notifications.web_notif}
+                    onChange={(e) =>
+                      setNotifications({ ...notifications, web_notif: e.target.checked })
+                    }
+                    className="sr-only peer"
+                  />
+                  <div 
+                    className="w-11 h-6 rounded-full peer transition-all relative"
+                    style={{
+                      backgroundColor: notifications.web_notif ? 'rgba(17, 77, 145)' : 'rgb(229, 231, 235)'
+                    }}
+                  >
+                    <div 
+                      className="absolute top-[2px] left-[2px] bg-white border border-gray-300 rounded-full h-5 w-5 transition-transform"
+                      style={{
+                        transform: notifications.web_notif ? 'translateX(20px)' : 'translateX(0)'
+                      }}
+                    />
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={saving}
+            className="w-full text-white px-6 py-3 rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-semibold"
+            style={{ backgroundColor: saving ? undefined : 'rgba(17, 77, 145)' }}
+            onMouseEnter={(e) => !saving && (e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.9)')}
+            onMouseLeave={(e) => !saving && (e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)')}
+          >
+            {saving ? "Menyimpan..." : "Simpan Perubahan"}
+          </button>
+        </form>
 
         {/* Danger Zone */}
-        <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6">
+  <div className="bg-red-50 border-2 border-red-200 rounded-xl p-6 mt-6">
           <h2 className="text-2xl font-bold text-red-900 mb-4">⚠️ Danger Zone</h2>
           <p className="text-red-700 mb-4">
             Menghapus akun akan menghapus semua data Anda termasuk laporan dan komentar. Tindakan ini

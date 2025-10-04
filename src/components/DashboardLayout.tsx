@@ -47,38 +47,28 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
         if (userError) {
           // User not in database yet, use auth metadata
-          console.log("⚠️ User not found in database, using auth metadata");
+          console.log("⚠️ User not found in DB, using auth metadata");
+          const fallbackAvatar = currentUser.user_metadata.avatar_url || 
+                                 currentUser.user_metadata.picture || 
+                                 currentUser.user_metadata.photo;
+          console.log("📸 Fallback avatar:", fallbackAvatar);
+          
           setUser({
             id: currentUser.id,
             name: currentUser.user_metadata.full_name || currentUser.email?.split("@")[0],
             email: currentUser.email,
-            avatar_url: currentUser.user_metadata.avatar_url || currentUser.user_metadata.picture,
+            avatar_url: fallbackAvatar,
             role: "student",
           });
         } else {
-          // User found in database
-          console.log("✅ User found in database:", userData);
-          
-          // Prioritas avatar:
-          // 1. Jika ada avatar di Supabase Storage (custom upload) -> pakai itu
-          // 2. Jika ada avatar dari Google di database -> pakai itu
-          // 3. Fallback ke default avatar
-          let avatarUrl = userData.avatar_url;
-          
-          // Add cache busting ONLY for Supabase Storage URLs
-          if (avatarUrl && avatarUrl.includes('supabase.co/storage')) {
-            avatarUrl = `${avatarUrl}?t=${Date.now()}`;
-            console.log("🖼️ Using custom avatar with cache busting:", avatarUrl);
-          } else if (avatarUrl) {
-            console.log("🖼️ Using Google avatar:", avatarUrl);
-          } else {
-            console.log("🖼️ No avatar found, will use default");
-          }
-          
-          setUser({
-            ...userData,
-            avatar_url: avatarUrl
+          // User found in database, use avatar from database (Google photo)
+          console.log("✅ User found in DB:", {
+            id: userData.id,
+            name: userData.name,
+            email: userData.email,
+            avatar_url: userData.avatar_url,
           });
+          setUser(userData);
         }
         
         setLoading(false);
@@ -105,7 +95,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-white">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-4"></div>
+          <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 mb-4" style={{ borderTopColor: 'rgba(17, 77, 145)', borderBottomColor: 'rgba(17, 77, 145)' }}></div>
           <p className="text-xl text-gray-700">Memuat...</p>
         </div>
       </div>

@@ -51,50 +51,63 @@ export default function AuthCallbackPage() {
           return;
         }
 
-        // Cek apakah user sudah ada di database
-        const { data: existingUser } = await supabase
-          .from("users")
-          .select("id, avatar_url")
-          .eq("email", email)
-          .single();
-
-        // Tentukan avatar URL yang akan digunakan
+        // Get Google avatar from user metadata
         const googleAvatar = user.user_metadata.avatar_url || user.user_metadata.picture || user.user_metadata.photo;
         
-        let avatarToSave = googleAvatar;
-        
-        // Jika user sudah ada DAN sudah upload custom avatar (dari Supabase Storage)
-        // JANGAN overwrite dengan foto Google
-        if (existingUser?.avatar_url && existingUser.avatar_url.includes('supabase.co/storage')) {
-          console.log("✅ User already has custom avatar, keeping it:", existingUser.avatar_url);
-          avatarToSave = existingUser.avatar_url; // Keep custom avatar
-        } else {
-          console.log("📸 Using Google avatar:", googleAvatar);
+        console.log("🔍 User metadata:", {
+          avatar_url: user.user_metadata.avatar_url,
+          picture: user.user_metadata.picture,
+          photo: user.user_metadata.photo,
+          full_name: user.user_metadata.full_name,
+        });
+        console.log("📸 Google Avatar URL:", googleAvatar);
+
+        // Ambil data user yang sudah ada untuk menjaga perubahan manual
+        const { data: existingUser, error: existingUserError } = await supabase
+          .from("users")
+          .select("id, name, avatar_url")
+          .eq("auth_id", user.id)
+          .maybeSingle();
+
+        if (existingUserError) {
+          console.warn("⚠️ Gagal mengambil data user yang ada:", existingUserError);
         }
 
+        const fallbackName =
+          user.user_metadata.full_name ||
+          user.user_metadata.name ||
+          user.user_metadata.display_name ||
+          email.split("@")[0];
+
+        const nameToUse = existingUser?.name?.trim() ? existingUser.name : fallbackName;
+        const avatarToUse = googleAvatar || existingUser?.avatar_url || null;
+
         // Simpan atau update user ke tabel public.users
-        const { error: upsertError } = await supabase.from("users").upsert(
-          {
-            auth_id: user.id,
-            name: user.user_metadata.full_name || user.user_metadata.name || user.user_metadata.display_name || email.split("@")[0],
-            email: user.email,
-            avatar_url: avatarToSave,
-            last_login: new Date().toISOString(),
-          },
-          {
-            onConflict: "email",
-          }
-        );
+        const { data: upsertData, error: upsertError } = await supabase
+          .from("users")
+          .upsert(
+            {
+              auth_id: user.id,
+              name: nameToUse,
+              email: user.email,
+              avatar_url: avatarToUse,
+              last_login: new Date().toISOString(),
+            },
+            {
+              onConflict: "email",
+            }
+          )
+          .select();
 
         if (upsertError) {
-          console.error("Error saving user to database:", upsertError);
+          console.error("❌ Error saving user to database:", upsertError);
           setError("⚠️ Terjadi kesalahan saat menyimpan data user");
           // Still redirect to dashboard even if upsert fails
         } else {
-          console.log("✅ User saved to database successfully");
+          console.log("✅ User saved successfully:", upsertData);
         }
 
-        console.log("Redirecting to dashboard...");
+        console.log("➡️ Redirecting to dashboard...");
         // Redirect ke dashboard
         router.push("/dashboard");
       } catch (err) {

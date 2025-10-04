@@ -53,12 +53,18 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit }: 
       <div className="p-4 border-b">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={report.user.avatar_url || "/default-avatar.svg"}
               alt={report.user.name}
-              width={40}
-              height={40}
-              className="rounded-full border-2 border-blue-600 object-cover"
+              className="h-10 w-10 rounded-full border-2 object-cover"
+              style={{ borderColor: 'rgba(17, 77, 145)' }}
+              loading="lazy"
+              referrerPolicy="no-referrer"
+              onError={(event) => {
+                event.currentTarget.onerror = null;
+                event.currentTarget.src = "/default-avatar.svg";
+              }}
             />
             <div>
               <p className="font-semibold text-gray-900">{report.user.name}</p>
@@ -70,7 +76,10 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit }: 
               {onEdit && (
                 <button
                   onClick={() => onEdit(report.id)}
-                  className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                  className="text-sm font-medium"
+                  style={{ color: 'rgba(17, 77, 145)' }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = 'rgba(17, 77, 145, 0.8)'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(17, 77, 145)'}
                 >
                   Edit
                 </button>
@@ -110,7 +119,7 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit }: 
             📦 {report.category}
           </span>
           {report.status === "selesai" && (
-            <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-md">
+            <span className="px-2 py-1 text-xs rounded-md" style={{ backgroundColor: 'rgba(17, 77, 145, 0.1)', color: 'rgba(17, 77, 145)' }}>
               ✔️ Selesai
             </span>
           )}
@@ -131,7 +140,9 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit }: 
         {/* Comment Button */}
         <button
           onClick={() => setShowComments(!showComments)}
-          className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors duration-200"
+          className="flex items-center gap-2 text-gray-600 transition-colors duration-200"
+          onMouseEnter={(e) => e.currentTarget.style.color = 'rgba(17, 77, 145)'}
+          onMouseLeave={(e) => e.currentTarget.style.color = 'rgb(75, 85, 99)'}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path

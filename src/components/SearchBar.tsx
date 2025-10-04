@@ -29,7 +29,16 @@ export default function SearchBar({ onSearch, placeholder = "Cari barang, deskri
           value={query}
           onChange={handleChange}
           placeholder={placeholder}
-          className="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+          className="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:border-transparent transition-all duration-200"
+          style={{
+            '--tw-ring-color': 'rgba(17, 77, 145, 0.5)'
+          } as React.CSSProperties}
+          onFocus={(e) => {
+            e.currentTarget.style.boxShadow = '0 0 0 2px rgba(17, 77, 145, 0.5)';
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.boxShadow = 'none';
+          }}
         />
         <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
