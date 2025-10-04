@@ -5,18 +5,16 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 flex items-center justify-center px-4">
       <div className="max-w-md w-full">
-        {/* Logo & Title */}
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-block">
-            <h1 className="text-5xl font-bold text-white mb-2">Lost&Found</h1>
-          </Link>
-          <p className="text-blue-200 text-lg">Sistem Barang Hilang Mahasiswa</p>
-        </div>
-
         {/* Login Card */}
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           <div className="text-center mb-6">
-            <div className="text-6xl mb-4">🎓</div>
+            <div className="mb-4">
+              <img
+                src="https://dinus.ac.id/wp-content/uploads/2023/11/LogoUdinus.png"
+                alt="Logo UDINUS"
+                className="w-33 h-33 mx-auto object-contain"
+              />
+            </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
               Selamat Datang!
             </h2>
@@ -30,7 +28,7 @@ export default function LoginPage() {
           <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
             <p className="text-sm text-gray-700 text-center">
               ⚠️ <strong>Penting:</strong> Pastikal Login hanya menggunakan Email{" "}
-              <span className="font-mono text-blue-600">Kampus</span>{" "}
+              <span className="font-mono text-yellow-600">Kampus</span>{" "}
             </p>
           </div>
         </div>

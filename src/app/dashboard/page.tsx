@@ -2,182 +2,247 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+import DashboardLayout from "@/components/DashboardLayout";
+import SearchBar from "@/components/SearchBar";
+import ReportCard, { Report } from "@/components/ReportCard";
+
+type TabType = "hilang" | "temuan";
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar_url?: string;
+  role: string;
+}
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [reports, setReports] = useState<Report[]>([]);
+  const [filteredReports, setFilteredReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<TabType>("hilang");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    async function checkUser() {
-      try {
-        // Check session first
-        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-        
-        if (sessionError || !sessionData.session) {
-          console.log("No session found, redirecting to login");
-          router.push("/login");
-          return;
-        }
-
-        const currentUser = sessionData.session.user;
-        
-        // Validate email domain
-        if (!currentUser.email?.endsWith("@mhs.dinus.ac.id")) {
-          console.log("Invalid email domain");
-          await supabase.auth.signOut();
-          router.push("/login");
-          return;
-        }
-
-        // Get user data from public.users table
-        const { data: userData, error: userError } = await supabase
-          .from("users")
-          .select("*")
-          .eq("email", currentUser.email)
-          .single();
-
-        if (userError) {
-          console.error("Error fetching user data:", userError);
-          // Still show basic info even if custom table fetch fails
-          setUser({
-            name: currentUser.user_metadata.full_name || currentUser.email?.split("@")[0],
-            email: currentUser.email,
-            avatar_url: currentUser.user_metadata.avatar_url,
-            role: "student",
-          });
-        } else {
-          setUser(userData);
-        }
-        
-        setLoading(false);
-      } catch (error) {
-        console.error("Error in checkUser:", error);
-        router.push("/login");
-      }
+    async function init() {
+      await checkUser();
+      await fetchReports();
     }
+    init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
 
-    checkUser();
-
-    // Listen for auth changes
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_OUT" || !session) {
-        router.push("/login");
-      }
-    });
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel("reports-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "reports",
+        },
+        () => {
+          fetchReports();
+        }
+      )
+      .subscribe();
 
     return () => {
-      authListener.subscription.unsubscribe();
+      supabase.removeChannel(channel);
     };
-  }, [router]);
+  }, []);
 
-  async function handleLogout() {
-    await supabase.auth.signOut();
-    router.push("/");
+  useEffect(() => {
+    filterReports();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reports, activeTab, searchQuery]);
+
+  async function checkUser() {
+    try {
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !sessionData.session) {
+        router.push("/login");
+        return;
+      }
+
+      const currentUser = sessionData.session.user;
+      
+      if (!currentUser.email?.endsWith("@mhs.dinus.ac.id")) {
+        await supabase.auth.signOut();
+        router.push("/login");
+        return;
+      }
+
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("email", currentUser.email)
+        .single();
+
+      if (userError) {
+        setUser({
+          id: currentUser.id,
+          name: currentUser.user_metadata.full_name || currentUser.email?.split("@")[0],
+          email: currentUser.email,
+          avatar_url: currentUser.user_metadata.avatar_url,
+          role: "student",
+        });
+      } else {
+        setUser(userData);
+      }
+    } catch (error) {
+      console.error("Error in checkUser:", error);
+      router.push("/login");
+    }
+  }
+
+  async function fetchReports() {
+    try {
+      const { data, error } = await supabase
+        .from("reports")
+        .select(`
+          *,
+          user:user_id (
+            name,
+            avatar_url
+          )
+        `)
+        .eq("status", "aktif")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      setReports(data || []);
+    } catch (error) {
+      console.error("Error fetching reports:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function filterReports() {
+    let filtered = reports.filter((report) => report.type === activeTab);
+
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (report) =>
+          report.title.toLowerCase().includes(query) ||
+          report.description?.toLowerCase().includes(query) ||
+          report.category?.toLowerCase().includes(query) ||
+          report.user.name.toLowerCase().includes(query)
+      );
+    }
+
+    setFilteredReports(filtered);
+  }
+
+  function handleSearch(query: string) {
+    setSearchQuery(query);
+  }
+
+  async function handleDeleteReport(reportId: string) {
+    if (!user || !confirm("Hapus laporan ini?")) return;
+
+    try {
+      const { error } = await supabase
+        .from("reports")
+        .delete()
+        .eq("id", reportId)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error("Error deleting report:", error);
+      alert("Gagal menghapus laporan.");
+    }
+  }
+
+  function handleEditReport(reportId: string) {
+    router.push(`/dashboard/laporan?edit=${reportId}`);
   }
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-4"></div>
-          <p className="text-xl text-gray-700">Memuat dashboard...</p>
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-4"></div>
+            <p className="text-xl text-gray-700">Memuat dashboard...</p>
+          </div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      {/* Navbar */}
-      <nav className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <span className="text-2xl font-bold text-blue-600">Lost&Found</span>
+    <DashboardLayout>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Dashboard Lost&Found</h1>
+          <p className="text-gray-600">Temukan atau laporkan barang hilang/ditemukan</p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-6">
+          <SearchBar onSearch={handleSearch} />
+        </div>
+
+        {/* Tab Switcher */}
+        <div className="flex gap-4 mb-6 border-b border-gray-200">
+          <button
+            onClick={() => setActiveTab("hilang")}
+            className={`pb-3 px-4 font-semibold transition-all duration-200 ${
+              activeTab === "hilang"
+                ? "text-red-600 border-b-2 border-red-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            🔍 Barang Hilang
+          </button>
+          <button
+            onClick={() => setActiveTab("temuan")}
+            className={`pb-3 px-4 font-semibold transition-all duration-200 ${
+              activeTab === "temuan"
+                ? "text-green-600 border-b-2 border-green-600"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            ✅ Barang Ditemukan
+          </button>
+        </div>
+
+        {/* Reports Grid */}
+        {filteredReports.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="text-6xl mb-4">
+              {activeTab === "hilang" ? "�" : "✅"}
             </div>
-            <div className="flex items-center gap-4">
-              <div className="relative w-10 h-10">
-                <Image
-                  src={user?.avatar_url || "/default-avatar.svg"}
-                  alt="Avatar"
-                  width={40}
-                  height={40}
-                  className="rounded-full border-2 border-blue-600 object-cover"
-                  priority
-                />
-              </div>
-              <span className="text-gray-700 font-medium hidden sm:inline">{user?.name}</span>
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-200"
-              >
-                Logout
-              </button>
-            </div>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+              Tidak ada laporan {activeTab === "hilang" ? "barang hilang" : "barang ditemukan"}
+            </h3>
+            <p className="text-gray-500">
+              {searchQuery ? "Coba kata kunci lain" : "Jadilah yang pertama membuat laporan!"}
+            </p>
           </div>
-        </div>
-      </nav>
-
-      {/* Dashboard Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            Anda di Dashboard 🎉
-          </h1>
-          <p className="text-xl text-gray-600">
-            Selamat datang, {user?.name}!
-          </p>
-        </div>
-
-        {/* Welcome Card */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
-          <div className="flex flex-col sm:flex-row items-center gap-6">
-            <div className="relative w-24 h-24 flex-shrink-0">
-              <Image
-                src={user?.avatar_url || "/default-avatar.svg"}
-                alt="Avatar"
-                width={96}
-                height={96}
-                className="rounded-full border-4 border-blue-600 object-cover"
-                priority
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredReports.map((report) => (
+              <ReportCard
+                key={report.id}
+                report={report}
+                currentUserId={user?.id || ""}
+                onDelete={handleDeleteReport}
+                onEdit={handleEditReport}
               />
-            </div>
-            <div className="text-center sm:text-left">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">{user?.name}</h2>
-              <p className="text-gray-600 mb-1">📧 {user?.email}</p>
-              <p className="text-gray-500 text-sm">
-                👤 Role: <span className="font-semibold capitalize">{user?.role}</span>
-              </p>
-              <p className="text-gray-500 text-sm">
-                🕐 Last login: {user?.last_login ? new Date(user.last_login).toLocaleString("id-ID") : "N/A"}
-              </p>
-            </div>
+            ))}
           </div>
-        </div>
-
-        {/* Placeholder untuk fitur selanjutnya */}
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-gradient-to-br from-blue-100 to-blue-50 p-6 rounded-xl shadow-md">
-            <div className="text-4xl mb-3">📝</div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Buat Laporan</h3>
-            <p className="text-gray-600 text-sm">Fitur akan segera hadir</p>
-          </div>
-
-          <div className="bg-gradient-to-br from-green-100 to-green-50 p-6 rounded-xl shadow-md">
-            <div className="text-4xl mb-3">🔍</div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Cari Barang</h3>
-            <p className="text-gray-600 text-sm">Fitur akan segera hadir</p>
-          </div>
-
-          <div className="bg-gradient-to-br from-purple-100 to-purple-50 p-6 rounded-xl shadow-md">
-            <div className="text-4xl mb-3">📊</div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Laporan Saya</h3>
-            <p className="text-gray-600 text-sm">Fitur akan segera hadir</p>
-          </div>
-        </div>
+        )}
       </div>
-    </div>
+    </DashboardLayout>
   );
 }

@@ -51,13 +51,34 @@ export default function AuthCallbackPage() {
           return;
         }
 
+        // Cek apakah user sudah ada di database
+        const { data: existingUser } = await supabase
+          .from("users")
+          .select("id, avatar_url")
+          .eq("email", email)
+          .single();
+
+        // Tentukan avatar URL yang akan digunakan
+        const googleAvatar = user.user_metadata.avatar_url || user.user_metadata.picture || user.user_metadata.photo;
+        
+        let avatarToSave = googleAvatar;
+        
+        // Jika user sudah ada DAN sudah upload custom avatar (dari Supabase Storage)
+        // JANGAN overwrite dengan foto Google
+        if (existingUser?.avatar_url && existingUser.avatar_url.includes('supabase.co/storage')) {
+          console.log("✅ User already has custom avatar, keeping it:", existingUser.avatar_url);
+          avatarToSave = existingUser.avatar_url; // Keep custom avatar
+        } else {
+          console.log("📸 Using Google avatar:", googleAvatar);
+        }
+
         // Simpan atau update user ke tabel public.users
         const { error: upsertError } = await supabase.from("users").upsert(
           {
             auth_id: user.id,
             name: user.user_metadata.full_name || user.user_metadata.name || user.user_metadata.display_name || email.split("@")[0],
             email: user.email,
-            avatar_url: user.user_metadata.avatar_url || user.user_metadata.picture || user.user_metadata.photo,
+            avatar_url: avatarToSave,
             last_login: new Date().toISOString(),
           },
           {
@@ -69,6 +90,8 @@ export default function AuthCallbackPage() {
           console.error("Error saving user to database:", upsertError);
           setError("⚠️ Terjadi kesalahan saat menyimpan data user");
           // Still redirect to dashboard even if upsert fails
+        } else {
+          console.log("✅ User saved to database successfully");
         }
 
         console.log("Redirecting to dashboard...");
