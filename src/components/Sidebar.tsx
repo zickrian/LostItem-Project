@@ -74,10 +74,10 @@ export default function Sidebar({ user }: SidebarProps) {
         </div>
       </div>
 
-      {/* Mobile Drawer Overlay */}
+      {/* Mobile Drawer Overlay - Transparent clickable area */}
       {isMobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-20 backdrop-blur-sm z-40"
+          className="lg:hidden fixed inset-0 z-40"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}

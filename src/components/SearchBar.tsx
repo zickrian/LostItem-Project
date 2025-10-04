@@ -30,7 +30,7 @@ export default function SearchBar({ onSearch, placeholder = "Cari barang, katego
           onChange={handleChange}
           placeholder={placeholder}
           // thicker blue outline on focus (matches navbar) and typed text black
-          className="w-full px-3 sm:px-4 py-2 sm:py-3 pl-10 sm:pl-12 pr-10 sm:pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-4 focus:ring-[rgba(17,77,145,0.35)] focus:border-transparent placeholder:text-gray-400 text-black transition-all duration-200 text-sm sm:text-base"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 pl-10 sm:pl-12 pr-10 sm:pr-4 border-2 border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-600 placeholder:text-gray-400 text-black transition-all duration-200 text-sm sm:text-base"
         />
         <div className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
           <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

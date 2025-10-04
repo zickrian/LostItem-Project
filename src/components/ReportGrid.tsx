@@ -112,6 +112,7 @@ export interface GridReport {
 interface ReportGridProps {
   reports: GridReport[];
   showActions?: boolean;
+  showComments?: boolean;
   currentUserId?: string;
   onEdit?: (reportId: string) => void;
   onComplete?: (reportId: string, currentStatus: "aktif" | "selesai") => void;
@@ -121,6 +122,7 @@ interface ReportGridProps {
 export default function ReportGrid({
   reports,
   showActions = false,
+  showComments = true,
   currentUserId,
   onEdit,
   onComplete,
@@ -271,7 +273,7 @@ export default function ReportGrid({
             </div>
 
             {/* Comment Toggle Button */}
-            {currentUserId && (
+            {showComments && currentUserId && (
               <button
                 onClick={() => toggleComments(report.id)}
                 className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors mb-3 text-sm"
@@ -334,7 +336,7 @@ export default function ReportGrid({
           </div>
 
           {/* Comment Section */}
-          {currentUserId && openComments.has(report.id) && (
+          {showComments && currentUserId && openComments.has(report.id) && (
             <div className="border-t">
               <CommentSection reportId={report.id} currentUserId={currentUserId} />
             </div>

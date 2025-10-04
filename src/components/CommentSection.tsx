@@ -218,7 +218,7 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Tulis komentar..."
-          className="flex-1 px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-transparent text-xs sm:text-sm"
+          className="flex-1 px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-transparent text-xs sm:text-sm text-black placeholder:text-gray-400"
           onFocus={(e) => {
             e.currentTarget.style.boxShadow = '0 0 0 2px rgba(17, 77, 145, 0.5)';
           }}
