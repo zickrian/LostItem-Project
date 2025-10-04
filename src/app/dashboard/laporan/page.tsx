@@ -492,32 +492,6 @@ function LaporanContent() {
                   {myReports.filter((r) => r.status === "selesai").length}
                 </span>
               </button>
-              <button
-                onClick={() => setStatusFilter("all")}
-                className="flex-1 min-w-fit px-4 py-2.5 rounded-lg text-sm font-bold transition-all duration-300 whitespace-nowrap"
-                style={{
-                  backgroundColor: statusFilter === "all" ? 'rgba(17, 77, 145)' : 'transparent',
-                  color: statusFilter === "all" ? 'white' : 'rgb(107, 114, 128)',
-                  boxShadow: statusFilter === "all" ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)' : 'none'
-                }}
-                onMouseEnter={(e) => {
-                  if (statusFilter !== "all") {
-                    e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.1)';
-                    e.currentTarget.style.color = 'rgba(17, 77, 145, 0.9)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (statusFilter !== "all") {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.color = 'rgb(107, 114, 128)';
-                  }
-                }}
-              >
-                Semua
-                <span className="ml-2 px-2 py-0.5 bg-white/20 rounded-full text-xs font-bold">
-                  {myReports.length}
-                </span>
-              </button>
             </div>
 
               {/* Reports Grid */}
