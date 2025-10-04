@@ -122,7 +122,11 @@ interface ReportCardProps {
 
 export default function ReportCard({ report, currentUserId, onDelete, onEdit }: ReportCardProps) {
   const [showComments, setShowComments] = useState(false);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const isOwner = report.user_id === currentUserId;
+  
+  // Check if description is long (more than 150 characters)
+  const isDescriptionLong = report.description.length > 150;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -206,7 +210,34 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit }: 
           </span>
         </div>
 
-        <p className="text-gray-600 text-sm mb-3 line-clamp-3">{report.description}</p>
+        <div className="mb-3">
+          <p className={`text-gray-600 text-sm whitespace-pre-wrap transition-all duration-300 ${!isDescriptionExpanded && isDescriptionLong ? 'line-clamp-3' : ''}`}>
+            {report.description}
+          </p>
+          {isDescriptionLong && (
+            <button
+              onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+              className="text-sm font-semibold mt-2 hover:underline transition-colors inline-flex items-center gap-1"
+              style={{ color: 'rgba(17, 77, 145)' }}
+            >
+              {isDescriptionExpanded ? (
+                <>
+                  Sembunyikan
+                  <svg className="w-4 h-4 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </>
+              ) : (
+                <>
+                  Lihat selengkapnya
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </>
+              )}
+            </button>
+          )}
+        </div>
 
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md">

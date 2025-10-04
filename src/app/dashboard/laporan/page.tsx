@@ -35,6 +35,20 @@ const CATEGORIES = [
   "Lainnya",
 ];
 
+const LOCATIONS = [
+  "Gedung A",
+  "Gedung C",
+  "Gedung D",
+  "Gedung E",
+  "Gedung F",
+  "Gedung G",
+  "Gedung H",
+  "Gedung I",
+  "Gedung J",
+  "Gedung K",
+  "Lainnya",
+];
+
 interface User {
   id: string;
   name: string;
@@ -518,13 +532,18 @@ function LaporanContent() {
                   {/* Location */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Lokasi</label>
-                    <input
-                      type="text"
+                    <select
                       value={formData.location}
                       onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                      placeholder="Contoh: Gedung D lantai 3"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 placeholder:text-gray-500"
-                    />
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                    >
+                      <option value="">Pilih lokasi</option>
+                      {LOCATIONS.map((loc) => (
+                        <option key={loc} value={loc}>
+                          {loc}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   {/* Type */}

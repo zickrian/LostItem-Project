@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import { PencilIcon, CheckIcon, TrashIcon } from "@heroicons/react/24/solid";
 
@@ -122,6 +123,20 @@ export default function ReportGrid({
   onComplete,
   onDelete,
 }: ReportGridProps) {
+  const [expandedReports, setExpandedReports] = useState<Set<string>>(new Set());
+  
+  const toggleDescription = (reportId: string) => {
+    setExpandedReports(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(reportId)) {
+        newSet.delete(reportId);
+      } else {
+        newSet.add(reportId);
+      }
+      return newSet;
+    });
+  };
+  
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("id-ID", {
@@ -192,9 +207,34 @@ export default function ReportGrid({
 
             {/* Description */}
             {report.description && (
-              <p className="text-gray-600 text-sm mb-2 line-clamp-2">
-                {report.description}
-              </p>
+              <div className="mb-2">
+                <p className={`text-gray-600 text-sm whitespace-pre-wrap transition-all duration-300 ${!expandedReports.has(report.id) && report.description.length > 100 ? 'line-clamp-2' : ''}`}>
+                  {report.description}
+                </p>
+                {report.description.length > 100 && (
+                  <button
+                    onClick={() => toggleDescription(report.id)}
+                    className="text-xs font-semibold mt-1 hover:underline transition-colors inline-flex items-center gap-1"
+                    style={{ color: 'rgba(17, 77, 145)' }}
+                  >
+                    {expandedReports.has(report.id) ? (
+                      <>
+                        Sembunyikan
+                        <svg className="w-3 h-3 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </>
+                    ) : (
+                      <>
+                        Lihat selengkapnya
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
             )}
 
             {/* Category & Location */}

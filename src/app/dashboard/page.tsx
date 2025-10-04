@@ -239,7 +239,7 @@ export default function DashboardPage() {
             }}
           >
             <CheckCircleIcon className="h-6 w-6" />
-            <span>Barang Ditemukan</span>
+            <span>Barang Temuan</span>
           </button>
         </div>
 
