@@ -361,7 +361,7 @@ function LaporanContent() {
       <DashboardLayout>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           {/* Header Skeleton - Improved */}
-          <div className="mb-6 sm:mb-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 p-6 sm:p-8 rounded-2xl border-2 border-blue-100 shadow-sm">
+          <div className="mb-6 sm:mb-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 p-6 sm:p-8 rounded-2xl border-2 border-blue-200 shadow-md">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex-1">
                 <div className="h-10 w-64 bg-gray-300 rounded-lg animate-pulse mb-3"></div>
@@ -430,7 +430,7 @@ function LaporanContent() {
 
         {/* Full Width Reports Section - Improved */}
         <div className="space-y-4">
-          <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 p-5 sm:p-7 hover:shadow-xl transition-all duration-300">
+          <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-5 sm:p-7 hover:shadow-lg transition-all duration-300">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
               <div>
                 <h2 className="text-2xl sm:text-3xl font-black text-gray-900 mb-1">Semua Laporan</h2>
@@ -524,7 +524,7 @@ function LaporanContent() {
         {showModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/40 backdrop-blur-md animate-fade-in">
             <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto border-2 border-gray-200 animate-scale-in">
-              <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-indigo-600 px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between rounded-t-2xl sm:rounded-t-3xl z-10">
+              <div className="sticky top-0 px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between rounded-t-2xl sm:rounded-t-3xl z-10 shadow-lg" style={{ backgroundColor: 'rgba(17, 77, 145)' }}>
                 <div className="flex items-center gap-2">
                   {editMode ? (
                     <PencilSquareIcon className="w-7 h-7 text-white" />
@@ -545,7 +545,7 @@ function LaporanContent() {
                     setShowModal(false);
                     if (!editMode) resetForm();
                   }}
-                  className="text-white hover:text-blue-200 transition-colors bg-white/20 hover:bg-white/30 rounded-full p-2"
+                  className="text-white hover:text-blue-100 transition-all bg-white/20 hover:bg-white/30 rounded-full p-2 transform hover:scale-110"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />

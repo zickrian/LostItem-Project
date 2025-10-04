@@ -75,12 +75,12 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit }: 
               <p className="text-xs text-gray-500 font-medium">{formatDate(report.created_at)}</p>
             </div>
           </div>
-          {isOwner && (
-            <div className="flex gap-2">
+          {isOwner && report.status === "aktif" && (
+            <div className="flex gap-1.5">
               {onEdit && (
                 <button
                   onClick={() => onEdit(report.id)}
-                  className="px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 hover:shadow-md"
+                  className="p-2 rounded-lg transition-all duration-200 hover:shadow-md group/btn relative"
                   style={{ 
                     backgroundColor: 'rgba(17, 77, 145, 0.1)', 
                     color: 'rgba(17, 77, 145)' 
@@ -88,21 +88,31 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit }: 
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)';
                     e.currentTarget.style.color = 'white';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.1)';
                     e.currentTarget.style.color = 'rgba(17, 77, 145)';
+                    e.currentTarget.style.transform = 'translateY(0)';
                   }}
+                  title="Edit Laporan"
                 >
-                  ✏️ Edit
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
                 </button>
               )}
               {onDelete && (
                 <button
                   onClick={() => onDelete(report.id)}
-                  className="px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200 hover:shadow-md"
+                  className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200 hover:shadow-md group/btn"
+                  onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                  onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                  title="Hapus Laporan"
                 >
-                  🗑️ Hapus
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
                 </button>
               )}
             </div>
@@ -201,40 +211,80 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit }: 
           <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity duration-300" />
         </div>
 
-        {/* Comment Button */}
-        <button
-          onClick={() => setShowComments(!showComments)}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-200 border-2"
-          style={{
-            backgroundColor: showComments ? 'rgba(17, 77, 145)' : 'rgba(17, 77, 145, 0.05)',
-            color: showComments ? 'white' : 'rgba(17, 77, 145)',
-            borderColor: showComments ? 'rgba(17, 77, 145)' : 'rgba(17, 77, 145, 0.2)'
-          }}
-          onMouseEnter={(e) => {
-            if (!showComments) {
-              e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.1)';
-              e.currentTarget.style.borderColor = 'rgba(17, 77, 145, 0.3)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!showComments) {
-              e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.05)';
-              e.currentTarget.style.borderColor = 'rgba(17, 77, 145, 0.2)';
-            }
-          }}
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2.5}
-              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-            />
-          </svg>
-          <span>
-            {showComments ? "Sembunyikan Komentar" : "Tampilkan Komentar"}
-          </span>
-        </button>
+        {/* Action Buttons */}
+        <div className="space-y-2">
+          {/* Comment Button */}
+          <button
+            onClick={() => setShowComments(!showComments)}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-200 border-2 hover:shadow-md"
+            style={{
+              backgroundColor: showComments ? 'rgba(17, 77, 145)' : 'rgba(17, 77, 145, 0.05)',
+              color: showComments ? 'white' : 'rgba(17, 77, 145)',
+              borderColor: showComments ? 'rgba(17, 77, 145)' : 'rgba(17, 77, 145, 0.2)'
+            }}
+            onMouseEnter={(e) => {
+              if (!showComments) {
+                e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(17, 77, 145, 0.3)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!showComments) {
+                e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.05)';
+                e.currentTarget.style.borderColor = 'rgba(17, 77, 145, 0.2)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }
+            }}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+              />
+            </svg>
+            <span>
+              {showComments ? "Sembunyikan Komentar" : "Tampilkan Komentar"}
+            </span>
+          </button>
+          
+          {/* Status Button - Only for Owner */}
+          {isOwner && report.status === "aktif" && (
+            <button
+              onClick={() => {
+                if (window.confirm("Tandai laporan ini sebagai selesai?")) {
+                  // This will be handled by parent component
+                  if (onEdit) onEdit(report.id);
+                }
+              }}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-200 border-2 hover:shadow-lg"
+              style={{
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                color: 'rgb(16, 185, 129)',
+                borderColor: 'rgba(16, 185, 129, 0.3)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgb(16, 185, 129)';
+                e.currentTarget.style.color = 'white';
+                e.currentTarget.style.borderColor = 'rgb(16, 185, 129)';
+                e.currentTarget.style.transform = 'translateY(-2px) scale(1.01)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+                e.currentTarget.style.color = 'rgb(16, 185, 129)';
+                e.currentTarget.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+              }}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Tandai Selesai</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Comment Section */}

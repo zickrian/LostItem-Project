@@ -33,20 +33,20 @@ export const Toast: React.FC<ToastProps> = ({
 
   return (
     <div
-      className={`${bgColor} text-white px-4 py-3 rounded-lg shadow-lg mb-2 flex items-center gap-3 min-w-[300px] max-w-[500px] animate-slide-in`}
+      className={`${bgColor} text-white px-5 py-4 rounded-xl shadow-xl mb-3 flex items-center gap-3 min-w-[300px] max-w-[500px] animate-slide-in border-2 border-white/20`}
       role="alert"
     >
-      <div className={`flex-shrink-0 w-6 h-6 rounded-full bg-white flex items-center justify-center font-bold ${iconColor}`}>
+      <div className={`flex-shrink-0 w-7 h-7 rounded-full bg-white flex items-center justify-center font-black text-base ${iconColor}`}>
         {icon}
       </div>
-      <p className="flex-1 text-sm font-medium">{message}</p>
+      <p className="flex-1 text-sm sm:text-base font-semibold">{message}</p>
       <button
         onClick={() => onClose(id)}
-        className="flex-shrink-0 text-white hover:text-gray-200 transition-colors"
+        className="flex-shrink-0 text-white hover:text-gray-200 transition-all hover:scale-110 p-1 rounded-lg hover:bg-white/10"
         aria-label="Tutup notifikasi"
       >
         <svg
-          className="w-4 h-4"
+          className="w-5 h-5"
           fill="currentColor"
           viewBox="0 0 20 20"
         >

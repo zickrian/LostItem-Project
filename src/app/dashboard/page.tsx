@@ -219,7 +219,7 @@ export default function DashboardPage() {
     <DashboardLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header dengan gradient background */}
-        <div className="mb-6 sm:mb-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 p-6 sm:p-8 rounded-2xl border-2 border-blue-100 shadow-sm">
+        <div className="mb-6 sm:mb-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 p-6 sm:p-8 rounded-2xl border-2 border-blue-200 shadow-md">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent mb-3">
             Dashboard
           </h1>
@@ -313,7 +313,7 @@ Laporkan sekarang dengan klik tombol &quot;Buat Laporan&quot; dan bantu teman-te
           <div className="text-center py-16 sm:py-20 px-4">
             <div className="max-w-md mx-auto">
               {/* Empty State dengan design menarik */}
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-3xl p-8 sm:p-12 shadow-lg border-2 border-blue-200">
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-3xl p-8 sm:p-12 shadow-lg border-2 border-blue-300">
                 <div className="mb-6 flex justify-center">
                   {activeTab === "hilang" ? (
                     <MagnifyingGlassIcon className="w-24 h-24 sm:w-32 sm:h-32 text-blue-600 opacity-50" />

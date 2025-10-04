@@ -59,7 +59,7 @@ export default function Sidebar({ user }: SidebarProps) {
       {/* Mobile Drawer Overlay - Improved */}
       {isMobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-40 animate-fade-in"
+          className="lg:hidden fixed inset-0 bg-black/30 backdrop-blur-md z-40 animate-fade-in"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
