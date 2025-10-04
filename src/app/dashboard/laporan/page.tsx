@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { uploadImage } from "@/lib/supabaseStorage";
 import { useRouter, useSearchParams } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
+import ReportGrid, { GridReport } from "@/components/ReportGrid";
 import Image from "next/image";
 
 type ReportType = "hilang" | "temuan";
@@ -392,78 +393,17 @@ function LaporanContent() {
                 </button>
               </div>
 
-              {/* Reports List */}
-              <div className="space-y-3 max-h-[600px] overflow-y-auto">
-                {filteredReports.length === 0 ? (
-                  <p className="text-center text-gray-500 py-8">
-                    Belum ada laporan {statusFilter !== "all" && statusFilter}
-                  </p>
-                ) : (
-                  filteredReports.map((report) => (
-                    <div
-                      key={report.id}
-                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-                    >
-                      <div className="flex gap-3">
-                        {report.image_url && (
-                          <div className="relative w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-100">
-                            <Image
-                              src={report.image_url}
-                              alt={report.title}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-gray-900 truncate">{report.title}</h3>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span
-                              className={`px-2 py-0.5 rounded text-xs font-medium ${
-                                report.type === "hilang"
-                                  ? "bg-red-100 text-red-700"
-                                  : "bg-green-100 text-green-700"
-                              }`}
-                            >
-                              {report.type === "hilang" ? "Hilang" : "Temuan"}
-                            </span>
-                            <span className="text-xs text-gray-500">{report.category}</span>
-                          </div>
-                          <p className="text-xs text-gray-400 mt-1">
-                            {new Date(report.created_at).toLocaleDateString("id-ID")}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex gap-2 mt-3">
-                        <button
-                          onClick={() => {
-                            loadReportForEdit(report.id);
-                            setShowModal(true);
-                          }}
-                          className="flex-1 px-3 py-1.5 text-white rounded text-sm transition-colors"
-                          style={{ backgroundColor: 'rgba(17, 77, 145)' }}
-                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.9)'}
-                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)'}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleToggleStatus(report.id, report.status)}
-                          className="flex-1 px-3 py-1.5 bg-green-600 text-white rounded text-sm hover:bg-green-700"
-                        >
-                          {report.status === "aktif" ? "Selesai" : "Aktifkan"}
-                        </button>
-                        <button
-                          onClick={() => handleDeleteReport(report.id)}
-                          className="px-3 py-1.5 bg-red-600 text-white rounded text-sm hover:bg-red-700"
-                        >
-                          Hapus
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
+              {/* Reports Grid */}
+              <ReportGrid
+                reports={filteredReports}
+                showActions={true}
+                onEdit={(reportId) => {
+                  loadReportForEdit(reportId);
+                  setShowModal(true);
+                }}
+                onComplete={handleToggleStatus}
+                onDelete={handleDeleteReport}
+              />
             </div>
           </div>
 

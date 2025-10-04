@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
 import SearchBar from "@/components/SearchBar";
 import ReportCard, { Report } from "@/components/ReportCard";
+import ReportGrid, { GridReport } from "@/components/ReportGrid";
 import { MagnifyingGlassIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 
 type TabType = "hilang" | "temuan";
@@ -253,17 +254,18 @@ export default function DashboardPage() {
             </p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredReports.map((report) => (
-              <ReportCard
-                key={report.id}
-                report={report}
-                currentUserId={user?.id || ""}
-                onDelete={handleDeleteReport}
-                onEdit={handleEditReport}
-              />
-            ))}
-          </div>
+          <ReportGrid
+            reports={filteredReports.map((report) => ({
+              id: report.id,
+              title: report.title,
+              category: report.category || "Lainnya",
+              type: report.type,
+              status: report.status,
+              image_url: report.image_url,
+              created_at: report.created_at,
+            }))}
+            showActions={false}
+          />
         )}
       </div>
     </DashboardLayout>
