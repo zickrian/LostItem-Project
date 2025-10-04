@@ -21,6 +21,11 @@ interface CommentSectionProps {
   currentUserId: string;
 }
 
+interface CurrentUser {
+  name: string;
+  avatar_url?: string;
+}
+
 export default function CommentSection({ reportId, currentUserId }: CommentSectionProps) {
   const toast = useToast();
   const [comments, setComments] = useState<Comment[]>([]);
@@ -29,13 +34,31 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
   const [submitting, setSubmitting] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, commentId: "", title: "", message: "" });
   const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null);
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
 
   useEffect(() => {
+    // Fetch current user data for optimistic updates
+    async function fetchCurrentUser() {
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("name, avatar_url")
+          .eq("id", currentUserId)
+          .single();
+        
+        if (!error && data) {
+          setCurrentUser(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch current user:", error);
+      }
+    }
+
+    fetchCurrentUser();
     fetchComments();
     
-    // Subscribe to new comments
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const channel = supabase
+    // Subscribe to comments changes (INSERT, UPDATE, DELETE)
+    const commentsChannel = supabase
       .channel(`comments-${reportId}`)
       .on(
         "postgres_changes",
@@ -46,15 +69,55 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
           filter: `report_id=eq.${reportId}`,
         },
         () => {
+          // Fetch ulang komentar dengan data user terbaru
           fetchComments();
         }
       )
       .subscribe();
 
+    // Subscribe to user profile changes to update displayed names/avatars
+    const usersChannel = supabase
+      .channel(`users-for-comments-${reportId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "users",
+        },
+        (payload) => {
+          console.log("User updated, refreshing comments:", payload.new);
+          // Update current user jika yang diupdate adalah current user
+          if (payload.new.id === currentUserId) {
+            setCurrentUser({
+              name: payload.new.name,
+              avatar_url: payload.new.avatar_url,
+            });
+          }
+          // Update comments yang ditampilkan dengan user data terbaru
+          setComments((prevComments) =>
+            prevComments.map((comment) =>
+              comment.user_id === payload.new.id
+                ? {
+                    ...comment,
+                    user: {
+                      name: payload.new.name,
+                      avatar_url: payload.new.avatar_url,
+                    },
+                  }
+                : comment
+            )
+          );
+        }
+      )
+      .subscribe();
+
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(commentsChannel);
+      supabase.removeChannel(usersChannel);
     };
-  }, [reportId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reportId, currentUserId]);
 
   async function fetchComments() {
     try {
@@ -82,23 +145,45 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
 
   async function handleSubmitComment(e: React.FormEvent) {
     e.preventDefault();
-    if (!newComment.trim() || submitting) return;
+    if (!newComment.trim() || submitting || !currentUser) return;
 
     setSubmitting(true);
+    
+    // Optimistic update: langsung tampilkan komentar di UI
+    const optimisticComment: Comment = {
+      id: `temp-${Date.now()}`, // ID sementara
+      report_id: reportId,
+      user_id: currentUserId,
+      content: newComment.trim(),
+      created_at: new Date().toISOString(),
+      user: {
+        name: currentUser.name,
+        avatar_url: currentUser.avatar_url,
+      },
+    };
+    
+    const commentContent = newComment.trim();
+    setComments((prev) => [...prev, optimisticComment]);
+    setNewComment("");
+    
     try {
       const { error } = await supabase
         .from("comments")
         .insert({
           report_id: reportId,
           user_id: currentUserId,
-          content: newComment.trim(),
+          content: commentContent,
         });
 
       if (error) throw error;
 
-      setNewComment("");
       toast.success("Komentar berhasil ditambahkan");
+      // Fetch ulang untuk mendapatkan ID yang benar dari database
+      fetchComments();
     } catch (error) {
+      // Rollback optimistic update jika gagal
+      setComments((prev) => prev.filter((c) => c.id !== optimisticComment.id));
+      setNewComment(commentContent);
       toast.error("Gagal mengirim komentar. Silakan coba lagi.");
     } finally {
       setSubmitting(false);

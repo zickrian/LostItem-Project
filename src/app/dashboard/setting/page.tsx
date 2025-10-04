@@ -97,6 +97,11 @@ export default function SettingPage() {
     }
 
     setSaving(true);
+    
+    // Optimistic update: langsung update state lokal
+    const previousUser = user;
+    setUser((prev) => prev ? { ...prev, name: trimmedName } : null);
+    
     try {
       // Update user profile (name only, avatar tetap mengikuti Google)
       const { error: profileError } = await supabase
@@ -138,9 +143,12 @@ export default function SettingPage() {
       if (notifError) throw notifError;
 
       toast.success("Pengaturan berhasil diperbarui!");
-      await fetchUserData();
+      // Refresh untuk memastikan data sinkron dengan database
       router.refresh();
     } catch (error) {
+      // Rollback optimistic update jika gagal
+      setUser(previousUser);
+      setName(previousUser.name);
       toast.error("Gagal menyimpan pengaturan. Silakan coba lagi.");
     } finally {
       setSaving(false);

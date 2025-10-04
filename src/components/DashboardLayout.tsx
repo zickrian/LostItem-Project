@@ -77,8 +77,42 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       }
     });
 
+    // Subscribe to user updates for real-time changes
+    let userChannel: ReturnType<typeof supabase.channel> | null = null;
+    
+    supabase.auth.getSession().then(({ data: sessionData }) => {
+      if (sessionData.session?.user.email) {
+        userChannel = supabase
+          .channel("user-profile-changes")
+          .on(
+            "postgres_changes",
+            {
+              event: "UPDATE",
+              schema: "public",
+              table: "users",
+              filter: `email=eq.${sessionData.session.user.email}`,
+            },
+            (payload) => {
+              console.log("User profile updated:", payload.new);
+              // Update user state with new data
+              setUser((prevUser) => {
+                if (!prevUser) return null;
+                return {
+                  ...prevUser,
+                  ...(payload.new as Partial<User>),
+                };
+              });
+            }
+          )
+          .subscribe();
+      }
+    });
+
     return () => {
       authListener.subscription.unsubscribe();
+      if (userChannel) {
+        supabase.removeChannel(userChannel);
+      }
     };
   }, [router]);
 
