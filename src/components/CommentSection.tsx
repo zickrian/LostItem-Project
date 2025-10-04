@@ -169,19 +169,19 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
   }
 
   return (
-    <div className="p-4 bg-gray-50">
+    <div className="p-3 sm:p-4 bg-gray-50">
       {/* Comments List */}
-      <div className="space-y-3 mb-4 max-h-96 overflow-y-auto">
+      <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4 max-h-80 sm:max-h-96 overflow-y-auto">
           {comments.length === 0 ? (
           <p className="text-center text-gray-500 text-sm py-4">Belum ada komentar</p>
         ) : (
           comments.map((comment) => (
-            <div key={comment.id} className={`flex gap-3 transition-opacity duration-300 ${deletingCommentId === comment.id ? 'opacity-0 h-0 overflow-hidden' : 'opacity-100'}`}>
+            <div key={comment.id} className={`flex gap-2 sm:gap-3 transition-opacity duration-300 ${deletingCommentId === comment.id ? 'opacity-0 h-0 overflow-hidden' : 'opacity-100'}`}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={comment.user.avatar_url || "/default-avatar.svg"}
                 alt={comment.user.name}
-                className="h-8 w-8 rounded-full border border-gray-300 object-cover flex-shrink-0"
+                className="h-7 w-7 sm:h-8 sm:w-8 rounded-full border border-gray-300 object-cover flex-shrink-0"
                 loading="lazy"
                 referrerPolicy="no-referrer"
                 onError={(event) => {
@@ -190,21 +190,21 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
                 }}
               />
               <div className="flex-1 min-w-0">
-                <div className="bg-white rounded-lg px-3 py-2 shadow-sm">
+                <div className="bg-white rounded-lg px-2.5 sm:px-3 py-1.5 sm:py-2 shadow-sm">
                   <div className="flex items-center justify-between mb-1">
-                    <p className="font-semibold text-sm text-gray-900">{comment.user.name}</p>
+                    <p className="font-semibold text-xs sm:text-sm text-gray-900 truncate">{comment.user.name}</p>
                     {comment.user_id === currentUserId && (
                       <button
                         onClick={() => setConfirmDialog({ isOpen: true, commentId: comment.id, title: 'Hapus Komentar', message: 'Apakah Anda yakin ingin menghapus komentar ini?' })}
-                        className="text-red-500 hover:text-red-700 text-xs"
+                        className="text-red-500 hover:text-red-700 text-[10px] sm:text-xs whitespace-nowrap ml-2"
                       >
                         Hapus
                       </button>
                     )}
                   </div>
-                  <p className="text-sm text-gray-700 break-words">{comment.content}</p>
+                  <p className="text-xs sm:text-sm text-gray-700 break-words">{comment.content}</p>
                 </div>
-                <p className="text-xs text-gray-500 mt-1 ml-3">{formatDate(comment.created_at)}</p>
+                <p className="text-[10px] sm:text-xs text-gray-500 mt-1 ml-2 sm:ml-3">{formatDate(comment.created_at)}</p>
               </div>
             </div>
           ))
@@ -212,13 +212,13 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
       </div>
 
   {/* Comment Form */}
-      <form onSubmit={handleSubmitComment} className="flex gap-2">
+      <form onSubmit={handleSubmitComment} className="flex gap-1.5 sm:gap-2">
         <input
           type="text"
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Tulis komentar..."
-          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-transparent text-sm"
+          className="flex-1 px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-transparent text-xs sm:text-sm"
           onFocus={(e) => {
             e.currentTarget.style.boxShadow = '0 0 0 2px rgba(17, 77, 145, 0.5)';
           }}
@@ -230,7 +230,7 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
         <button
           type="submit"
           disabled={!newComment.trim() || submitting}
-          className="px-4 py-2 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 text-sm font-medium"
+          className="px-3 sm:px-4 py-1.5 sm:py-2 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 text-xs sm:text-sm font-medium whitespace-nowrap"
           style={{ backgroundColor: !newComment.trim() || submitting ? undefined : 'rgba(17, 77, 145)' }}
           onMouseEnter={(e) => {
             if (newComment.trim() && !submitting) {

@@ -362,17 +362,17 @@ function LaporanContent() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header with Create Button */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">Laporan Saya</h1>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">Laporan Saya</h1>
           <button
             onClick={() => {
               resetForm();
               setEditMode(false);
               setShowModal(true);
             }}
-            className="text-white px-6 py-3 rounded-lg transition-colors font-semibold shadow-md hover:shadow-lg"
+            className="w-full sm:w-auto text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg transition-colors font-semibold shadow-md hover:shadow-lg text-sm sm:text-base"
             style={{ backgroundColor: 'rgba(17, 77, 145)' }}
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.9)'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)'}
@@ -383,17 +383,17 @@ function LaporanContent() {
 
         {/* Full Width Reports Section */}
         <div className="space-y-4">
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-bold text-gray-900">Semua Laporan</h2>
-              <span className="text-sm text-gray-500">{myReports.length} total</span>
+          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 mb-4">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Semua Laporan</h2>
+              <span className="text-xs sm:text-sm text-gray-500">{myReports.length} total</span>
             </div>
 
               {/* Status Filter */}
-              <div className="flex gap-2 mb-4">
+              <div className="flex gap-2 mb-4 overflow-x-auto">
                 <button
                   onClick={() => setStatusFilter("aktif")}
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                  className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors whitespace-nowrap"
                   style={{
                     backgroundColor: statusFilter === "aktif" ? 'rgba(17, 77, 145)' : 'rgb(243, 244, 246)',
                     color: statusFilter === "aktif" ? 'white' : 'rgb(55, 65, 81)'
@@ -413,7 +413,7 @@ function LaporanContent() {
                 </button>
                 <button
                   onClick={() => setStatusFilter("selesai")}
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                  className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors whitespace-nowrap"
                   style={{
                     backgroundColor: statusFilter === "selesai" ? 'rgba(17, 77, 145)' : 'rgb(243, 244, 246)',
                     color: statusFilter === "selesai" ? 'white' : 'rgb(55, 65, 81)'
@@ -460,10 +460,10 @@ function LaporanContent() {
 
         {/* Modal Popup for Create/Edit Report */}
         {showModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-2xl">
-                <h2 className="text-2xl font-bold text-gray-900">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/20 backdrop-blur-sm">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between rounded-t-xl sm:rounded-t-2xl">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                   {editMode ? "Edit Laporan" : "Buat Laporan Baru"}
                 </h2>
                 <button
@@ -479,8 +479,8 @@ function LaporanContent() {
                 </button>
               </div>
 
-              <div className="p-6">
-                <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="p-4 sm:p-6">
+                <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
                   {/* Title */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">

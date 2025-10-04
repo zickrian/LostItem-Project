@@ -185,23 +185,23 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Dashboard</h1>
-          <p className="text-gray-600">Temukan atau laporkan barang hilang/ditemukan</p>
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Dashboard</h1>
+          <p className="text-sm sm:text-base text-gray-600">Temukan atau laporkan barang hilang/ditemukan</p>
         </div>
 
         {/* Search Bar */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6">
           <SearchBar onSearch={handleSearch} />
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex gap-4 mb-6 border-b border-gray-200">
+        <div className="flex gap-2 sm:gap-4 mb-4 sm:mb-6 border-b border-gray-200 overflow-x-auto">
           <button
             onClick={() => setActiveTab("hilang")}
-            className="flex items-center gap-2 pb-3 px-4 font-semibold transition-all duration-200"
+            className="flex items-center gap-1.5 sm:gap-2 pb-2 sm:pb-3 px-3 sm:px-4 font-semibold transition-all duration-200 whitespace-nowrap text-sm sm:text-base"
             style={{
               color: activeTab === "hilang" ? 'rgba(17, 77, 145)' : 'rgb(107, 114, 128)',
               borderBottom: activeTab === "hilang" ? '2px solid rgba(17, 77, 145)' : 'none'
@@ -217,12 +217,12 @@ export default function DashboardPage() {
               }
             }}
           >
-            <MagnifyingGlassIcon className="h-6 w-6" />
+            <MagnifyingGlassIcon className="h-5 w-5 sm:h-6 sm:w-6" />
             <span>Barang Hilang</span>
           </button>
           <button
             onClick={() => setActiveTab("temuan")}
-            className="flex items-center gap-2 pb-3 px-4 font-semibold transition-all duration-200"
+            className="flex items-center gap-1.5 sm:gap-2 pb-2 sm:pb-3 px-3 sm:px-4 font-semibold transition-all duration-200 whitespace-nowrap text-sm sm:text-base"
             style={{
               color: activeTab === "temuan" ? 'rgba(17, 77, 145)' : 'rgb(107, 114, 128)',
               borderBottom: activeTab === "temuan" ? '2px solid rgba(17, 77, 145)' : 'none'
@@ -238,21 +238,21 @@ export default function DashboardPage() {
               }
             }}
           >
-            <CheckCircleIcon className="h-6 w-6" />
+            <CheckCircleIcon className="h-5 w-5 sm:h-6 sm:w-6" />
             <span>Barang Temuan</span>
           </button>
         </div>
 
         {/* Reports Grid */}
         {filteredReports.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="text-6xl mb-4">
-              {activeTab === "hilang" ? "�" : "✅"}
+          <div className="text-center py-12 sm:py-16 px-4">
+            <div className="text-5xl sm:text-6xl mb-3 sm:mb-4">
+              {activeTab === "hilang" ? "🔍" : "✅"}
             </div>
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">
               Tidak ada laporan {activeTab === "hilang" ? "barang hilang" : "barang ditemukan"}
             </h3>
-            <p className="text-gray-500">
+            <p className="text-sm sm:text-base text-gray-500">
               {searchQuery ? "Coba kata kunci lain" : "Jadilah yang pertama membuat laporan!"}
             </p>
           </div>

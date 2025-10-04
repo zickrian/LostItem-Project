@@ -177,11 +177,11 @@ export default function ReportGrid({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full">
       {reports.map((report) => (
         <div
           key={report.id}
-          className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group"
+          className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group w-full"
         >
           {/* Image Thumbnail */}
           <div className="relative w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200">
@@ -215,16 +215,16 @@ export default function ReportGrid({
           </div>
 
           {/* Card Content */}
-          <div className="p-4">
+          <div className="p-3 sm:p-4">
             {/* Title */}
-            <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
+            <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-2 line-clamp-2 break-words">
               {report.title}
             </h3>
 
             {/* Description */}
             {report.description && (
               <div className="mb-2">
-                <p className={`text-gray-600 text-sm whitespace-pre-wrap transition-all duration-300 ${!expandedReports.has(report.id) && report.description.length > 100 ? 'line-clamp-2' : ''}`}>
+                <p className={`text-gray-600 text-xs sm:text-sm whitespace-pre-wrap transition-all duration-300 break-words ${!expandedReports.has(report.id) && report.description.length > 100 ? 'line-clamp-2' : ''}`}>
                   {report.description}
                 </p>
                 {report.description.length > 100 && (
@@ -254,19 +254,19 @@ export default function ReportGrid({
             )}
 
             {/* Category & Location */}
-            <div className="flex flex-wrap items-center gap-2 mb-2">
-              <span className="inline-flex items-center px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-md">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-2">
+              <span className="inline-flex items-center px-2 py-0.5 sm:px-2.5 sm:py-1 bg-blue-50 text-blue-700 text-[10px] sm:text-xs font-medium rounded-md break-words max-w-full">
                 {getCategoryEmoji(report.category)} {report.category}
               </span>
               {report.location && (
-                <span className="inline-flex items-center px-2.5 py-1 bg-green-50 text-green-700 text-xs font-medium rounded-md">
+                <span className="inline-flex items-center px-2 py-0.5 sm:px-2.5 sm:py-1 bg-green-50 text-green-700 text-[10px] sm:text-xs font-medium rounded-md break-words max-w-full">
                   📍 {report.location}
                 </span>
               )}
             </div>
 
             {/* Date */}
-            <div className="text-xs text-gray-500 mb-3">
+            <div className="text-[10px] sm:text-xs text-gray-500 mb-3">
               {formatDate(report.created_at)}
             </div>
 

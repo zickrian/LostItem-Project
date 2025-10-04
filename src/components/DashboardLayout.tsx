@@ -94,10 +94,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <div className="flex min-h-screen bg-gradient-to-b from-blue-50 to-white overflow-x-hidden">
       {user && <Sidebar user={user} />}
-      <main className="flex-1 lg:ml-0 pt-16 lg:pt-0">
-        {children}
+      <main className="flex-1 w-full lg:ml-0 pt-16 lg:pt-0 overflow-x-hidden">
+        <div className="w-full max-w-full">
+          {children}
+        </div>
       </main>
     </div>
   );

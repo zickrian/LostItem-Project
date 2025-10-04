@@ -156,38 +156,38 @@ export default function StatistikPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">Statistik Laporan</h1>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6 sm:mb-8">Statistik Laporan</h1>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-xl shadow-md">
-            <p className="text-sm opacity-90 mb-1">Total Laporan</p>
-            <p className="text-3xl font-bold">{stats.totalReports}</p>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-4 sm:p-6 rounded-lg sm:rounded-xl shadow-md">
+            <p className="text-xs sm:text-sm opacity-90 mb-1">Total Laporan</p>
+            <p className="text-2xl sm:text-3xl font-bold">{stats.totalReports}</p>
           </div>
-          <div className="bg-gradient-to-br from-red-500 to-red-600 text-white p-6 rounded-xl shadow-md">
-            <p className="text-sm opacity-90 mb-1">Barang Hilang</p>
-            <p className="text-3xl font-bold">{stats.totalHilang}</p>
+          <div className="bg-gradient-to-br from-red-500 to-red-600 text-white p-4 sm:p-6 rounded-lg sm:rounded-xl shadow-md">
+            <p className="text-xs sm:text-sm opacity-90 mb-1">Barang Hilang</p>
+            <p className="text-2xl sm:text-3xl font-bold">{stats.totalHilang}</p>
           </div>
-          <div className="bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-xl shadow-md">
-            <p className="text-sm opacity-90 mb-1">Barang Ditemukan</p>
-            <p className="text-3xl font-bold">{stats.totalTemuan}</p>
+          <div className="bg-gradient-to-br from-green-500 to-green-600 text-white p-4 sm:p-6 rounded-lg sm:rounded-xl shadow-md">
+            <p className="text-xs sm:text-sm opacity-90 mb-1">Barang Ditemukan</p>
+            <p className="text-2xl sm:text-3xl font-bold">{stats.totalTemuan}</p>
           </div>
-          <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 text-white p-6 rounded-xl shadow-md">
-            <p className="text-sm opacity-90 mb-1">Laporan Aktif</p>
-            <p className="text-3xl font-bold">{stats.totalAktif}</p>
+          <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 text-white p-4 sm:p-6 rounded-lg sm:rounded-xl shadow-md">
+            <p className="text-xs sm:text-sm opacity-90 mb-1">Laporan Aktif</p>
+            <p className="text-2xl sm:text-3xl font-bold">{stats.totalAktif}</p>
           </div>
-          <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-xl shadow-md">
-            <p className="text-sm opacity-90 mb-1">Selesai</p>
-            <p className="text-3xl font-bold">{stats.totalSelesai}</p>
+          <div className="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-4 sm:p-6 rounded-lg sm:rounded-xl shadow-md">
+            <p className="text-xs sm:text-sm opacity-90 mb-1">Selesai</p>
+            <p className="text-2xl sm:text-3xl font-bold">{stats.totalSelesai}</p>
           </div>
         </div>
 
         {/* Charts Grid */}
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
           {/* Category Chart */}
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Kategori Paling Sering</h2>
+          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Kategori Paling Sering</h2>
             {stats.categoryData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
@@ -215,8 +215,8 @@ export default function StatistikPage() {
           </div>
 
           {/* Monthly Trend Chart */}
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Tren Laporan (6 Bulan Terakhir)</h2>
+          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Tren Laporan (6 Bulan Terakhir)</h2>
             {stats.monthlyData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={stats.monthlyData}>
@@ -235,8 +235,8 @@ export default function StatistikPage() {
           </div>
 
           {/* Location Chart */}
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Lokasi Paling Sering (Top 5)</h2>
+          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Lokasi Paling Sering (Top 5)</h2>
             {stats.locationData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={stats.locationData} layout="vertical">
@@ -253,8 +253,8 @@ export default function StatistikPage() {
           </div>
 
           {/* Success Rate Card */}
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Tingkat Penyelesaian</h2>
+          <div className="bg-white rounded-xl shadow-md p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Tingkat Penyelesaian</h2>
             <div className="flex items-center justify-center h-[300px]">
               <div className="text-center">
                 <div className="relative w-48 h-48 mx-auto mb-4">
@@ -303,7 +303,7 @@ export default function StatistikPage() {
         </div>
 
         {/* Additional Info */}
-        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
+        <div className="mt-6 sm:mt-8 bg-blue-50 border border-blue-200 rounded-xl p-4 sm:p-6">
           <div className="flex items-start gap-3">
             <span className="text-2xl">📊</span>
             <div>

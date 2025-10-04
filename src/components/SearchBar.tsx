@@ -22,18 +22,18 @@ export default function SearchBar({ onSearch, placeholder = "Cari barang, katego
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full">
-      <div className="relative">
+    <form onSubmit={handleSubmit} className="w-full max-w-full">
+      <div className="relative w-full">
         <input
           type="text"
           value={query}
           onChange={handleChange}
           placeholder={placeholder}
           // thicker blue outline on focus (matches navbar) and typed text black
-          className="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-4 focus:ring-[rgba(17,77,145,0.35)] focus:border-transparent placeholder:text-gray-400 text-black transition-all duration-200"
+          className="w-full px-3 sm:px-4 py-2 sm:py-3 pl-10 sm:pl-12 pr-10 sm:pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-4 focus:ring-[rgba(17,77,145,0.35)] focus:border-transparent placeholder:text-gray-400 text-black transition-all duration-200 text-sm sm:text-base"
         />
-        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+          <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -49,9 +49,9 @@ export default function SearchBar({ onSearch, placeholder = "Cari barang, katego
               setQuery("");
               onSearch("");
             }}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
