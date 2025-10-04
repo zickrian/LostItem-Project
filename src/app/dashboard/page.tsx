@@ -270,6 +270,7 @@ export default function DashboardPage() {
               created_at: report.created_at,
             }))}
             showActions={false}
+            currentUserId={user?.id}
           />
         )}
       </div>

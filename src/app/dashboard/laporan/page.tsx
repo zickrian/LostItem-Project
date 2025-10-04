@@ -447,6 +447,7 @@ function LaporanContent() {
                   created_at: report.created_at,
                 }))}
                 showActions={true}
+                currentUserId={user?.id}
                 onEdit={(reportId) => {
                   loadReportForEdit(reportId);
                   setShowModal(true);

@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useToast } from "@/contexts/ToastContext";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 interface Comment {
   id: string;
@@ -26,6 +27,8 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, commentId: "", title: "", message: "" });
+  const [deletingCommentId, setDeletingCommentId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchComments();
@@ -103,7 +106,22 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
   }
 
   async function handleDeleteComment(commentId: string) {
-    if (!confirm("Hapus komentar ini?")) return;
+    // open confirm dialog
+    setConfirmDialog({
+      isOpen: true,
+      commentId,
+      title: "Hapus Komentar",
+      message: "Apakah Anda yakin ingin menghapus komentar ini? Tindakan ini tidak dapat dibatalkan.",
+    });
+  }
+
+  async function confirmDeleteComment() {
+    const commentId = confirmDialog.commentId;
+    setConfirmDialog({ isOpen: false, commentId: "", title: "", message: "" });
+    if (!commentId) return;
+
+    // optimistic UI: mark as deleting to animate fade
+    setDeletingCommentId(commentId);
 
     try {
       const { error } = await supabase
@@ -113,9 +131,16 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
         .eq("user_id", currentUserId);
 
       if (error) throw error;
+
+      // remove from local state
+      setComments((prev) => prev.filter((c) => c.id !== commentId));
       toast.success("Komentar berhasil dihapus");
-    } catch (error) {
+    } catch (err) {
+      // revert: refetch comments
       toast.error("Gagal menghapus komentar.");
+      fetchComments();
+    } finally {
+      setDeletingCommentId(null);
     }
   }
 
@@ -147,11 +172,11 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
     <div className="p-4 bg-gray-50">
       {/* Comments List */}
       <div className="space-y-3 mb-4 max-h-96 overflow-y-auto">
-        {comments.length === 0 ? (
+          {comments.length === 0 ? (
           <p className="text-center text-gray-500 text-sm py-4">Belum ada komentar</p>
         ) : (
           comments.map((comment) => (
-            <div key={comment.id} className="flex gap-3">
+            <div key={comment.id} className={`flex gap-3 transition-opacity duration-300 ${deletingCommentId === comment.id ? 'opacity-0 h-0 overflow-hidden' : 'opacity-100'}`}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={comment.user.avatar_url || "/default-avatar.svg"}
@@ -170,7 +195,7 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
                     <p className="font-semibold text-sm text-gray-900">{comment.user.name}</p>
                     {comment.user_id === currentUserId && (
                       <button
-                        onClick={() => handleDeleteComment(comment.id)}
+                        onClick={() => setConfirmDialog({ isOpen: true, commentId: comment.id, title: 'Hapus Komentar', message: 'Apakah Anda yakin ingin menghapus komentar ini?' })}
                         className="text-red-500 hover:text-red-700 text-xs"
                       >
                         Hapus
@@ -186,7 +211,7 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
         )}
       </div>
 
-      {/* Comment Form */}
+  {/* Comment Form */}
       <form onSubmit={handleSubmitComment} className="flex gap-2">
         <input
           type="text"
@@ -221,6 +246,17 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
           {submitting ? "..." : "Kirim"}
         </button>
       </form>
+      {/* Confirm Dialog for deletion */}
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        confirmText="Hapus"
+        cancelText="Batal"
+        onConfirm={confirmDeleteComment}
+        onCancel={() => setConfirmDialog({ isOpen: false, commentId: "", title: "", message: "" })}
+        type="danger"
+      />
     </div>
   );
 }
