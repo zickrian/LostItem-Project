@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import { useToast } from "@/contexts/ToastContext";
 
 interface Comment {
   id: string;
@@ -20,6 +21,7 @@ interface CommentSectionProps {
 }
 
 export default function CommentSection({ reportId, currentUserId }: CommentSectionProps) {
+  const toast = useToast();
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
@@ -69,7 +71,7 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
 
       setComments(data || []);
     } catch (error) {
-      console.error("Error fetching comments:", error);
+      toast.error("Gagal memuat komentar");
     } finally {
       setLoading(false);
     }
@@ -92,9 +94,9 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
       if (error) throw error;
 
       setNewComment("");
+      toast.success("Komentar berhasil ditambahkan");
     } catch (error) {
-      console.error("Error submitting comment:", error);
-      alert("Gagal mengirim komentar. Silakan coba lagi.");
+      toast.error("Gagal mengirim komentar. Silakan coba lagi.");
     } finally {
       setSubmitting(false);
     }
@@ -111,9 +113,9 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
         .eq("user_id", currentUserId);
 
       if (error) throw error;
+      toast.success("Komentar berhasil dihapus");
     } catch (error) {
-      console.error("Error deleting comment:", error);
-      alert("Gagal menghapus komentar.");
+      toast.error("Gagal menghapus komentar.");
     }
   }
 

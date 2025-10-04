@@ -27,8 +27,6 @@ export async function uploadImage(file: File, userId: string): Promise<string | 
       });
 
     if (error) {
-      console.error('Error uploading image:', error);
-      console.error('Error details:', error.message);
       return null;
     }
 
@@ -37,10 +35,8 @@ export async function uploadImage(file: File, userId: string): Promise<string | 
       .from(REPORTS_BUCKET)
       .getPublicUrl(data.path);
 
-    console.log('File uploaded successfully:', urlData.publicUrl);
     return urlData.publicUrl;
   } catch (error) {
-    console.error('Error in uploadImage:', error);
     return null;
   }
 }
@@ -65,13 +61,11 @@ export async function deleteImage(imageUrl: string, bucketName: string = REPORTS
       .remove([filePath]);
 
     if (error) {
-      console.error('Error deleting image:', error);
       return false;
     }
 
     return true;
   } catch (error) {
-    console.error('Error in deleteImage:', error);
     return false;
   }
 }
@@ -106,8 +100,6 @@ export async function uploadAvatar(
       });
 
     if (error) {
-      console.error('Error uploading avatar:', error);
-      console.error('Error details:', error.message);
       return null;
     }
 
@@ -116,10 +108,8 @@ export async function uploadAvatar(
       .from(AVATARS_BUCKET)
       .getPublicUrl(data.path);
 
-    console.log('Avatar uploaded successfully:', urlData.publicUrl);
     return urlData.publicUrl;
   } catch (error) {
-    console.error('Error in uploadAvatar:', error);
     return null;
   }
 }

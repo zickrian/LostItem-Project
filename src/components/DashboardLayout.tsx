@@ -47,11 +47,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
         if (userError) {
           // User not in database yet, use auth metadata
-          console.log("⚠️ User not found in DB, using auth metadata");
           const fallbackAvatar = currentUser.user_metadata.avatar_url || 
                                  currentUser.user_metadata.picture || 
                                  currentUser.user_metadata.photo;
-          console.log("📸 Fallback avatar:", fallbackAvatar);
           
           setUser({
             id: currentUser.id,
@@ -62,18 +60,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           });
         } else {
           // User found in database, use avatar from database (Google photo)
-          console.log("✅ User found in DB:", {
-            id: userData.id,
-            name: userData.name,
-            email: userData.email,
-            avatar_url: userData.avatar_url,
-          });
           setUser(userData);
         }
         
         setLoading(false);
       } catch (error) {
-        console.error("Error in checkUser:", error);
         router.push("/login");
       }
     }

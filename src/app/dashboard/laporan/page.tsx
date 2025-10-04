@@ -6,6 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
 import ReportGrid, { GridReport } from "@/components/ReportGrid";
 import Image from "next/image";
+import { useToast } from "@/contexts/ToastContext";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 type ReportType = "hilang" | "temuan";
 type ReportStatus = "aktif" | "selesai";
@@ -13,7 +15,9 @@ type ReportStatus = "aktif" | "selesai";
 interface UserReport {
   id: string;
   title: string;
+  description?: string;
   category: string;
+  location?: string;
   type: ReportType;
   status: ReportStatus;
   created_at: string;
@@ -43,6 +47,7 @@ function LaporanContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams?.get("edit");
+  const toast = useToast();
 
   const [user, setUser] = useState<User | null>(null);
   const [myReports, setMyReports] = useState<UserReport[]>([]);
@@ -64,6 +69,12 @@ function LaporanContent() {
   const [editMode, setEditMode] = useState(false);
   const [editingId, setEditingId] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    reportId: "",
+    title: "",
+    message: "",
+  });
 
   useEffect(() => {
     async function init() {
@@ -102,7 +113,7 @@ function LaporanContent() {
 
       setUser(userData);
     } catch (error) {
-      console.error("Error checking user:", error);
+      toast.error("Gagal memuat data pengguna");
     }
   }
 
@@ -121,7 +132,7 @@ function LaporanContent() {
 
       const { data, error } = await supabase
         .from("reports")
-        .select("id, title, category, type, status, created_at, image_url")
+        .select("id, title, description, category, location, type, status, created_at, image_url")
         .eq("user_id", userData.id)
         .order("created_at", { ascending: false });
 
@@ -129,7 +140,7 @@ function LaporanContent() {
 
       setMyReports(data || []);
     } catch (error) {
-      console.error("Error fetching reports:", error);
+      toast.error("Gagal memuat laporan");
     } finally {
       setLoading(false);
     }
@@ -178,7 +189,7 @@ function LaporanContent() {
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert("Ukuran file maksimal 5MB");
+      toast.error("Ukuran file maksimal 5MB");
       return;
     }
 
@@ -191,7 +202,7 @@ function LaporanContent() {
     if (!user || submitting) return;
 
     if (!formData.title.trim() || !formData.category) {
-      alert("Judul dan kategori harus diisi!");
+      toast.error("Judul dan kategori harus diisi!");
       return;
     }
 
@@ -227,13 +238,13 @@ function LaporanContent() {
           .eq("user_id", user.id);
 
         if (error) throw error;
-        alert("Laporan berhasil diperbarui!");
+        toast.success("Laporan berhasil diperbarui!");
       } else {
         // Create new report
         const { error } = await supabase.from("reports").insert(reportData);
 
         if (error) throw error;
-        alert("Laporan berhasil dibuat!");
+        toast.success("Laporan berhasil dibuat!");
       }
 
       // Reset form
@@ -242,8 +253,7 @@ function LaporanContent() {
       fetchMyReports();
       router.push("/dashboard/laporan");
     } catch (error) {
-      console.error("Error submitting report:", error);
-      alert("Gagal menyimpan laporan. Silakan coba lagi.");
+      toast.error("Gagal menyimpan laporan. Silakan coba lagi.");
     } finally {
       setSubmitting(false);
     }
@@ -263,28 +273,44 @@ function LaporanContent() {
     setEditingId("");
   }
 
-  async function handleDeleteReport(reportId: string) {
-    if (!user || !confirm("Hapus laporan ini?")) return;
+  function handleDeleteReport(reportId: string) {
+    if (!user) return;
+    
+    setConfirmDialog({
+      isOpen: true,
+      reportId,
+      title: "Hapus Laporan",
+      message: "Apakah Anda yakin ingin menghapus laporan ini? Tindakan ini tidak dapat dibatalkan.",
+    });
+  }
+
+  async function confirmDeleteReport() {
+    const { reportId } = confirmDialog;
+    
+    setConfirmDialog({ isOpen: false, reportId: "", title: "", message: "" });
 
     try {
       const { error } = await supabase
         .from("reports")
         .delete()
         .eq("id", reportId)
-        .eq("user_id", user.id);
+        .eq("user_id", user!.id);
 
       if (error) throw error;
 
-      alert("Laporan berhasil dihapus!");
+      toast.success("Laporan berhasil dihapus!");
       fetchMyReports();
       
       if (editingId === reportId) {
         resetForm();
       }
     } catch (error) {
-      console.error("Error deleting report:", error);
-      alert("Gagal menghapus laporan.");
+      toast.error("Gagal menghapus laporan.");
     }
+  }
+
+  function cancelDeleteReport() {
+    setConfirmDialog({ isOpen: false, reportId: "", title: "", message: "" });
   }
 
   async function handleToggleStatus(reportId: string, currentStatus: ReportStatus) {
@@ -300,10 +326,10 @@ function LaporanContent() {
 
       if (error) throw error;
 
+      toast.success(`Status berhasil diubah menjadi ${newStatus}`);
       fetchMyReports();
     } catch (error) {
-      console.error("Error updating status:", error);
-      alert("Gagal mengubah status laporan.");
+      toast.error("Gagal mengubah status laporan.");
     }
   }
 
@@ -395,7 +421,17 @@ function LaporanContent() {
 
               {/* Reports Grid */}
               <ReportGrid
-                reports={filteredReports}
+                reports={filteredReports.map((report) => ({
+                  id: report.id,
+                  title: report.title,
+                  description: myReports.find(r => r.id === report.id)?.description,
+                  category: report.category,
+                  location: myReports.find(r => r.id === report.id)?.location,
+                  type: report.type,
+                  status: report.status,
+                  image_url: report.image_url,
+                  created_at: report.created_at,
+                }))}
                 showActions={true}
                 onEdit={(reportId) => {
                   loadReportForEdit(reportId);
@@ -577,6 +613,18 @@ function LaporanContent() {
             </div>
           </div>
         )}
+
+        {/* Confirm Dialog */}
+        <ConfirmDialog
+          isOpen={confirmDialog.isOpen}
+          title={confirmDialog.title}
+          message={confirmDialog.message}
+          confirmText="Hapus"
+          cancelText="Batal"
+          onConfirm={confirmDeleteReport}
+          onCancel={cancelDeleteReport}
+          type="danger"
+        />
       </div>
     </DashboardLayout>
   );

@@ -3,12 +3,106 @@ import { useState } from "react";
 import Image from "next/image";
 import CommentSection from "@/components/CommentSection";
 
+// Fungsi untuk mendapatkan emoji berdasarkan kategori
+const getCategoryEmoji = (category: string): string => {
+  const categoryLower = category.toLowerCase().trim();
+  
+  // Switch case untuk exact match dulu
+  switch (categoryLower) {
+    // Elektronik
+    case "elektronik":
+    case "hp":
+    case "handphone":
+    case "smartphone":
+      return "📱";
+    case "laptop":
+    case "notebook":
+      return "💻";
+    
+    // Dokumen
+    case "dokumen":
+    case "surat":
+      return "📄";
+    case "ktp":
+    case "kartu":
+    case "id card":
+      return "🪪";
+    
+    // Kunci
+    case "kunci":
+      return "🔑";
+    
+    // Tas & Dompet
+    case "tas":
+    case "ransel":
+    case "backpack":
+      return "🎒";
+    case "dompet":
+    case "wallet":
+      return "👛";
+    
+    // Pakaian
+    case "pakaian":
+    case "baju":
+    case "kaos":
+    case "kemeja":
+      return "👕";
+    case "sepatu":
+    case "sandal":
+      return "👟";
+    
+    // Aksesoris
+    case "jam":
+    case "jam tangan":
+    case "watch":
+      return "⌚";
+    case "kacamata":
+    case "glasses":
+      return "🕶️";
+    
+    // Buku & Alat Tulis
+    case "buku":
+    case "novel":
+    case "book":
+      return "📚";
+    case "alat tulis":
+    case "pensil":
+    case "pulpen":
+      return "✏️";
+    
+    // Lainnya
+    case "lainnya":
+    case "other":
+      return "📦";
+  }
+  
+  // Fallback dengan includes untuk partial match
+  if (categoryLower.includes("kunci")) return "🔑";
+  if (categoryLower.includes("hp") || categoryLower.includes("handphone")) return "📱";
+  if (categoryLower.includes("laptop")) return "💻";
+  if (categoryLower.includes("elektronik")) return "📱";
+  if (categoryLower.includes("dokumen") || categoryLower.includes("surat")) return "📄";
+  if (categoryLower.includes("ktp") || categoryLower.includes("kartu")) return "🪪";
+  if (categoryLower.includes("tas")) return "🎒";
+  if (categoryLower.includes("dompet")) return "👛";
+  if (categoryLower.includes("baju") || categoryLower.includes("pakaian")) return "👕";
+  if (categoryLower.includes("sepatu")) return "👟";
+  if (categoryLower.includes("jam")) return "⌚";
+  if (categoryLower.includes("kacamata")) return "🕶️";
+  if (categoryLower.includes("buku")) return "📚";
+  if (categoryLower.includes("pensil") || categoryLower.includes("alat tulis")) return "✏️";
+  
+  // Default
+  return "📦";
+};
+
 export interface Report {
   id: string;
   user_id: string;
   title: string;
   description: string;
   category: string;
+  location?: string;
   type: "hilang" | "temuan";
   image_url?: string;
   status: "aktif" | "selesai";
@@ -114,10 +208,15 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit }: 
 
         <p className="text-gray-600 text-sm mb-3 line-clamp-3">{report.description}</p>
 
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex flex-wrap items-center gap-2 mb-3">
           <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md">
-            📦 {report.category}
+            {getCategoryEmoji(report.category)} {report.category}
           </span>
+          {report.location && (
+            <span className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-md">
+              📍 {report.location}
+            </span>
+          )}
           {report.status === "selesai" && (
             <span className="px-2 py-1 text-xs rounded-md" style={{ backgroundColor: 'rgba(17, 77, 145, 0.1)', color: 'rgba(17, 77, 145)' }}>
               ✔️ Selesai
@@ -125,8 +224,8 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit }: 
           )}
         </div>
 
-        {/* Image */}
-        {report.image_url && (
+        {/* Image or Icon */}
+        {report.image_url ? (
           <div className="relative w-full h-64 mb-3 rounded-lg overflow-hidden bg-gray-100">
             <Image
               src={report.image_url}
@@ -134,6 +233,12 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit }: 
               fill
               className="object-cover"
             />
+          </div>
+        ) : (
+          <div className="relative w-full h-64 mb-3 rounded-lg overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+            <div className="text-8xl">
+              {getCategoryEmoji(report.category)}
+            </div>
           </div>
         )}
 

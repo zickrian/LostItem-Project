@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
+import { useToast } from "@/contexts/ToastContext";
 
 interface UserSettings {
   id: string;
@@ -22,6 +23,7 @@ interface NotificationSettings {
 
 export default function SettingPage() {
   const router = useRouter();
+  const toast = useToast();
   const [user, setUser] = useState<UserSettings | null>(null);
   const [notifications, setNotifications] = useState<NotificationSettings>({
     email_notif: true,
@@ -61,13 +63,6 @@ export default function SettingPage() {
 
       if (userError) throw userError;
 
-      console.log("👤 User data in Settings:", {
-        id: userData.id,
-        name: userData.name,
-        email: userData.email,
-        avatar_url: userData.avatar_url,
-      });
-
       setUser(userData);
       setName(userData.name);
 
@@ -85,7 +80,7 @@ export default function SettingPage() {
         });
       }
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      toast.error("Gagal memuat data pengguna");
     } finally {
       setLoading(false);
     }
@@ -97,7 +92,7 @@ export default function SettingPage() {
 
     const trimmedName = name.trim();
     if (!trimmedName) {
-      alert("Nama tidak boleh kosong!");
+      toast.error("Nama tidak boleh kosong!");
       return;
     }
 
@@ -142,12 +137,11 @@ export default function SettingPage() {
 
       if (notifError) throw notifError;
 
-      alert("Pengaturan berhasil diperbarui!");
+      toast.success("Pengaturan berhasil diperbarui!");
       await fetchUserData();
       router.refresh();
     } catch (error) {
-      console.error("Error saving settings:", error);
-      alert("Gagal menyimpan pengaturan. Silakan coba lagi.");
+      toast.error("Gagal menyimpan pengaturan. Silakan coba lagi.");
     } finally {
       setSaving(false);
     }
@@ -157,7 +151,7 @@ export default function SettingPage() {
     if (!user) return;
 
     if (deleteConfirmText !== "HAPUS AKUN") {
-      alert('Ketik "HAPUS AKUN" untuk konfirmasi');
+      toast.error('Ketik "HAPUS AKUN" untuk konfirmasi');
       return;
     }
 
@@ -181,11 +175,10 @@ export default function SettingPage() {
       // This might fail depending on RLS policies, but user data is already deleted
       await supabase.auth.admin.deleteUser(user.auth_id);
 
-      alert("Akun berhasil dihapus. Anda akan dialihkan ke halaman utama.");
-      router.push("/");
+      toast.success("Akun berhasil dihapus. Anda akan dialihkan ke halaman utama.");
+      setTimeout(() => router.push("/"), 2000);
     } catch (error) {
-      console.error("Error deleting account:", error);
-      alert("Gagal menghapus akun. Silakan hubungi administrator.");
+      toast.error("Gagal menghapus akun. Silakan hubungi administrator.");
     }
   }
 
@@ -235,7 +228,6 @@ export default function SettingPage() {
                     loading="lazy"
                     referrerPolicy="no-referrer"
                     onError={(event) => {
-                      console.error("❌ Failed to load avatar (settings):", user.avatar_url);
                       event.currentTarget.onerror = null;
                       event.currentTarget.src = "/default-avatar.svg";
                     }}

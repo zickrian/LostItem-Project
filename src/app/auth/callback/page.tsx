@@ -2,9 +2,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function AuthCallbackPage() {
   const router = useRouter();
+  const toast = useToast();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -16,8 +18,9 @@ export default function AuthCallbackPage() {
         const errorDescription = params.get('error_description');
         
         if (errorParam) {
-          console.error("OAuth error:", errorParam, errorDescription);
-          setError(errorDescription || "Terjadi kesalahan saat login");
+          const errorMsg = errorDescription || "Terjadi kesalahan saat login";
+          setError(errorMsg);
+          toast.error(errorMsg);
           setTimeout(() => router.push("/login"), 3000);
           return;
         }
@@ -26,14 +29,13 @@ export default function AuthCallbackPage() {
         const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
         
         if (sessionError) {
-          console.error("Session error:", sessionError);
           setError("Gagal mendapatkan session");
+          toast.error("Gagal mendapatkan session");
           setTimeout(() => router.push("/login"), 2000);
           return;
         }
 
         if (!sessionData.session) {
-          console.log("No session found, redirecting to login");
           router.push("/login");
           return;
         }
@@ -41,11 +43,11 @@ export default function AuthCallbackPage() {
         const user = sessionData.session.user;
         const email = user.email!;
         
-        console.log("User logged in:", email);
-        
         // Validasi domain email
         if (!email.endsWith("@mhs.dinus.ac.id")) {
-          setError("❌ Pastikan Login menggunakan email kampus!");
+          const errorMsg = "❌ Pastikan Login menggunakan email kampus!";
+          setError(errorMsg);
+          toast.error(errorMsg);
           await supabase.auth.signOut();
           setTimeout(() => router.push("/login"), 3000);
           return;
@@ -53,14 +55,6 @@ export default function AuthCallbackPage() {
 
         // Get Google avatar from user metadata
         const googleAvatar = user.user_metadata.avatar_url || user.user_metadata.picture || user.user_metadata.photo;
-        
-        console.log("🔍 User metadata:", {
-          avatar_url: user.user_metadata.avatar_url,
-          picture: user.user_metadata.picture,
-          photo: user.user_metadata.photo,
-          full_name: user.user_metadata.full_name,
-        });
-        console.log("📸 Google Avatar URL:", googleAvatar);
 
         // Ambil data user yang sudah ada untuk menjaga perubahan manual
         const { data: existingUser, error: existingUserError } = await supabase
@@ -68,10 +62,6 @@ export default function AuthCallbackPage() {
           .select("id, name, avatar_url")
           .eq("auth_id", user.id)
           .maybeSingle();
-
-        if (existingUserError) {
-          console.warn("⚠️ Gagal mengambil data user yang ada:", existingUserError);
-        }
 
         const fallbackName =
           user.user_metadata.full_name ||
@@ -100,19 +90,17 @@ export default function AuthCallbackPage() {
           .select();
 
         if (upsertError) {
-          console.error("❌ Error saving user to database:", upsertError);
           setError("⚠️ Terjadi kesalahan saat menyimpan data user");
+          toast.error("Terjadi kesalahan saat menyimpan data user");
           // Still redirect to dashboard even if upsert fails
-        } else {
-          console.log("✅ User saved successfully:", upsertData);
         }
 
-        console.log("➡️ Redirecting to dashboard...");
         // Redirect ke dashboard
+        toast.success("Login berhasil!");
         router.push("/dashboard");
       } catch (err) {
-        console.error("Unexpected error:", err);
         setError("Terjadi kesalahan tidak terduga");
+        toast.error("Terjadi kesalahan tidak terduga");
         setTimeout(() => router.push("/login"), 2000);
       }
     }

@@ -6,7 +6,7 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-export default function SearchBar({ onSearch, placeholder = "Cari barang, deskripsi, atau nama..." }: SearchBarProps) {
+export default function SearchBar({ onSearch, placeholder = "Cari barang, kategori, lokasi, atau nama..." }: SearchBarProps) {
   const [query, setQuery] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -29,16 +29,8 @@ export default function SearchBar({ onSearch, placeholder = "Cari barang, deskri
           value={query}
           onChange={handleChange}
           placeholder={placeholder}
-          className="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:border-transparent transition-all duration-200"
-          style={{
-            '--tw-ring-color': 'rgba(17, 77, 145, 0.5)'
-          } as React.CSSProperties}
-          onFocus={(e) => {
-            e.currentTarget.style.boxShadow = '0 0 0 2px rgba(17, 77, 145, 0.5)';
-          }}
-          onBlur={(e) => {
-            e.currentTarget.style.boxShadow = 'none';
-          }}
+          // thicker blue outline on focus (matches navbar) and typed text black
+          className="w-full px-4 py-3 pl-12 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-4 focus:ring-[rgba(17,77,145,0.35)] focus:border-transparent placeholder:text-gray-400 text-black transition-all duration-200"
         />
         <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

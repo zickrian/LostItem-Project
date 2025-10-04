@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function LoginButton() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const toast = useToast();
 
   async function handleLogin() {
     try {
@@ -23,14 +25,16 @@ export default function LoginButton() {
       });
 
       if (signInError) {
-        console.error("Login error:", signInError);
-        setError("Gagal memulai proses login. Silakan coba lagi.");
+        const errorMessage = "Gagal memulai proses login. Silakan coba lagi.";
+        setError(errorMessage);
+        toast.error(errorMessage);
         setLoading(false);
       }
       // Note: If successful, browser will redirect, so we don't need to setLoading(false)
     } catch (err) {
-      console.error("Unexpected error:", err);
-      setError("Terjadi kesalahan tidak terduga");
+      const errorMessage = "Terjadi kesalahan tidak terduga";
+      setError(errorMessage);
+      toast.error(errorMessage);
       setLoading(false);
     }
   }

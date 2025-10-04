@@ -66,7 +66,6 @@ export default function Sidebar({ user }: SidebarProps) {
               loading="lazy"
               referrerPolicy="no-referrer"
               onError={(event) => {
-                console.error("❌ Failed to load avatar (mobile):", user.avatar_url);
                 event.currentTarget.onerror = null;
                 event.currentTarget.src = "/default-avatar.svg";
               }}
@@ -111,7 +110,6 @@ export default function Sidebar({ user }: SidebarProps) {
                 loading="lazy"
                 referrerPolicy="no-referrer"
                 onError={(event) => {
-                  console.error("❌ Failed to load avatar (sidebar):", user.avatar_url);
                   event.currentTarget.onerror = null;
                   event.currentTarget.src = "/default-avatar.svg";
                 }}

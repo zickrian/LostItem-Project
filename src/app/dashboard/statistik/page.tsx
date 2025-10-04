@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { useToast } from "@/contexts/ToastContext";
 
 interface StatsData {
   totalReports: number;
@@ -20,6 +21,7 @@ const COLORS = ["#3B82F6", "#EF4444", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899"
 
 export default function StatistikPage() {
   const router = useRouter();
+  const toast = useToast();
   const [stats, setStats] = useState<StatsData>({
     totalReports: 0,
     totalHilang: 0,
@@ -48,7 +50,7 @@ export default function StatistikPage() {
         router.push("/login");
       }
     } catch (error) {
-      console.error("Error checking auth:", error);
+      toast.error("Sesi Anda telah berakhir");
       router.push("/login");
     }
   }
@@ -133,7 +135,7 @@ export default function StatistikPage() {
         locationData,
       });
     } catch (error) {
-      console.error("Error fetching statistics:", error);
+      toast.error("Gagal memuat statistik");
     } finally {
       setLoading(false);
     }

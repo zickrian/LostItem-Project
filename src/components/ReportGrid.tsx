@@ -2,10 +2,105 @@
 import Image from "next/image";
 import { PencilIcon, CheckIcon, TrashIcon } from "@heroicons/react/24/solid";
 
+// Fungsi untuk mendapatkan emoji berdasarkan kategori
+const getCategoryEmoji = (category: string): string => {
+  const categoryLower = category.toLowerCase().trim();
+  
+  // Switch case untuk exact match dulu
+  switch (categoryLower) {
+    // Elektronik
+    case "elektronik":
+    case "hp":
+    case "handphone":
+    case "smartphone":
+      return "📱";
+    case "laptop":
+    case "notebook":
+      return "💻";
+    
+    // Dokumen
+    case "dokumen":
+    case "surat":
+      return "📄";
+    case "ktp":
+    case "kartu":
+    case "id card":
+      return "🪪";
+    
+    // Kunci
+    case "kunci":
+      return "🔑";
+    
+    // Tas & Dompet
+    case "tas":
+    case "ransel":
+    case "backpack":
+      return "🎒";
+    case "dompet":
+    case "wallet":
+      return "👛";
+    
+    // Pakaian
+    case "pakaian":
+    case "baju":
+    case "kaos":
+    case "kemeja":
+      return "👕";
+    case "sepatu":
+    case "sandal":
+      return "👟";
+    
+    // Aksesoris
+    case "jam":
+    case "jam tangan":
+    case "watch":
+      return "⌚";
+    case "kacamata":
+    case "glasses":
+      return "🕶️";
+    
+    // Buku & Alat Tulis
+    case "buku":
+    case "novel":
+    case "book":
+      return "📚";
+    case "alat tulis":
+    case "pensil":
+    case "pulpen":
+      return "✏️";
+    
+    // Lainnya
+    case "lainnya":
+    case "other":
+      return "📦";
+  }
+  
+  // Fallback dengan includes untuk partial match
+  if (categoryLower.includes("kunci")) return "🔑";
+  if (categoryLower.includes("hp") || categoryLower.includes("handphone")) return "📱";
+  if (categoryLower.includes("laptop")) return "💻";
+  if (categoryLower.includes("elektronik")) return "📱";
+  if (categoryLower.includes("dokumen") || categoryLower.includes("surat")) return "📄";
+  if (categoryLower.includes("ktp") || categoryLower.includes("kartu")) return "🪪";
+  if (categoryLower.includes("tas")) return "🎒";
+  if (categoryLower.includes("dompet")) return "👛";
+  if (categoryLower.includes("baju") || categoryLower.includes("pakaian")) return "👕";
+  if (categoryLower.includes("sepatu")) return "👟";
+  if (categoryLower.includes("jam")) return "⌚";
+  if (categoryLower.includes("kacamata")) return "🕶️";
+  if (categoryLower.includes("buku")) return "📚";
+  if (categoryLower.includes("pensil") || categoryLower.includes("alat tulis")) return "✏️";
+  
+  // Default
+  return "📦";
+};
+
 export interface GridReport {
   id: string;
   title: string;
+  description?: string;
   category: string;
+  location?: string;
   type: "hilang" | "temuan";
   status: "aktif" | "selesai";
   image_url?: string;
@@ -67,8 +162,10 @@ export default function ReportGrid({
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-6xl text-gray-300">📦</div>
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+                <div className="text-7xl">
+                  {getCategoryEmoji(report.category)}
+                </div>
               </div>
             )}
             
@@ -89,18 +186,32 @@ export default function ReportGrid({
           {/* Card Content */}
           <div className="p-4">
             {/* Title */}
-            <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 min-h-[3.5rem]">
+            <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
               {report.title}
             </h3>
 
-            {/* Category & Date */}
-            <div className="flex items-center justify-between mb-4">
+            {/* Description */}
+            {report.description && (
+              <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+                {report.description}
+              </p>
+            )}
+
+            {/* Category & Location */}
+            <div className="flex flex-wrap items-center gap-2 mb-2">
               <span className="inline-flex items-center px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-md">
-                {report.category}
+                {getCategoryEmoji(report.category)} {report.category}
               </span>
-              <span className="text-xs text-gray-500">
-                {formatDate(report.created_at)}
-              </span>
+              {report.location && (
+                <span className="inline-flex items-center px-2.5 py-1 bg-green-50 text-green-700 text-xs font-medium rounded-md">
+                  📍 {report.location}
+                </span>
+              )}
+            </div>
+
+            {/* Date */}
+            <div className="text-xs text-gray-500 mb-3">
+              {formatDate(report.created_at)}
             </div>
 
             {/* Action Buttons (only show if showActions is true) */}

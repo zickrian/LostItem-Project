@@ -7,6 +7,7 @@ import SearchBar from "@/components/SearchBar";
 import ReportCard, { Report } from "@/components/ReportCard";
 import ReportGrid, { GridReport } from "@/components/ReportGrid";
 import { MagnifyingGlassIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
+import { useToast } from "@/contexts/ToastContext";
 
 type TabType = "hilang" | "temuan";
 
@@ -20,6 +21,7 @@ interface User {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const toast = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [filteredReports, setFilteredReports] = useState<Report[]>([]);
@@ -96,7 +98,7 @@ export default function DashboardPage() {
         setUser(userData);
       }
     } catch (error) {
-      console.error("Error in checkUser:", error);
+      toast.error("Gagal memuat data pengguna");
       router.push("/login");
     }
   }
@@ -119,7 +121,7 @@ export default function DashboardPage() {
 
       setReports(data || []);
     } catch (error) {
-      console.error("Error fetching reports:", error);
+      toast.error("Gagal memuat laporan");
     } finally {
       setLoading(false);
     }
@@ -135,6 +137,7 @@ export default function DashboardPage() {
           report.title.toLowerCase().includes(query) ||
           report.description?.toLowerCase().includes(query) ||
           report.category?.toLowerCase().includes(query) ||
+          report.location?.toLowerCase().includes(query) ||
           report.user.name.toLowerCase().includes(query)
       );
     }
@@ -157,9 +160,9 @@ export default function DashboardPage() {
         .eq("user_id", user.id);
 
       if (error) throw error;
+      toast.success("Laporan berhasil dihapus!");
     } catch (error) {
-      console.error("Error deleting report:", error);
-      alert("Gagal menghapus laporan.");
+      toast.error("Gagal menghapus laporan.");
     }
   }
 
@@ -258,7 +261,9 @@ export default function DashboardPage() {
             reports={filteredReports.map((report) => ({
               id: report.id,
               title: report.title,
+              description: report.description,
               category: report.category || "Lainnya",
+              location: report.location,
               type: report.type,
               status: report.status,
               image_url: report.image_url,
