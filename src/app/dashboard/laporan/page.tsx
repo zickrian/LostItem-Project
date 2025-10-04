@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, Suspense } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { uploadImage } from "@/lib/supabaseStorage";
+import { uploadImage, delete_report_file } from "@/lib/supabaseStorage";
 import { useRouter, useSearchParams } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
 import ReportGrid from "@/components/ReportGrid";
@@ -313,21 +313,48 @@ function LaporanContent() {
     setConfirmDialog({ isOpen: false, reportId: "", title: "", message: "" });
 
     try {
+      // Get the report to find the image URL
+      const report = myReports.find(r => r.id === reportId);
+      
+      console.log('Deleting report:', reportId);
+      console.log('Report data:', report);
+      console.log('Image URL:', report?.image_url);
+      
+      // Delete the image file from storage FIRST (before deleting from database)
+      if (report?.image_url) {
+        console.log('Attempting to delete image from storage...');
+        const deleteSuccess = await delete_report_file(report.image_url);
+        if (deleteSuccess) {
+          console.log('Image deleted successfully from storage');
+        } else {
+          console.error('Failed to delete image from storage, but continuing with report deletion');
+        }
+      } else {
+        console.log('No image to delete');
+      }
+
+      // Delete the report from database
+      console.log('Deleting report from database...');
       const { error } = await supabase
         .from("reports")
         .delete()
         .eq("id", reportId)
         .eq("user_id", user!.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database deletion error:', error);
+        throw error;
+      }
 
-      toast.success("Laporan berhasil dihapus!");
+      console.log('Report deleted successfully from database');
+      toast.success("Laporan dan foto berhasil dihapus!");
       fetchMyReports();
       
       if (editingId === reportId) {
         resetForm();
       }
     } catch (error) {
+      console.error('Error in confirmDeleteReport:', error);
       toast.error("Gagal menghapus laporan.");
     }
   }

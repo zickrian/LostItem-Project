@@ -6,11 +6,15 @@ import { ToastProvider } from "@/contexts/ToastContext";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap", // Optimasi: prevent font blocking render
+  preload: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap", // Optimasi: prevent font blocking render
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -27,6 +31,11 @@ export default function RootLayout({
     <html lang="id">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+        
+        {/* Preconnect to Supabase for faster image loading */}
+        <link rel="preconnect" href="https://bcxpmqhxcqiyfnlmnhvv.supabase.co" />
+        <link rel="dns-prefetch" href="https://bcxpmqhxcqiyfnlmnhvv.supabase.co" />
+        
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"

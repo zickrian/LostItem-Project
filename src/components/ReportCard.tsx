@@ -27,9 +27,10 @@ interface ReportCardProps {
   currentUserId: string;
   onDelete?: (reportId: string) => void;
   onEdit?: (reportId: string) => void;
+  priority?: boolean;
 }
 
-export default function ReportCard({ report, currentUserId, onDelete, onEdit }: ReportCardProps) {
+export default function ReportCard({ report, currentUserId, onDelete, onEdit, priority = false }: ReportCardProps) {
   const [showComments, setShowComments] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const isOwner = report.user_id === currentUserId;
@@ -196,7 +197,7 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit }: 
               src={report.image_url}
               alt={report.title}
               fill
-              priority={false}
+              priority={priority}
               className="object-cover transition-transform duration-500 group-hover/image:scale-105"
               fallbackEmoji={getCategoryEmoji(report.category)}
             />

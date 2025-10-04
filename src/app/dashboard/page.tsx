@@ -8,6 +8,7 @@ import ReportGrid from "@/components/ReportGrid";
 import ReportGridSkeleton from "@/components/ReportGridSkeleton";
 import { MagnifyingGlassIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 import { useToast } from "@/contexts/ToastContext";
+import { delete_report_file } from "@/lib/supabaseStorage";
 
 type TabType = "hilang" | "temuan";
 
@@ -170,15 +171,43 @@ export default function DashboardPage() {
     if (!user || !confirm("Hapus laporan ini?")) return;
 
     try {
+      // Get the report to find the image URL
+      const report = reports.find(r => r.id === reportId);
+      
+      console.log('[Dashboard] Deleting report:', reportId);
+      console.log('[Dashboard] Report data:', report);
+      console.log('[Dashboard] Image URL:', report?.image_url);
+      
+      // Delete the image file from storage FIRST (before deleting from database)
+      if (report?.image_url) {
+        console.log('[Dashboard] Attempting to delete image from storage...');
+        const deleteSuccess = await delete_report_file(report.image_url);
+        if (deleteSuccess) {
+          console.log('[Dashboard] Image deleted successfully from storage');
+        } else {
+          console.error('[Dashboard] Failed to delete image from storage, but continuing with report deletion');
+        }
+      } else {
+        console.log('[Dashboard] No image to delete');
+      }
+
+      // Delete the report from database
+      console.log('[Dashboard] Deleting report from database...');
       const { error } = await supabase
         .from("reports")
         .delete()
         .eq("id", reportId)
         .eq("user_id", user.id);
 
-      if (error) throw error;
-      toast.success("Laporan berhasil dihapus!");
+      if (error) {
+        console.error('[Dashboard] Database deletion error:', error);
+        throw error;
+      }
+
+      console.log('[Dashboard] Report deleted successfully from database');
+      toast.success("Laporan dan foto berhasil dihapus!");
     } catch (error) {
+      console.error('[Dashboard] Error in handleDeleteReport:', error);
       toast.error("Gagal menghapus laporan.");
     }
   }

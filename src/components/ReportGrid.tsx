@@ -88,19 +88,19 @@ export default function ReportGrid({
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full">
-      {reports.map((report) => (
+      {reports.map((report, index) => (
         <div
           key={report.id}
           className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group w-full"
         >
-          {/* Image Thumbnail - Optimized for LCP */}
+          {/* Image Thumbnail - Optimized for LCP with priority loading for first 3 images */}
           <div className="relative w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200">
             {report.image_url ? (
               <OptimizedImage
                 src={report.image_url}
                 alt={report.title}
                 fill
-                priority={false}
+                priority={index < 3}
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
                 fallbackEmoji={getCategoryEmoji(report.category)}
               />
