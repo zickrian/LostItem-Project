@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -48,7 +48,7 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>("");
+  const monthInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     async function init() {
@@ -82,7 +82,7 @@ export default function DashboardPage() {
   useEffect(() => {
     filterReports();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reports, activeTab, searchQuery, selectedCategory, startDate, endDate]);
+  }, [reports, activeTab, searchQuery, selectedCategory, startDate]);
 
   async function checkUser() {
     try {
@@ -168,21 +168,14 @@ export default function DashboardPage() {
       filtered = filtered.filter((report) => report.category === selectedCategory);
     }
 
-    // Filter by date range
+    // Filter by month
     if (startDate) {
       filtered = filtered.filter((report) => {
         const reportDate = new Date(report.created_at);
-        const filterStartDate = new Date(startDate);
-        return reportDate >= filterStartDate;
-      });
-    }
-
-    if (endDate) {
-      filtered = filtered.filter((report) => {
-        const reportDate = new Date(report.created_at);
-        const filterEndDate = new Date(endDate);
-        filterEndDate.setHours(23, 59, 59, 999); // Include the entire end date
-        return reportDate <= filterEndDate;
+        const [filterYear, filterMonth] = startDate.split('-').map(Number);
+        const reportYear = reportDate.getFullYear();
+        const reportMonth = reportDate.getMonth() + 1; // JavaScript months are 0-indexed
+        return reportYear === filterYear && reportMonth === filterMonth;
       });
     }
 
@@ -284,76 +277,135 @@ Laporkan sekarang dengan klik tombol &quot;Buat Laporan&quot; dan bantu teman-te
 
         {/* Search Bar with Filters */}
         <div className="mb-6 sm:mb-8">
-          <div className="flex flex-col lg:flex-row gap-3">
-            {/* Search Bar */}
-            <div className="flex-1">
-              <SearchBar onSearch={handleSearch} />
+          <div className="flex flex-col gap-3">
+            {/* Search Bar and Desktop Filters */}
+            <div className="flex gap-3 items-stretch">
+              {/* Search Bar */}
+              <div className="flex-1">
+                <SearchBar onSearch={handleSearch} />
+              </div>
+              
+              {/* Filters - Desktop only */}
+              <div className="hidden sm:flex gap-3">
+                {/* Category Filter */}
+                <div className="relative h-[52px] w-[52px] flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-700 pointer-events-none z-10">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                  </svg>
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="appearance-none w-full h-full border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer bg-white font-bold text-gray-900 text-sm"
+                    style={{ '--tw-ring-color': 'rgba(17, 77, 145, 0.5)', color: 'transparent' } as React.CSSProperties}
+                    title="Filter berdasarkan kategori"
+                  >
+                    <option value="all" className="text-gray-900 font-semibold">Semua Kategori</option>
+                    <option value="Elektronik" className="text-gray-900 font-semibold">📱 Elektronik</option>
+                    <option value="Dokumen" className="text-gray-900 font-semibold">📄 Dokumen</option>
+                    <option value="Kunci" className="text-gray-900 font-semibold">🔑 Kunci</option>
+                    <option value="Tas & Dompet" className="text-gray-900 font-semibold">👜 Tas & Dompet</option>
+                    <option value="Pakaian" className="text-gray-900 font-semibold">👕 Pakaian</option>
+                    <option value="Aksesoris" className="text-gray-900 font-semibold">⌚ Aksesoris</option>
+                    <option value="Buku & Alat Tulis" className="text-gray-900 font-semibold">📚 Buku & Alat Tulis</option>
+                    <option value="Lainnya" className="text-gray-900 font-semibold">📦 Lainnya</option>
+                  </select>
+                  <div className="w-full h-full border-2 border-gray-300 rounded-xl pointer-events-none absolute inset-0 hover:shadow-md transition-shadow"></div>
+                </div>
+
+                {/* Month Filter */}
+                <div
+                  className="relative w-[52px] h-[52px] flex-shrink-0 cursor-pointer"
+                  onClick={() => {
+                    if (monthInputRef.current) {
+                      try {
+                        (monthInputRef.current as any).showPicker?.();
+                      } catch (e) {
+                        // ignore
+                      }
+                      monthInputRef.current.focus();
+                      monthInputRef.current.click();
+                    }
+                  }}
+                >
+                  <CalendarIcon className="w-5 h-5 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-700 z-10 pointer-events-none" />
+                  <input
+                    ref={monthInputRef}
+                    type="month"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="w-full h-full border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-150 shadow-sm cursor-pointer bg-white absolute inset-0 opacity-0"
+                    style={{ '--tw-ring-color': 'rgba(17, 77, 145, 0.5)' } as React.CSSProperties}
+                    title="Filter berdasarkan bulan"
+                  />
+                  <div className="w-full h-full border-2 border-gray-300 rounded-xl pointer-events-none absolute inset-0 hover:shadow-md transition-shadow"></div>
+                </div>
+              </div>
             </div>
-            
-            {/* Filters */}
-            <div className="flex gap-2">
-              {/* Category Filter */}
-              <div className="relative group">
+
+            {/* Mobile Filters */}
+            <div className="flex sm:hidden gap-3">
+              {/* Category Filter - Mobile */}
+              <div className="relative h-[48px] flex-1">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-700 pointer-events-none z-10">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                </svg>
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="appearance-none px-4 py-3 pr-10 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 font-medium transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer bg-white"
-                  style={{ 
-                    '--tw-ring-color': 'rgba(17, 77, 145, 0.5)'
-                  } as React.CSSProperties}
+                  className="appearance-none w-full h-full border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer bg-white font-bold text-gray-900 text-sm"
+                  style={{ '--tw-ring-color': 'rgba(17, 77, 145, 0.5)', color: 'transparent' } as React.CSSProperties}
                   title="Filter berdasarkan kategori"
                 >
-                  <option value="all">Semua Kategori</option>
-                  <option value="Elektronik">Elektronik</option>
-                  <option value="Dokumen">Dokumen</option>
-                  <option value="Kunci">Kunci</option>
-                  <option value="Tas & Dompet">Tas & Dompet</option>
-                  <option value="Pakaian">Pakaian</option>
-                  <option value="Aksesoris">Aksesoris</option>
-                  <option value="Buku & Alat Tulis">Buku & Alat Tulis</option>
-                  <option value="Lainnya">Lainnya</option>
+                  <option value="all" className="text-gray-900 font-semibold">Semua Kategori</option>
+                  <option value="Elektronik" className="text-gray-900 font-semibold">📱 Elektronik</option>
+                  <option value="Dokumen" className="text-gray-900 font-semibold">📄 Dokumen</option>
+                  <option value="Kunci" className="text-gray-900 font-semibold">🔑 Kunci</option>
+                  <option value="Tas & Dompet" className="text-gray-900 font-semibold">👜 Tas & Dompet</option>
+                  <option value="Pakaian" className="text-gray-900 font-semibold">👕 Pakaian</option>
+                  <option value="Aksesoris" className="text-gray-900 font-semibold">⌚ Aksesoris</option>
+                  <option value="Buku & Alat Tulis" className="text-gray-900 font-semibold">📚 Buku & Alat Tulis</option>
+                  <option value="Lainnya" className="text-gray-900 font-semibold">📦 Lainnya</option>
                 </select>
-                <TagIcon className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                <div className="w-full h-full border-2 border-gray-300 rounded-xl pointer-events-none absolute inset-0 hover:shadow-md transition-shadow"></div>
               </div>
 
-              {/* Date Range Filter */}
-              <div className="flex gap-2">
-                <div className="relative">
-                  <input
-                    type="date"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                    className="px-4 py-3 pr-10 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 font-medium transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer bg-white"
-                    style={{ 
-                      '--tw-ring-color': 'rgba(17, 77, 145, 0.5)'
-                    } as React.CSSProperties}
-                    title="Dari tanggal"
-                  />
-                  <CalendarIcon className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
-                </div>
-                <div className="relative">
-                  <input
-                    type="date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                    className="px-4 py-3 pr-10 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 font-medium transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer bg-white"
-                    style={{ 
-                      '--tw-ring-color': 'rgba(17, 77, 145, 0.5)'
-                    } as React.CSSProperties}
-                    title="Sampai tanggal"
-                  />
-                  <CalendarIcon className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
-                </div>
+              {/* Month Filter - Mobile */}
+              <div
+                className="relative h-[48px] flex-1 cursor-pointer"
+                onClick={() => {
+                  if (monthInputRef.current) {
+                    try {
+                      (monthInputRef.current as any).showPicker?.();
+                    } catch (e) {
+                      // ignore
+                    }
+                    monthInputRef.current.focus();
+                    monthInputRef.current.click();
+                  }
+                }}
+              >
+                <CalendarIcon className="w-5 h-5 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-gray-700 z-10 pointer-events-none" />
+                <input
+                  type="month"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="w-full h-full border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-150 shadow-sm cursor-pointer bg-white absolute inset-0 opacity-0"
+                  style={{ '--tw-ring-color': 'rgba(17, 77, 145, 0.5)' } as React.CSSProperties}
+                  title="Filter berdasarkan bulan"
+                />
+                <div className="w-full h-full border-2 border-gray-300 rounded-xl pointer-events-none absolute inset-0 hover:shadow-md transition-shadow"></div>
               </div>
             </div>
           </div>
 
           {/* Active Filters Display */}
-          {(selectedCategory !== "all" || startDate || endDate) && (
+          {(selectedCategory !== "all" || startDate) && (
             <div className="flex flex-wrap gap-2 mt-3">
               {selectedCategory !== "all" && (
                 <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm font-semibold">
-                  <TagIcon className="w-4 h-4" />
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                  </svg>
                   {selectedCategory}
                   <button
                     onClick={() => setSelectedCategory("all")}
@@ -366,21 +418,9 @@ Laporkan sekarang dengan klik tombol &quot;Buat Laporan&quot; dan bantu teman-te
               {startDate && (
                 <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-sm font-semibold">
                   <CalendarIcon className="w-4 h-4" />
-                  Dari: {new Date(startDate).toLocaleDateString("id-ID")}
+                  {new Date(startDate + '-01').toLocaleDateString("id-ID", { year: 'numeric', month: 'long' })}
                   <button
                     onClick={() => setStartDate("")}
-                    className="ml-1 hover:text-green-900"
-                  >
-                    ×
-                  </button>
-                </span>
-              )}
-              {endDate && (
-                <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-sm font-semibold">
-                  <CalendarIcon className="w-4 h-4" />
-                  Sampai: {new Date(endDate).toLocaleDateString("id-ID")}
-                  <button
-                    onClick={() => setEndDate("")}
                     className="ml-1 hover:text-green-900"
                   >
                     ×
@@ -391,7 +431,6 @@ Laporkan sekarang dengan klik tombol &quot;Buat Laporan&quot; dan bantu teman-te
                 onClick={() => {
                   setSelectedCategory("all");
                   setStartDate("");
-                  setEndDate("");
                 }}
                 className="inline-flex items-center gap-1 px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-sm font-semibold hover:bg-red-200"
               >

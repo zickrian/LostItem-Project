@@ -4,11 +4,11 @@ export default function ReportGridSkeleton({ count = 6 }: { count?: number }) {
       {Array.from({ length: count }).map((_, index) => (
         <div
           key={index}
-          className="bg-white rounded-xl shadow-md overflow-hidden w-full animate-pulse"
+          className="bg-white rounded-xl shadow-md overflow-hidden w-full"
         >
           {/* Image Skeleton */}
           <div className="relative w-full h-48 bg-gray-200">
-            <div className="absolute inset-0 shimmer-effect"></div>
+            <div className="absolute inset-0 bg-gray-200"></div>
             {/* Status Badge Skeleton */}
             <div className="absolute top-3 right-3">
               <div className="h-6 w-20 bg-gray-300 rounded-full"></div>
@@ -44,34 +44,6 @@ export default function ReportGridSkeleton({ count = 6 }: { count?: number }) {
               <div className="h-4 w-20 bg-gray-200 rounded"></div>
             </div>
           </div>
-
-          <style jsx>{`
-            @keyframes shimmer {
-              0% {
-                transform: translateX(-100%);
-              }
-              100% {
-                transform: translateX(100%);
-              }
-            }
-            .shimmer-effect::after {
-              content: "";
-              position: absolute;
-              top: 0;
-              right: 0;
-              bottom: 0;
-              left: 0;
-              transform: translateX(-100%);
-              background: linear-gradient(
-                90deg,
-                rgba(255, 255, 255, 0) 0,
-                rgba(255, 255, 255, 0.2) 20%,
-                rgba(255, 255, 255, 0.5) 60%,
-                rgba(255, 255, 255, 0)
-              );
-              animation: shimmer 2s infinite;
-            }
-          `}</style>
         </div>
       ))}
     </div>

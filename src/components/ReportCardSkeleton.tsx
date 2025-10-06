@@ -1,6 +1,6 @@
 export default function ReportCardSkeleton() {
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden animate-pulse">
+    <div className="bg-white rounded-xl shadow-md overflow-hidden">
       {/* Card Header */}
       <div className="p-4 border-b">
         <div className="flex items-center justify-between">
@@ -33,7 +33,7 @@ export default function ReportCardSkeleton() {
 
         {/* Image Skeleton */}
         <div className="relative w-full h-64 mb-3 rounded-lg overflow-hidden bg-gray-200">
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 shimmer"></div>
+          <div className="absolute inset-0 bg-gray-200"></div>
         </div>
 
         {/* Comment Button */}
@@ -42,34 +42,6 @@ export default function ReportCardSkeleton() {
           <div className="h-4 w-32 bg-gray-200 rounded"></div>
         </div>
       </div>
-
-      <style jsx>{`
-        @keyframes shimmer {
-          0% {
-            transform: translateX(-100%);
-          }
-          100% {
-            transform: translateX(100%);
-          }
-        }
-        .shimmer::after {
-          content: "";
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          transform: translateX(-100%);
-          background: linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0) 0,
-            rgba(255, 255, 255, 0.2) 20%,
-            rgba(255, 255, 255, 0.5) 60%,
-            rgba(255, 255, 255, 0)
-          );
-          animation: shimmer 2s infinite;
-        }
-      `}</style>
     </div>
   );
 }

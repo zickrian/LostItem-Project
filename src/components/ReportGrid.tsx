@@ -128,43 +128,6 @@ export default function ReportGrid({
 
           {/* Card Content */}
           <div className="p-3 sm:p-4">
-            {/* Title */}
-            <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-2 line-clamp-2 break-words">
-              {report.title}
-            </h3>
-
-            {/* Description */}
-            {report.description && (
-              <div className="mb-2">
-                <p className={`text-gray-600 text-xs sm:text-sm whitespace-pre-wrap transition-all duration-300 break-words ${!expandedReports.has(report.id) && report.description.length > 100 ? 'line-clamp-2' : ''}`}>
-                  {report.description}
-                </p>
-                {report.description.length > 100 && (
-                  <button
-                    onClick={() => toggleDescription(report.id)}
-                    className="text-xs font-semibold mt-1 hover:underline transition-colors inline-flex items-center gap-1"
-                    style={{ color: 'rgba(17, 77, 145)' }}
-                  >
-                    {expandedReports.has(report.id) ? (
-                      <>
-                        Sembunyikan
-                        <svg className="w-3 h-3 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </>
-                    ) : (
-                      <>
-                        Lihat selengkapnya
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </>
-                    )}
-                  </button>
-                )}
-              </div>
-            )}
-
             {/* Category & Location */}
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-2">
               <span className="inline-flex items-center px-2 py-0.5 sm:px-2.5 sm:py-1 bg-blue-50 text-blue-700 text-[10px] sm:text-xs font-medium rounded-md break-words max-w-full">

@@ -56,12 +56,12 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit, pr
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group">
+  <div className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
       {/* Card Header */}
       <div className="p-4 sm:p-5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="relative h-11 w-11 rounded-full border-3 overflow-hidden shadow-sm transition-transform duration-300 group-hover:scale-105" style={{ borderColor: 'rgba(17, 77, 145)', borderWidth: '3px' }}>
+            <div className="relative h-11 w-11 rounded-full border-3 overflow-hidden shadow-sm" style={{ borderColor: 'rgba(17, 77, 145)', borderWidth: '3px' }}>
               <Image
                 src={report.user.avatar_url || "/default-avatar.svg"}
                 alt={report.user.name}
@@ -136,8 +136,8 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit, pr
           </span>
         </div>
 
-        <div className="mb-4">
-          <p className={`text-gray-600 text-sm sm:text-base whitespace-pre-wrap transition-all duration-300 leading-relaxed ${!isDescriptionExpanded && isDescriptionLong ? 'line-clamp-3' : ''}`}>
+          <div className="mb-4">
+          <p className={`text-gray-600 text-sm sm:text-base whitespace-pre-wrap leading-relaxed ${!isDescriptionExpanded && isDescriptionLong ? 'line-clamp-3' : ''}`}>
             {report.description}
           </p>
           {isDescriptionLong && (
@@ -192,24 +192,24 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit, pr
 
         {/* Image or Icon - Optimized for LCP */}
         <div className="relative w-full h-64 sm:h-72 mb-4 rounded-xl overflow-hidden bg-gray-100 shadow-inner group/image">
-          {report.image_url ? (
-            <OptimizedImage
-              src={report.image_url}
-              alt={report.title}
-              fill
-              priority={priority}
-              className="object-cover transition-transform duration-500 group-hover/image:scale-105"
-              fallbackEmoji={getCategoryEmoji(report.category)}
-            />
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
-              <div className="text-7xl sm:text-8xl transition-transform duration-300 group-hover/image:scale-110">
-                {getCategoryEmoji(report.category)}
+            {report.image_url ? (
+              <OptimizedImage
+                src={report.image_url}
+                alt={report.title}
+                fill
+                priority={priority}
+                className="object-cover"
+                fallbackEmoji={getCategoryEmoji(report.category)}
+              />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+                <div className="text-7xl sm:text-8xl">
+                  {getCategoryEmoji(report.category)}
+                </div>
               </div>
-            </div>
-          )}
-          {/* Image overlay on hover */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover/image:opacity-100 transition-opacity duration-300" />
+            )}
+            {/* Image overlay (no hover animation) */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-100" />
         </div>
 
         {/* Action Buttons */}

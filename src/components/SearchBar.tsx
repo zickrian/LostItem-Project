@@ -23,8 +23,8 @@ export default function SearchBar({ onSearch, placeholder = "Cari barang, katego
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-full">
-      <div className="relative w-full group">
+    <form onSubmit={handleSubmit} className="w-full max-w-full h-[48px] sm:h-[52px]">
+      <div className="relative w-full h-full group">
         <input
           type="text"
           value={query}
@@ -32,7 +32,7 @@ export default function SearchBar({ onSearch, placeholder = "Cari barang, katego
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           placeholder={placeholder}
-          className="w-full px-3 sm:px-4 py-3 sm:py-4 pl-12 sm:pl-14 pr-12 sm:pr-14 border-2 rounded-xl focus:outline-none transition-all duration-300 text-gray-900 placeholder:text-gray-400 text-sm sm:text-base shadow-sm hover:shadow-md font-medium"
+          className="w-full h-full px-3 sm:px-4 pl-10 sm:pl-12 pr-10 sm:pr-12 border-2 rounded-xl focus:outline-none transition-all duration-300 text-gray-900 placeholder:text-gray-400 text-sm sm:text-base shadow-sm hover:shadow-md font-medium"
           style={{
             borderColor: isFocused ? 'rgba(17, 77, 145)' : '#e5e7eb',
             backgroundColor: isFocused ? 'rgba(17, 77, 145, 0.02)' : 'white'
@@ -42,7 +42,7 @@ export default function SearchBar({ onSearch, placeholder = "Cari barang, katego
           className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 transition-colors duration-300"
           style={{ color: isFocused ? 'rgba(17, 77, 145)' : '#9ca3af' }}
         >
-          <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
