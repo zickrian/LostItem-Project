@@ -520,7 +520,7 @@ export default function DashboardPage() {
             }}
           >
             <MagnifyingGlassIcon className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
-            <span className="truncate">Barang Hilang</span>
+            <span className="truncate">Hilang</span>
             <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs font-bold flex-shrink-0">
               {reports.filter(r => r.type === "hilang").length}
             </span>
@@ -547,7 +547,7 @@ export default function DashboardPage() {
             }}
           >
             <CheckCircleIcon className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
-            <span className="truncate">Barang Temuan</span>
+            <span className="truncate">Temuan</span>
             <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs font-bold flex-shrink-0">
               {reports.filter(r => r.type === "temuan").length}
             </span>
