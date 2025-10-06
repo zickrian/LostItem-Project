@@ -98,6 +98,11 @@ function LaporanContent() {
     title: "",
     message: "",
   });
+  const [titleError, setTitleError] = useState<string>("");
+  const [descriptionError, setDescriptionError] = useState<string>("");
+
+  const MAX_TITLE_LENGTH = 50;
+  const MAX_DESCRIPTION_LENGTH = 200;
 
   useEffect(() => {
     async function init() {
@@ -229,6 +234,17 @@ function LaporanContent() {
       return;
     }
 
+    // Validate length
+    if (formData.title.length > MAX_TITLE_LENGTH) {
+      toast.error(`Judul terlalu panjang! Maksimal ${MAX_TITLE_LENGTH} karakter`);
+      return;
+    }
+
+    if (formData.description.length > MAX_DESCRIPTION_LENGTH) {
+      toast.error(`Deskripsi terlalu panjang! Maksimal ${MAX_DESCRIPTION_LENGTH} karakter`);
+      return;
+    }
+
     setSubmitting(true);
     try {
       let imageUrl = imagePreview;
@@ -294,6 +310,28 @@ function LaporanContent() {
     setImagePreview("");
     setEditMode(false);
     setEditingId("");
+    setTitleError("");
+    setDescriptionError("");
+  }
+
+  function handleTitleChange(value: string) {
+    setFormData({ ...formData, title: value });
+    
+    if (value.length > MAX_TITLE_LENGTH) {
+      setTitleError(`Judul terlalu panjang! Maksimal ${MAX_TITLE_LENGTH} karakter (saat ini: ${value.length})`);
+    } else {
+      setTitleError("");
+    }
+  }
+
+  function handleDescriptionChange(value: string) {
+    setFormData({ ...formData, description: value });
+    
+    if (value.length > MAX_DESCRIPTION_LENGTH) {
+      setDescriptionError(`Deskripsi terlalu panjang! Maksimal ${MAX_DESCRIPTION_LENGTH} karakter (saat ini: ${value.length})`);
+    } else {
+      setDescriptionError("");
+    }
   }
 
   function handleDeleteReport(reportId: string) {
@@ -316,45 +354,27 @@ function LaporanContent() {
       // Get the report to find the image URL
       const report = myReports.find(r => r.id === reportId);
       
-      console.log('Deleting report:', reportId);
-      console.log('Report data:', report);
-      console.log('Image URL:', report?.image_url);
-      
       // Delete the image file from storage FIRST (before deleting from database)
       if (report?.image_url) {
-        console.log('Attempting to delete image from storage...');
-        const deleteSuccess = await delete_report_file(report.image_url);
-        if (deleteSuccess) {
-          console.log('Image deleted successfully from storage');
-        } else {
-          console.error('Failed to delete image from storage, but continuing with report deletion');
-        }
-      } else {
-        console.log('No image to delete');
+        await delete_report_file(report.image_url);
       }
 
-      // Delete the report from database
-      console.log('Deleting report from database...');
+      // Delete the report from database (cascade will delete comments automatically)
       const { error } = await supabase
         .from("reports")
         .delete()
         .eq("id", reportId)
         .eq("user_id", user!.id);
 
-      if (error) {
-        console.error('Database deletion error:', error);
-        throw error;
-      }
+      if (error) throw error;
 
-      console.log('Report deleted successfully from database');
-      toast.success("Laporan dan foto berhasil dihapus!");
+      toast.success("Laporan, foto, dan semua komentar berhasil dihapus!");
       fetchMyReports();
       
       if (editingId === reportId) {
         resetForm();
       }
     } catch (error) {
-      console.error('Error in confirmDeleteReport:', error);
       toast.error("Gagal menghapus laporan.");
     }
   }
@@ -584,39 +604,69 @@ function LaporanContent() {
                 <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
                   {/* Title */}
                   <div>
-                    <label className="flex items-center gap-2 text-sm font-bold text-gray-900 mb-2">
-                      <BookmarkIcon className="w-4 h-4" />
-                      Judul Barang <span className="text-red-500">*</span>
+                    <label className="flex items-center justify-between text-sm font-bold text-gray-900 mb-2">
+                      <span className="flex items-center gap-2">
+                        <BookmarkIcon className="w-4 h-4" />
+                        Judul Barang <span className="text-red-500">*</span>
+                      </span>
+                      <span className={`text-xs font-semibold ${formData.title.length > MAX_TITLE_LENGTH ? 'text-red-500' : 'text-gray-500'}`}>
+                        {formData.title.length}/{MAX_TITLE_LENGTH}
+                      </span>
                     </label>
                     <input
                       type="text"
                       value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      onChange={(e) => handleTitleChange(e.target.value)}
                       placeholder="Contoh: iPhone 13 Pro Max warna biru"
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:border-transparent text-gray-900 placeholder:text-gray-500 font-medium transition-all duration-200 shadow-sm hover:border-gray-400"
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:border-transparent text-gray-900 placeholder:text-gray-500 font-medium transition-all duration-200 shadow-sm hover:border-gray-400 ${
+                        titleError ? 'border-red-400' : 'border-gray-300'
+                      }`}
                       style={{ 
-                        '--tw-ring-color': 'rgba(17, 77, 145, 0.5)'
+                        '--tw-ring-color': titleError ? 'rgba(239, 68, 68, 0.5)' : 'rgba(17, 77, 145, 0.5)'
                       } as React.CSSProperties}
                       required
                     />
+                    {titleError && (
+                      <p className="text-xs text-red-600 mt-1 font-semibold flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        {titleError}
+                      </p>
+                    )}
                   </div>
 
                   {/* Description */}
                   <div>
-                    <label className="flex items-center gap-2 text-sm font-bold text-gray-900 mb-2">
-                      <PencilSquareIcon className="w-4 h-4" />
-                      Deskripsi Barang
+                    <label className="flex items-center justify-between text-sm font-bold text-gray-900 mb-2">
+                      <span className="flex items-center gap-2">
+                        <PencilSquareIcon className="w-4 h-4" />
+                        Deskripsi Barang
+                      </span>
+                      <span className={`text-xs font-semibold ${formData.description.length > MAX_DESCRIPTION_LENGTH ? 'text-red-500' : 'text-gray-500'}`}>
+                        {formData.description.length}/{MAX_DESCRIPTION_LENGTH}
+                      </span>
                     </label>
                     <textarea
                       value={formData.description}
-                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      onChange={(e) => handleDescriptionChange(e.target.value)}
                       placeholder="Jelaskan ciri-ciri barang secara detail..."
                       rows={4}
-                      className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:border-transparent resize-none text-gray-900 placeholder:text-gray-500 font-medium transition-all duration-200 shadow-sm hover:border-gray-400"
+                      className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:border-transparent resize-none text-gray-900 placeholder:text-gray-500 font-medium transition-all duration-200 shadow-sm hover:border-gray-400 ${
+                        descriptionError ? 'border-red-400' : 'border-gray-300'
+                      }`}
                       style={{ 
-                        '--tw-ring-color': 'rgba(17, 77, 145, 0.5)'
+                        '--tw-ring-color': descriptionError ? 'rgba(239, 68, 68, 0.5)' : 'rgba(17, 77, 145, 0.5)'
                       } as React.CSSProperties}
                     />
+                    {descriptionError && (
+                      <p className="text-xs text-red-600 mt-1 font-semibold flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        {descriptionError}
+                      </p>
+                    )}
                   </div>
 
                   {/* Category */}

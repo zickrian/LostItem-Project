@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
 import SettingSkeleton from "@/components/SettingSkeleton";
 import { useToast } from "@/contexts/ToastContext";
+import { delete_report_file } from "@/lib/supabaseStorage";
 import { 
   Cog6ToothIcon, 
   UserCircleIcon, 
@@ -108,30 +109,10 @@ export default function SettingPage() {
     e.preventDefault();
     if (!user || saving) return;
 
-    const trimmedName = name.trim();
-    if (!trimmedName) {
-      toast.error("Nama tidak boleh kosong!");
-      return;
-    }
-
     setSaving(true);
     
-    // Optimistic update: langsung update state lokal
-    const previousUser = user;
-    setUser((prev) => prev ? { ...prev, name: trimmedName } : null);
-    
     try {
-      // Update user profile (name only, avatar tetap mengikuti Google)
-      const { error: profileError } = await supabase
-        .from("users")
-        .update({
-          name: trimmedName,
-        })
-        .eq("id", user.id);
-
-      if (profileError) throw profileError;
-
-      // Pastikan pengaturan notifikasi ikut tersimpan
+      // Save notification settings only (name is now locked)
       const { data: existingNotif, error: notifFetchError } = await supabase
         .from("notifications")
         .select("id")
@@ -164,9 +145,6 @@ export default function SettingPage() {
       // Refresh untuk memastikan data sinkron dengan database
       router.refresh();
     } catch (error) {
-      // Rollback optimistic update jika gagal
-      setUser(previousUser);
-      setName(previousUser.name);
       toast.error("Gagal menyimpan pengaturan. Silakan coba lagi.");
     } finally {
       setSaving(false);
@@ -181,30 +159,61 @@ export default function SettingPage() {
       return;
     }
 
-    if (!confirm("Apakah Anda yakin ingin menghapus akun? Tindakan ini tidak dapat dibatalkan!")) {
+    if (!confirm("Apakah Anda yakin ingin menghapus akun? Tindakan ini tidak dapat dibatalkan dan akan menghapus semua laporan, komentar, dan foto yang pernah Anda upload!")) {
       return;
     }
 
     try {
-      // Delete user from public.users (cascade will delete related data)
+      // 1. Get all user's reports to delete associated images
+      const { data: userReports, error: reportsError } = await supabase
+        .from("reports")
+        .select("id, image_url")
+        .eq("user_id", user.id);
+
+      if (reportsError) {
+        toast.error("Gagal mengambil data laporan. Silakan coba lagi.");
+        return;
+      }
+
+      // 2. Delete all images from storage
+      if (userReports && userReports.length > 0) {
+        const imageDeletePromises = userReports
+          .filter(report => report.image_url)
+          .map(report => {
+            if (report.image_url) {
+              return delete_report_file(report.image_url);
+            }
+            return Promise.resolve(true);
+          });
+
+        const deleteResults = await Promise.allSettled(imageDeletePromises);
+        
+        const failedDeletes = deleteResults.filter(result => result.status === 'rejected' || (result.status === 'fulfilled' && !result.value));
+        
+        if (failedDeletes.length > 0) {
+          toast.error(`${failedDeletes.length} foto gagal dihapus dari storage, namun tetap melanjutkan penghapusan akun...`);
+        }
+      }
+
+      // 3. Delete user from database (cascade will delete reports and comments automatically due to ON DELETE CASCADE)
       const { error: deleteError } = await supabase
         .from("users")
         .delete()
         .eq("id", user.id);
 
-      if (deleteError) throw deleteError;
+      if (deleteError) {
+        toast.error("Gagal menghapus data pengguna. Silakan coba lagi.");
+        return;
+      }
 
-      // Sign out and delete from auth
+      // 4. Sign out
       await supabase.auth.signOut();
       
-      // Try to delete from auth.users (may require admin privileges)
-      // This might fail depending on RLS policies, but user data is already deleted
-      await supabase.auth.admin.deleteUser(user.auth_id);
-
-      toast.success("Akun berhasil dihapus. Anda akan dialihkan ke halaman utama.");
+      toast.success("Akun dan semua data berhasil dihapus. Anda akan dialihkan ke halaman utama.");
       setTimeout(() => router.push("/"), 2000);
     } catch (error) {
-      toast.error("Gagal menghapus akun. Silakan hubungi administrator.");
+      const errorMessage = error instanceof Error ? error.message : "Terjadi kesalahan yang tidak terduga";
+      toast.error(`Gagal menghapus akun: ${errorMessage}`);
     }
   }
 
@@ -287,22 +296,28 @@ export default function SettingPage() {
                 </div>
               </div>
 
-              {/* Name - Improved */}
+              {/* Name - Locked (Read-only) */}
               <div>
                 <label className="flex items-center gap-2 text-sm font-bold text-gray-900 mb-2">
                   <UserIcon className="w-4 h-4" />
-                  Nama Lengkap <span className="text-red-500">*</span>
+                  Nama Lengkap
                 </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:border-transparent text-gray-900 font-medium transition-all duration-200 shadow-sm hover:border-gray-400"
-                  style={{ 
-                    '--tw-ring-color': 'rgba(17, 77, 145, 0.5)'
-                  } as React.CSSProperties}
-                  required
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={name}
+                    disabled
+                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl bg-gray-100 text-gray-600 cursor-not-allowed font-medium"
+                  />
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 bg-gray-200 px-2 py-1 rounded-md flex items-center gap-1">
+                    <LockClosedIcon className="w-3 h-3 text-gray-500" />
+                    <span className="text-xs font-bold text-gray-500">Locked</span>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-600 mt-2 font-medium flex items-center gap-1">
+                  <InformationCircleIcon className="w-4 h-4" />
+                  Nama tidak dapat diubah
+                </p>
               </div>
 
               {/* Email (Read-only) - Improved */}

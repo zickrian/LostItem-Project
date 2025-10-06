@@ -6,7 +6,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import SearchBar from "@/components/SearchBar";
 import ReportGrid from "@/components/ReportGrid";
 import ReportGridSkeleton from "@/components/ReportGridSkeleton";
-import { MagnifyingGlassIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, CheckCircleIcon, TagIcon, CalendarIcon } from "@heroicons/react/24/outline";
 import { useToast } from "@/contexts/ToastContext";
 import { delete_report_file } from "@/lib/supabaseStorage";
 
@@ -46,6 +46,9 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabType>("hilang");
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
 
   useEffect(() => {
     async function init() {
@@ -79,7 +82,7 @@ export default function DashboardPage() {
   useEffect(() => {
     filterReports();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reports, activeTab, searchQuery]);
+  }, [reports, activeTab, searchQuery, selectedCategory, startDate, endDate]);
 
   async function checkUser() {
     try {
@@ -160,6 +163,29 @@ export default function DashboardPage() {
       );
     }
 
+    // Filter by category
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter((report) => report.category === selectedCategory);
+    }
+
+    // Filter by date range
+    if (startDate) {
+      filtered = filtered.filter((report) => {
+        const reportDate = new Date(report.created_at);
+        const filterStartDate = new Date(startDate);
+        return reportDate >= filterStartDate;
+      });
+    }
+
+    if (endDate) {
+      filtered = filtered.filter((report) => {
+        const reportDate = new Date(report.created_at);
+        const filterEndDate = new Date(endDate);
+        filterEndDate.setHours(23, 59, 59, 999); // Include the entire end date
+        return reportDate <= filterEndDate;
+      });
+    }
+
     setFilteredReports(filtered);
   }
 
@@ -174,40 +200,22 @@ export default function DashboardPage() {
       // Get the report to find the image URL
       const report = reports.find(r => r.id === reportId);
       
-      console.log('[Dashboard] Deleting report:', reportId);
-      console.log('[Dashboard] Report data:', report);
-      console.log('[Dashboard] Image URL:', report?.image_url);
-      
       // Delete the image file from storage FIRST (before deleting from database)
       if (report?.image_url) {
-        console.log('[Dashboard] Attempting to delete image from storage...');
-        const deleteSuccess = await delete_report_file(report.image_url);
-        if (deleteSuccess) {
-          console.log('[Dashboard] Image deleted successfully from storage');
-        } else {
-          console.error('[Dashboard] Failed to delete image from storage, but continuing with report deletion');
-        }
-      } else {
-        console.log('[Dashboard] No image to delete');
+        await delete_report_file(report.image_url);
       }
 
       // Delete the report from database
-      console.log('[Dashboard] Deleting report from database...');
       const { error } = await supabase
         .from("reports")
         .delete()
         .eq("id", reportId)
         .eq("user_id", user.id);
 
-      if (error) {
-        console.error('[Dashboard] Database deletion error:', error);
-        throw error;
-      }
+      if (error) throw error;
 
-      console.log('[Dashboard] Report deleted successfully from database');
       toast.success("Laporan dan foto berhasil dihapus!");
     } catch (error) {
-      console.error('[Dashboard] Error in handleDeleteReport:', error);
       toast.error("Gagal menghapus laporan.");
     }
   }
@@ -274,9 +282,123 @@ Laporkan sekarang dengan klik tombol &quot;Buat Laporan&quot; dan bantu teman-te
           </div>
         </div>
 
-        {/* Search Bar dengan spacing lebih baik */}
+        {/* Search Bar with Filters */}
         <div className="mb-6 sm:mb-8">
-          <SearchBar onSearch={handleSearch} />
+          <div className="flex flex-col lg:flex-row gap-3">
+            {/* Search Bar */}
+            <div className="flex-1">
+              <SearchBar onSearch={handleSearch} />
+            </div>
+            
+            {/* Filters */}
+            <div className="flex gap-2">
+              {/* Category Filter */}
+              <div className="relative group">
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="appearance-none px-4 py-3 pr-10 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 font-medium transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer bg-white"
+                  style={{ 
+                    '--tw-ring-color': 'rgba(17, 77, 145, 0.5)'
+                  } as React.CSSProperties}
+                  title="Filter berdasarkan kategori"
+                >
+                  <option value="all">Semua Kategori</option>
+                  <option value="Elektronik">Elektronik</option>
+                  <option value="Dokumen">Dokumen</option>
+                  <option value="Kunci">Kunci</option>
+                  <option value="Tas & Dompet">Tas & Dompet</option>
+                  <option value="Pakaian">Pakaian</option>
+                  <option value="Aksesoris">Aksesoris</option>
+                  <option value="Buku & Alat Tulis">Buku & Alat Tulis</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+                <TagIcon className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+              </div>
+
+              {/* Date Range Filter */}
+              <div className="flex gap-2">
+                <div className="relative">
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="px-4 py-3 pr-10 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 font-medium transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer bg-white"
+                    style={{ 
+                      '--tw-ring-color': 'rgba(17, 77, 145, 0.5)'
+                    } as React.CSSProperties}
+                    title="Dari tanggal"
+                  />
+                  <CalendarIcon className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                </div>
+                <div className="relative">
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="px-4 py-3 pr-10 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:border-transparent text-gray-900 font-medium transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer bg-white"
+                    style={{ 
+                      '--tw-ring-color': 'rgba(17, 77, 145, 0.5)'
+                    } as React.CSSProperties}
+                    title="Sampai tanggal"
+                  />
+                  <CalendarIcon className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Active Filters Display */}
+          {(selectedCategory !== "all" || startDate || endDate) && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              {selectedCategory !== "all" && (
+                <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm font-semibold">
+                  <TagIcon className="w-4 h-4" />
+                  {selectedCategory}
+                  <button
+                    onClick={() => setSelectedCategory("all")}
+                    className="ml-1 hover:text-blue-900"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
+              {startDate && (
+                <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-sm font-semibold">
+                  <CalendarIcon className="w-4 h-4" />
+                  Dari: {new Date(startDate).toLocaleDateString("id-ID")}
+                  <button
+                    onClick={() => setStartDate("")}
+                    className="ml-1 hover:text-green-900"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
+              {endDate && (
+                <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-sm font-semibold">
+                  <CalendarIcon className="w-4 h-4" />
+                  Sampai: {new Date(endDate).toLocaleDateString("id-ID")}
+                  <button
+                    onClick={() => setEndDate("")}
+                    className="ml-1 hover:text-green-900"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
+              <button
+                onClick={() => {
+                  setSelectedCategory("all");
+                  setStartDate("");
+                  setEndDate("");
+                }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-sm font-semibold hover:bg-red-200"
+              >
+                Reset Filter
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Tab Switcher dengan design modern */}
@@ -353,25 +475,11 @@ Laporkan sekarang dengan klik tombol &quot;Buat Laporan&quot; dan bantu teman-te
                 <h3 className="text-xl sm:text-2xl font-black text-gray-900 mb-3">
                   {searchQuery ? "Tidak Ditemukan" : "Belum Ada Laporan"}
                 </h3>
-                <p className="text-sm sm:text-base text-gray-700 font-medium mb-6">
+                <p className="text-sm sm:text-base text-gray-700 font-medium">
                   {searchQuery 
                     ? "Coba gunakan kata kunci lain untuk mencari" 
-                    : `Belum ada laporan ${activeTab === "hilang" ? "barang hilang" : "barang ditemukan"}`}
+                    : `Belum ada laporan ${activeTab === "hilang" ? "barang hilang" : "barang ditemukan"}. Gunakan menu 'Buat Laporan' di sidebar untuk membuat laporan baru.`}
                 </p>
-                {!searchQuery && (
-                  <button
-                    onClick={() => router.push("/dashboard/laporan")}
-                    className="inline-flex items-center gap-2 px-6 py-3 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-                    style={{ backgroundColor: 'rgba(17, 77, 145)' }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.9)'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)'}
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-                    </svg>
-                    Buat Laporan Pertama
-                  </button>
-                )}
               </div>
             </div>
           </div>
