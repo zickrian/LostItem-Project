@@ -327,8 +327,8 @@ export default function DashboardPage() {
                   onClick={() => {
                     if (monthInputRef.current) {
                       try {
-                        (monthInputRef.current as any).showPicker?.();
-                      } catch (e) {
+                        (monthInputRef.current as HTMLInputElement & { showPicker?: () => void }).showPicker?.();
+                      } catch {
                         // ignore
                       }
                       monthInputRef.current.focus();
@@ -408,8 +408,8 @@ export default function DashboardPage() {
                 onClick={() => {
                   if (monthInputRef.current) {
                     try {
-                      (monthInputRef.current as any).showPicker?.();
-                    } catch (e) {
+                      (monthInputRef.current as HTMLInputElement & { showPicker?: () => void }).showPicker?.();
+                    } catch {
                       // ignore
                     }
                     monthInputRef.current.focus();

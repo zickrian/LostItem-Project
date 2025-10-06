@@ -196,45 +196,45 @@ export default function ReportGrid({
               </button>
             )}
 
-            {/* Action Buttons (only show if showActions is true) */}
+            {/* Action Buttons (only show if showActions is true) - Compact Icon Style */}
             {showActions && (
-              <div className="flex flex-col gap-2 pt-3 border-t border-gray-100">
-                {/* Edit Button */}
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100">
+                {/* Edit Button - Icon Only */}
                 {onEdit && (
                   <button
                     onClick={() => onEdit(report.id)}
-                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold"
+                    className="p-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white transition-colors shadow-sm hover:shadow-md"
+                    title="Edit Laporan"
                   >
                     <PencilIcon className="w-4 h-4" />
-                    <span>Edit</span>
                   </button>
                 )}
 
-                {/* Complete/Activate Button */}
+                {/* Complete/Activate Button - Icon Only */}
                 {onComplete && (
                   <button
                     onClick={() => onComplete(report.id, report.status)}
-                    className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold ${
+                    className={`p-2 rounded-lg transition-colors shadow-sm hover:shadow-md ${
                       report.status === "aktif"
                         ? "bg-green-500 hover:bg-green-600 text-white"
                         : "bg-gray-400 hover:bg-gray-500 text-white"
                     }`}
+                    title={report.status === "aktif" ? "Tandai Selesai" : "Aktifkan Kembali"}
                   >
                     <CheckIcon className="w-4 h-4" />
-                    <span>Selesai</span>
                   </button>
                 )}
 
-                {/* Delete Button */}
+                {/* Delete Button - Icon Only */}
                 {onDelete && (
                   <button
                     onClick={() => onDelete(report.id)}
-                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-semibold"
+                    className="p-2 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors shadow-sm hover:shadow-md"
+                    title="Hapus Laporan"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
-                    <span>Hapus</span>
                   </button>
                 )}
               </div>
