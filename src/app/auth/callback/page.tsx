@@ -21,7 +21,7 @@ export default function AuthCallbackPage() {
           const errorMsg = errorDescription || "Terjadi kesalahan saat login";
           setError(errorMsg);
           toast.error(errorMsg);
-          setTimeout(() => router.push("/login"), 3000);
+          setTimeout(() => router.push("/login"), 2000);
           return;
         }
 
@@ -49,7 +49,7 @@ export default function AuthCallbackPage() {
           setError(errorMsg);
           toast.error(errorMsg);
           await supabase.auth.signOut();
-          setTimeout(() => router.push("/login"), 3000);
+          setTimeout(() => router.push("/login"), 4000);
           return;
         }
 
