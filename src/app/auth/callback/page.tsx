@@ -49,7 +49,7 @@ export default function AuthCallbackPage() {
           setError(errorMsg);
           toast.error(errorMsg);
           await supabase.auth.signOut();
-          setTimeout(() => router.push("/login"), 4000);
+          setTimeout(() => router.push("/login"), 8000);
           return;
         }
 
