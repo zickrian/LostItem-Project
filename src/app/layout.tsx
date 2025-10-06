@@ -25,7 +25,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Lost&Found - UDINUS",
+  title: "SITEMU - UDINUS",
   description: "Platform untuk melaporkan dan menemukan barang hilang di kampus",
 };
 

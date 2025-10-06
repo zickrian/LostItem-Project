@@ -8,7 +8,7 @@ export default function LoginPage() {
         url: "/",
         src: "https://dinus.ac.id/wp-content/uploads/2023/11/LogoUdinus.png",
         alt: "Logo UDINUS",
-        title: "UDINUS Lost & Found",
+        title: "UDINUS SITEMU",
       }}
       googleText="Login dengan Google Kampus"
     />
