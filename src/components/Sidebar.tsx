@@ -51,7 +51,7 @@ export default function Sidebar({ user }: SidebarProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <span className="text-lg font-black tracking-tight" style={{ color: '#114D91' }}>Lost&Found</span>
+            <span className="text-lg font-black tracking-tight" style={{ color: '#114D91' }}>SITEMU</span>
           </div>
         </div>
       </div>
@@ -80,7 +80,7 @@ export default function Sidebar({ user }: SidebarProps) {
         <div className="flex flex-col h-full">
           {/* Logo - Modern & Clean */}
           <div className="px-6 py-7 border-b border-gray-100">
-            <h1 className="text-2xl font-black tracking-tight" style={{ color: '#114D91' }}>Lost&Found</h1>
+            <h1 className="text-2xl font-black tracking-tight" style={{ color: '#114D91' }}>SITEMU</h1>
             <p className="text-xs font-semibold text-gray-500 mt-1">Mahasiswa Portal</p>
           </div>
 

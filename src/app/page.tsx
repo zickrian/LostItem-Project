@@ -598,7 +598,7 @@ export default function Home() {
           <div>
             <h4 className="text-[#ffffff] font-semibold text-lg mb-3">Hubungi Kami</h4>
             <p className="text-[#cbd5e1] hover:text-[#3b82f6] transition">+62 24 3517261</p>
-            <p className="text-[#cbd5e1] hover:text-[#3b82f6] transition">lostandfound@dinus.ac.id</p>
+            <p className="text-[#cbd5e1] hover:text-[#3b82f6] transition">sitemuDinus@dinus.ac.id</p>
             <p className="text-[#cbd5e1] hover:text-[#3b82f6] transition">Jl. Imam Bonjol No.207, Semarang</p>
 
             <h4 className="text-[#ffffff] font-semibold text-lg mt-6 mb-3">Media Sosial</h4>
