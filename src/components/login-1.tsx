@@ -1,8 +1,8 @@
 "use client";
 
 import { FcGoogle } from "react-icons/fc";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabaseClient";
+import { Button } from "./ui/button";
+import { supabase } from "../lib/supabaseClient";
 import { useState } from "react";
 import Link from "next/link";
 
