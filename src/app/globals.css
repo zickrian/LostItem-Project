@@ -260,6 +260,11 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+/* Navbar scroll effect */
+.navbar-scrolled {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 /* Rotating gradient animation */
 @keyframes rotateGradient {
   0% { transform: rotate(0deg); }

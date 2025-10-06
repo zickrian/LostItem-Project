@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Search, FileEdit, BarChart3, Shield, Clock, Users, GraduationCap, Github, Twitter, Instagram, Facebook, Linkedin, Mail, MapPin, Folder, Bell, Wallet, Smartphone, Book, Key, Headphones, Laptop } from "lucide-react";
+import { motion } from "framer-motion";
+import { Search, FileEdit, BarChart3, Shield, Clock, Users, Mail, MapPin, Folder, Bell, Wallet, Smartphone, Book, Key, Headphones, Laptop, Instagram, Facebook, Linkedin } from "lucide-react";
 
 interface CountUpProps {
   target: number;
@@ -77,27 +78,12 @@ export default function Home() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 10);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-white text-gray-900 font-sans">
-
-      {/* Navbar */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/80 transition-all duration-300 ${
-          scrolled ? "border-b border-gray-200" : ""
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <span className="text-xl sm:text-2xl font-bold text-gray-900 select-none">FindNUS</span>
-            </div>
-          </div>
-        </div>
-      </nav>
 
       {/* Hero Section */}
       <section className="relative flex flex-col md:flex-row items-center justify-between px-10 lg:px-20 py-24 bg-white overflow-hidden">
@@ -112,31 +98,16 @@ export default function Home() {
 
         {/* Text */}
         <div className="z-10 max-w-xl space-y-6">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-5xl font-extrabold text-gray-900 leading-tight"
-            >
+            <h1 className="text-5xl font-extrabold text-gray-900 leading-tight animate-fadeInUp">
               Temukan Kembali <br/>
               <span className="animated-gradient-text">Barang Anda</span><br/>
               Dengan Mudah
-            </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="text-gray-600"
-          >
+            </h1>
+          <p className="text-gray-600 animate-fadeInUp" style={{ animationDelay: '0.2s', animationFillMode: 'both' }}>
             Sistem pelaporan barang hilang yang cepat dan aman untuk mahasiswa.
             Bantu kami menghubungkan kembali Anda dengan barang yang hilang.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.5, type: "spring", stiffness: 200 }}
-            className="flex gap-4"
-          >
+          </p>
+          <div className="flex gap-4 animate-fadeInUp" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
             <Link
               href="/login"
               className="px-6 py-3 text-white font-semibold rounded-lg shadow-md transition-all hover:-translate-y-0.5"
@@ -155,51 +126,35 @@ export default function Home() {
             >
               Pelajari Lebih Lanjut
             </a>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Phone + floating icons */}
+        {/* Phone + floating icons (LCP optimized) */}
         <div className="relative mt-10 md:mt-0">
-          <motion.img
+          <Image
             src="/phone.png"
             alt="App Preview"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.7, duration: 0.8 }}
-            className="w-[400px] drop-shadow-xl"
+            width={360}
+            height={720}
+            priority
+            quality={85}
+            className="w-[320px] md:w-[360px] drop-shadow-xl"
+            placeholder="blur"
+            blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+            sizes="(max-width: 768px) 90vw, 360px"
           />
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.0, duration: 0.6 }}
-            className="absolute w-10 top-8 right-20 float-mail"
-          >
-            <Mail className="w-10 h-10 drop-shadow-lg" style={{color: '#3f7bd1'}} />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 0.6 }}
-            className="absolute w-8 bottom-12 left-16 float-location"
-          >
-            <MapPin className="w-8 h-8 text-green-500 drop-shadow-lg" />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.2, duration: 0.6 }}
-            className="absolute w-9 top-1/3 left-10 float-folder"
-          >
-            <Folder className="w-9 h-9 text-purple-500 drop-shadow-lg" />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.3, duration: 0.6 }}
-            className="absolute w-9 top-1/4 right-10 float-bell"
-          >
-            <Bell className="w-9 h-9 text-orange-500 drop-shadow-lg" />
-          </motion.div>
+          <div className="absolute w-8 top-8 right-16">
+            <Mail className="w-8 h-8 drop-shadow-lg" style={{color: '#3f7bd1'}} />
+          </div>
+          <div className="absolute w-7 bottom-12 left-12">
+            <MapPin className="w-7 h-7 text-green-500 drop-shadow-lg" />
+          </div>
+          <div className="absolute w-8 top-1/3 left-8">
+            <Folder className="w-8 h-8 text-purple-500 drop-shadow-lg" />
+          </div>
+          <div className="absolute w-8 top-1/4 right-8">
+            <Bell className="w-8 h-8 text-orange-500 drop-shadow-lg" />
+          </div>
         </div>
       </section>
 
@@ -211,30 +166,18 @@ export default function Home() {
       </div>
 
       {/* Features Section */}
-      <section id="features" className="relative py-24 overflow-hidden">
-        {/* Animated background */}
-        <div className="absolute inset-0 bg-[conic-gradient(from_0deg,_#1E3A8A,_#3B82F6,_#1E40AF,_#1E3A8A)] blur-3xl opacity-25 animate-spinGradient"></div>
+      <section id="features" className="relative py-24 overflow-hidden" style={{contentVisibility: 'auto'}}>
+        {/* Animated background - Deferred */}
+        <div className="absolute inset-0 bg-[conic-gradient(from_0deg,_#1E3A8A,_#3B82F6,_#1E40AF,_#1E3A8A)] blur-3xl opacity-25 animate-spinGradient" style={{willChange: 'transform'}}></div>
 
         {/* Header */}
         <div className="relative z-10 text-center mb-12">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-bold text-slate-900"
-          >
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-900">
             Fitur Utama
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-gray-700 mt-2"
-          >
+          </h2>
+          <p className="text-gray-700 mt-2">
             Kemudahan dalam melaporkan, mencari, dan mengklaim barang hilang
-          </motion.p>
+          </p>
         </div>
 
         {/* Infinite Scroll Container */}
@@ -242,13 +185,8 @@ export default function Home() {
           <div className={`flex gap-6 ${isPaused ? '' : 'animate-scrollLeft'} cursor-grab active:cursor-grabbing`} onMouseDown={() => setIsPaused(true)} onMouseUp={() => setIsPaused(false)} onTouchStart={() => setIsPaused(true)} onTouchEnd={() => setIsPaused(false)}>
             {/* Group 1 */}
             <div className="flex gap-6">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6 }}
-                viewport={{ once: true }}
-                className="w-[220px] md:w-[260px] h-[200px] md:h-[230px] flex-shrink-0 bg-white/25 backdrop-blur-lg border border-white/20 rounded-2xl p-5 md:p-6 text-center shadow-md hover:shadow-blue-400/30 transition-all hover:-translate-y-1 hover:scale-[1.03]"
-              >
+              <div className="w-[220px] md:w-[260px] h-[200px] md:h-[230px] flex-shrink-0 bg-white/25 backdrop-blur-lg border border-white/20 rounded-2xl p-5 md:p-6 text-center shadow-md hover:shadow-blue-400/30 transition-all hover:-translate-y-1 hover:scale-[1.03]">
+
                 <div className="flex justify-center mb-4">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-xl flex items-center justify-center">
                     <Search className="w-5 h-5 text-white" />
@@ -258,7 +196,7 @@ export default function Home() {
                 <p className="text-gray-700 text-sm leading-snug line-clamp-3 break-words">
                   Filter dan cari laporan barang hilang dengan mudah berdasarkan kategori, lokasi, dan waktu.
                 </p>
-              </motion.div>
+              </div>
 
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -466,7 +404,7 @@ export default function Home() {
       </section>
 
       {/* Categories Section */}
-      <section className="py-24 bg-gray-900 text-white">
+      <section className="py-24 bg-gray-900 text-white" style={{contentVisibility: 'auto', containIntrinsicSize: '0 500px'}}>
         <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
           <div className="text-center mb-16">
             <motion.h2
@@ -517,7 +455,7 @@ export default function Home() {
       </section>
 
       {/* Found Items Section */}
-      <section className="relative py-24 bg-white overflow-hidden">
+      <section className="relative py-24 bg-white overflow-hidden" style={{contentVisibility: 'auto', containIntrinsicSize: '0 600px'}}>
         {/* Floating bubbles background */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="bubble-particle w-16 h-16 absolute top-20 left-10 animate-floatBubbles"></div>
@@ -585,7 +523,7 @@ export default function Home() {
       </section>
 
       {/* Statistics Platform Section */}
-      <section id="statistik-platform" className="relative py-24 overflow-hidden">
+      <section id="statistik-platform" className="relative py-24 overflow-hidden" style={{contentVisibility: 'auto', containIntrinsicSize: '0 400px'}}>
         {/* Animated background */}
         <div className="absolute inset-0 bg-[conic-gradient(from_0deg,_#1E3A8A,_#3B82F6,_#1E40AF,_#1E3A8A)] blur-3xl opacity-25 animate-spinGradient"></div>
 
@@ -634,7 +572,7 @@ export default function Home() {
 
 
       {/* Footer */}
-      <footer className="relative overflow-hidden py-16 bg-gradient-to-t from-[#0b0f19] to-[#111827] text-[#ffffff]">
+      <footer className="relative overflow-hidden py-16 bg-gradient-to-t from-[#0b0f19] to-[#111827] text-[#ffffff]" style={{contentVisibility: 'auto', containIntrinsicSize: '0 400px'}}>
         {/* Animated background orbs */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute w-72 h-72 bg-blue-400/10 rounded-full top-10 left-20 blur-3xl animate-[floatBubblesFooter_14s_ease-in-out_infinite_alternate]"></div>
@@ -649,7 +587,7 @@ export default function Home() {
                 <span className="text-[#ffffff] font-bold text-lg">F</span>
               </div>
               <div>
-                <h3 className="font-semibold text-2xl bg-gradient-to-r from-[#3b82f6] to-[#3b82f6] bg-clip-text text-transparent">Lost & Found</h3>
+                <h3 className="font-semibold text-2xl bg-gradient-to-r from-[#3b82f6] to-[#3b82f6] bg-clip-text text-transparent">SITEMU</h3>
                 <p className="text-[#3b82f6] text-sm">UDINUS</p>
               </div>
             </div>
@@ -678,7 +616,7 @@ export default function Home() {
           </div>
         </div>
         <div className="relative z-10 text-center mt-10 border-t border-blue-400/20 pt-6 text-[#cbd5e1] text-sm">
-          2025 Lost & Found UDINUS. All rights reserved. <br/>
+          2025 SITEMU UDINUS. All rights reserved. <br/>
           Dibuat dengan <span className="text-red-400 animate-pulse">❤</span> untuk Mahasiswa UDINUS.
         </div>
       </footer>
