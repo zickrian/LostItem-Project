@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { supabase } from "../lib/supabaseClient";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Login1Props {
   heading?: string;
@@ -65,11 +66,14 @@ const Login1 = ({
             {/* Logo */}
             <div className="flex items-center gap-1 justify-center mb-2">
               <a href={logo.url} className="transform transition-transform duration-300 hover:scale-105">
-                <img
+                <Image
                   src={logo.src}
                   alt={logo.alt}
                   title={logo.title}
+                  width={96}
+                  height={96}
                   className="h-24 w-24 object-contain drop-shadow-lg"
+                  priority
                 />
               </a>
             </div>

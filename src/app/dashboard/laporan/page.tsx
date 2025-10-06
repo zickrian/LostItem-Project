@@ -150,14 +150,13 @@ function LaporanContent() {
       const { data: sessionData } = await supabase.auth.getSession();
       if (!sessionData.session) return;
 
-      const { data: userData, error } = await supabase
+      const { data: userData } = await supabase
         .from("users")
         .select("id")
         .eq("email", sessionData.session.user.email)
         .single();
 
-      if (error || !userData) {
-        if (error) console.error('Error fetching user data:', error);
+      if (!userData) {
         return;
       }
 
