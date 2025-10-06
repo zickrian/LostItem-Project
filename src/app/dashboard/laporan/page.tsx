@@ -444,34 +444,34 @@ function LaporanContent() {
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Header with Create Button - Improved Design */}
-        <div className="mb-6 sm:mb-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 p-6 sm:p-8 rounded-2xl border-2 border-blue-100 shadow-sm">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent mb-3">
-                Laporan Saya
-              </h1>
-              <div className="flex items-center gap-2">
-                <DocumentTextIcon className="w-5 h-5 text-gray-700" />
-                <p className="text-sm sm:text-base lg:text-lg text-gray-700 font-medium">
-                  Kelola semua laporan barang hilang dan temuan Anda
-                </p>
+        {/* Header with Create Button - Modern Gradient */}
+        <div className="mb-6 sm:mb-8 rounded-2xl shadow-lg border border-blue-100 overflow-hidden" style={{ background: 'linear-gradient(135deg, #114D91 0%, #3B82F6 50%, #93C5FD 100%)' }}>
+          <div className="p-6 sm:p-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">
+                  Laporan Saya
+                </h1>
+                <div className="flex items-center gap-2">
+                  <DocumentTextIcon className="w-5 h-5 text-white/95" />
+                  <p className="text-sm sm:text-base text-white/95">
+                    Kelola semua laporan barang hilang dan temuan Anda
+                  </p>
+                </div>
               </div>
+              <button
+                onClick={() => {
+                  resetForm();
+                  setEditMode(false);
+                  setShowModal(true);
+                }}
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-sm sm:text-base whitespace-nowrap bg-white hover:bg-blue-50 border-2 border-white"
+                style={{ color: '#114D91' }}
+              >
+                <PlusIcon className="w-5 h-5" />
+                Buat Laporan Baru
+              </button>
             </div>
-            <button
-              onClick={() => {
-                resetForm();
-                setEditMode(false);
-                setShowModal(true);
-              }}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-sm sm:text-base whitespace-nowrap"
-              style={{ backgroundColor: 'rgba(17, 77, 145)' }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.9)'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)'}
-            >
-              <PlusIcon className="w-5 h-5" />
-              Buat Laporan Baru
-            </button>
           </div>
         </div>
 

@@ -238,17 +238,19 @@ export default function SettingPage() {
   return (
     <DashboardLayout>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Header - Improved */}
-        <div className="mb-6 sm:mb-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 p-6 sm:p-8 rounded-2xl border-2 border-blue-200 shadow-md">
-          <div className="flex items-center gap-3 mb-3">
-            <Cog6ToothIcon className="w-10 h-10 sm:w-12 sm:h-12 text-blue-600" />
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent">
-              Pengaturan
-            </h1>
+        {/* Header - Modern Gradient */}
+        <div className="mb-6 sm:mb-8 rounded-2xl shadow-lg border border-blue-100 overflow-hidden" style={{ background: 'linear-gradient(135deg, #114D91 0%, #3B82F6 50%, #93C5FD 100%)' }}>
+          <div className="p-6 sm:p-8">
+            <div className="flex items-center gap-3 mb-2">
+              <Cog6ToothIcon className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+                Pengaturan
+              </h1>
+            </div>
+            <p className="text-sm sm:text-base text-white/95">
+              Kelola profil dan preferensi akun Anda
+            </p>
           </div>
-          <p className="text-sm sm:text-base lg:text-lg text-gray-700 font-medium">
-            Kelola profil dan preferensi akun Anda
-          </p>
         </div>
 
         <form onSubmit={handleSaveSettings} className="space-y-5 sm:space-y-6">

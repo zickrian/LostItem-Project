@@ -118,20 +118,20 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-white">
+      <div className="flex items-center justify-center min-h-screen" style={{ backgroundColor: '#F8FAFC' }}>
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 mb-4" style={{ borderTopColor: 'rgba(17, 77, 145)', borderBottomColor: 'rgba(17, 77, 145)' }}></div>
-          <p className="text-xl font-semibold text-gray-700">Memuat...</p>
+          <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 mb-4" style={{ borderTopColor: '#114D91', borderBottomColor: '#114D91' }}></div>
+          <p className="text-xl font-bold text-gray-700">Memuat...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-white overflow-x-hidden">
+    <div className="flex min-h-screen overflow-x-hidden" style={{ backgroundColor: '#F8FAFC' }}>
       {user && <Sidebar user={user} />}
       <main className="flex-1 w-full lg:ml-0 pt-16 lg:pt-0 overflow-x-hidden">
-        <div className="w-full max-w-full">
+        <div className="w-full max-w-full min-h-screen">
           {children}
         </div>
       </main>

@@ -249,15 +249,16 @@ export default function DashboardPage() {
     <DashboardLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Header dengan gradient background */}
-        <div className="mb-6 sm:mb-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 p-6 sm:p-8 rounded-2xl border-2 border-blue-200 shadow-md">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent mb-3">
-            Dashboard
-          </h1>
-          <p className="text-sm sm:text-base lg:text-lg text-gray-700 font-medium">
-            Kehilangan atau menemukan barang di kampus? 
-Laporkan sekarang dengan klik tombol &quot;Buat Laporan&quot; dan bantu teman-temanmu menemukan barang mereka kembali.
-          </p>
-          <div className="mt-4 flex flex-wrap items-center gap-3">
+        <div className="mb-6 sm:mb-8 rounded-2xl shadow-lg border border-blue-100 overflow-hidden" style={{ background: 'linear-gradient(135deg, #114D91 0%, #3B82F6 50%, #93C5FD 100%)' }}>
+          <div className="p-6 sm:p-8">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">
+              Dashboard
+            </h1>
+            <p className="text-sm sm:text-base text-white/95">
+              Kehilangan atau menemukan barang di kampus? 
+              Laporkan sekarang dengan klik tombol &quot;Buat Laporan&quot; dan bantu teman-temanmu menemukan barang mereka kembali.
+            </p>
+            <div className="mt-4 flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm">
               <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -271,6 +272,7 @@ Laporkan sekarang dengan klik tombol &quot;Buat Laporan&quot; dan bantu teman-te
             <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-lg shadow-sm">
               <CheckCircleIcon className="w-5 h-5 text-green-600" />
               <span className="text-sm font-semibold text-gray-700">Temuan: {reports.filter(r => r.type === "temuan").length}</span>
+            </div>
             </div>
           </div>
         </div>

@@ -5,16 +5,18 @@
 
 :root {
 
-  /* Primary Blue - Navy Theme */
-  --primary: oklch(0.205 0 0);
-  --primary-hover: rgba(17, 77, 145, 0.9);
-  --primary-light: rgba(17, 77, 145, 0.1);
-  --primary-lighter: rgba(17, 77, 145, 0.05);
+  /* Primary Blue - Modern Navy Theme (Tasklify Style) */
+  --primary: #114D91;
+  --primary-rgb: 17, 77, 145;
+  --primary-hover: #0D3A6D;
+  --primary-light: #EAF2FF;
+  --primary-lighter: #F5F9FF;
+  --primary-dark: #1E40AF;
 
   /* Secondary Blue - Lighter Accent */
-  --secondary: oklch(0.97 0 0);
-  --secondary-hover: rgba(59, 130, 246, 0.9);
-  --secondary-light: rgba(59, 130, 246, 0.1);
+  --secondary: #3B82F6;
+  --secondary-hover: #2563EB;
+  --secondary-light: #DBEAFE;
 
   /* Success Green */
   --success: rgba(16, 185, 129, 1);
@@ -78,6 +80,11 @@
 body {
   overflow-x: hidden;
   max-width: 100vw;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  background-color: #F8FAFC;
+  color: #1F2937;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
@@ -87,6 +94,7 @@ body {
 html {
   overflow-x: hidden;
   max-width: 100vw;
+  scroll-behavior: smooth;
 }
 
 /* Custom Utility Classes */

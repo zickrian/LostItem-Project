@@ -153,14 +153,16 @@ export default function StatistikPage() {
   return (
     <DashboardLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Header - Improved */}
-        <div className="mb-6 sm:mb-8 bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 p-6 sm:p-8 rounded-2xl border-2 border-blue-200 shadow-md">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent mb-3">
-            Statistik Laporan
-          </h1>
-          <p className="text-sm sm:text-base lg:text-lg text-gray-700 font-medium">
-            Analisis data dan insights dari seluruh laporan di sistem
-          </p>
+        {/* Header - Modern Gradient */}
+        <div className="mb-6 sm:mb-8 rounded-2xl shadow-lg border border-blue-100 overflow-hidden" style={{ background: 'linear-gradient(135deg, #114D91 0%, #3B82F6 50%, #93C5FD 100%)' }}>
+          <div className="p-6 sm:p-8">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-2">
+              Statistik Laporan
+            </h1>
+            <p className="text-sm sm:text-base text-white/95">
+              Analisis data dan insights dari seluruh laporan di sistem
+            </p>
+          </div>
         </div>
 
         {/* Summary Cards - Improved with Icons and Better Design */}
@@ -221,7 +223,11 @@ export default function StatistikPage() {
                 <h2 className="text-lg sm:text-xl font-black text-gray-900 mb-1">Kategori Paling Sering</h2>
                 <p className="text-xs sm:text-sm text-gray-600 font-medium">Top 8 kategori barang</p>
               </div>
-              <span className="text-3xl">🏷️</span>
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+              </div>
             </div>
             {stats.categoryData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
@@ -257,7 +263,11 @@ export default function StatistikPage() {
               </ResponsiveContainer>
             ) : (
               <div className="text-center py-12 bg-gray-50 rounded-xl">
-                <div className="text-5xl mb-3">📊</div>
+                <div className="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-gray-300 to-gray-400 rounded-2xl flex items-center justify-center">
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
                 <p className="text-gray-500 font-semibold">Belum ada data kategori</p>
               </div>
             )}
@@ -270,7 +280,11 @@ export default function StatistikPage() {
                 <h2 className="text-lg sm:text-xl font-black text-gray-900 mb-1">Tren Laporan</h2>
                 <p className="text-xs sm:text-sm text-gray-600 font-medium">6 bulan terakhir</p>
               </div>
-              <span className="text-3xl">📈</span>
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-md">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
             </div>
             {stats.monthlyData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
@@ -307,7 +321,11 @@ export default function StatistikPage() {
               </ResponsiveContainer>
             ) : (
               <div className="text-center py-12 bg-gray-50 rounded-xl">
-                <div className="text-5xl mb-3">📈</div>
+                <div className="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-gray-300 to-gray-400 rounded-2xl flex items-center justify-center">
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                </div>
                 <p className="text-gray-500 font-semibold">Belum ada data bulanan</p>
               </div>
             )}
@@ -320,7 +338,12 @@ export default function StatistikPage() {
                 <h2 className="text-lg sm:text-xl font-black text-gray-900 mb-1">Lokasi Paling Sering</h2>
                 <p className="text-xs sm:text-sm text-gray-600 font-medium">Top 5 lokasi kejadian</p>
               </div>
-              <span className="text-3xl">📍</span>
+              <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center shadow-md">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
             </div>
             {stats.locationData.length > 0 ? (
               <ResponsiveContainer width="100%" height={300}>
@@ -351,7 +374,12 @@ export default function StatistikPage() {
               </ResponsiveContainer>
             ) : (
               <div className="text-center py-12 bg-gray-50 rounded-xl">
-                <div className="text-5xl mb-3">📍</div>
+                <div className="w-16 h-16 mx-auto mb-3 bg-gradient-to-br from-gray-300 to-gray-400 rounded-2xl flex items-center justify-center">
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </div>
                 <p className="text-gray-500 font-semibold">Belum ada data lokasi</p>
               </div>
             )}
@@ -364,7 +392,11 @@ export default function StatistikPage() {
                 <h2 className="text-lg sm:text-xl font-black text-gray-900 mb-1">Tingkat Penyelesaian</h2>
                 <p className="text-xs sm:text-sm text-gray-600 font-medium">Persentase laporan selesai</p>
               </div>
-              <span className="text-3xl">🎯</span>
+              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
+              </div>
             </div>
             <div className="flex items-center justify-center h-[300px]">
               <div className="text-center">
