@@ -6,9 +6,10 @@ export default function LoginPage() {
       heading="Selamat Datang"
       logo={{
         url: "/",
-        src: "https://dinus.ac.id/wp-content/uploads/2023/11/LogoUdinus.png",
+        src: "https://res.cloudinary.com/dujp9ydkx/image/upload/v1759767613/dinuslogo_ywakje.png",
         alt: "Logo UDINUS",
         title: "UDINUS SITEMU",
+        
       }}
       googleText="Login dengan Google Kampus"
     />
