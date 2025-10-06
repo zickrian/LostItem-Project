@@ -57,7 +57,7 @@ export default function AuthCallbackPage() {
         const googleAvatar = user.user_metadata.avatar_url || user.user_metadata.picture || user.user_metadata.photo;
 
         // Ambil data user yang sudah ada untuk menjaga perubahan manual
-        const { data: existingUser, error: existingUserError } = await supabase
+        const { data: existingUser } = await supabase
           .from("users")
           .select("id, name, avatar_url")
           .eq("auth_id", user.id)
@@ -73,7 +73,7 @@ export default function AuthCallbackPage() {
         const avatarToUse = googleAvatar || existingUser?.avatar_url || null;
 
         // Simpan atau update user ke tabel public.users
-        const { data: upsertData, error: upsertError } = await supabase
+        const { error: upsertError } = await supabase
           .from("users")
           .upsert(
             {
@@ -98,7 +98,7 @@ export default function AuthCallbackPage() {
         // Redirect ke dashboard
         toast.success("Login berhasil!");
         router.push("/dashboard");
-      } catch (err) {
+      } catch {
         setError("Terjadi kesalahan tidak terduga");
         toast.error("Terjadi kesalahan tidak terduga");
         setTimeout(() => router.push("/login"), 2000);
@@ -106,7 +106,7 @@ export default function AuthCallbackPage() {
     }
 
     handleAuth();
-  }, [router]);
+  }, [router, toast]);
 
   if (error) {
     return (

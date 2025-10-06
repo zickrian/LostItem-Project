@@ -47,7 +47,6 @@ function CountUp({ target, duration = 2000, className = "text-4xl font-extrabold
 }
 
 export default function Home() {
-  const [scrolled, setScrolled] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
   const categories = [
@@ -74,13 +73,7 @@ export default function Home() {
     { icon: "✅", title: "Barang Diklaim", count: 200, gradient: "from-emerald-400 to-green-500" },
   ];
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-white text-gray-900 font-sans">

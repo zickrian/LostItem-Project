@@ -12,10 +12,9 @@ export const AVATARS_BUCKET = 'avatars';
  * @param userId - User ID for organizing files
  * @returns Public URL of uploaded image or null on error
  */
-export async function uploadImage(file: File, userId: string): Promise<string | null> {
+export async function uploadImage(file: File): Promise<string | null> {
   try {
     // Create unique filename dengan timestamp
-    const fileExt = file.name.split('.').pop();
     const fileName = `images/${Date.now()}_${file.name}`;
 
     // Upload file to Supabase Storage
@@ -36,7 +35,7 @@ export async function uploadImage(file: File, userId: string): Promise<string | 
       .getPublicUrl(data.path);
 
     return urlData.publicUrl;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -64,16 +63,12 @@ export async function deleteImage(imageUrl: string, bucketName: string = REPORTS
     
     const filePath = pathParts[1];
 
-    const { error } = await supabase.storage
+    await supabase.storage
       .from(bucketName)
       .remove([filePath]);
 
-    if (error) {
-      return false;
-    }
-
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -98,7 +93,7 @@ export async function delete_report_file(imageUrl: string): Promise<boolean> {
     
     const result = await deleteImage(imageUrl, bucketName);
     return result;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -142,7 +137,7 @@ export async function uploadAvatar(
       .getPublicUrl(data.path);
 
     return urlData.publicUrl;
-  } catch (error) {
+  } catch {
     return null;
   }
 }

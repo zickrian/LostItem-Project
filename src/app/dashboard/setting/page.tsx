@@ -68,9 +68,9 @@ export default function SettingPage() {
 
   async function fetchUserData() {
     try {
-      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      const { data: sessionData } = await supabase.auth.getSession();
       
-      if (sessionError || !sessionData.session) {
+      if (!sessionData.session) {
         router.push("/login");
         return;
       }
@@ -99,7 +99,7 @@ export default function SettingPage() {
           web_notif: notifData.web_notif,
         });
       }
-    } catch (error) {
+    } catch {
       toast.error("Gagal memuat data pengguna");
     } finally {
       setLoading(false);
@@ -145,7 +145,7 @@ export default function SettingPage() {
       toast.success("Pengaturan berhasil diperbarui!");
       // Refresh untuk memastikan data sinkron dengan database
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Gagal menyimpan pengaturan. Silakan coba lagi.");
     } finally {
       setSaving(false);

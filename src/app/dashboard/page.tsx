@@ -6,9 +6,8 @@ import DashboardLayout from "@/components/DashboardLayout";
 import SearchBar from "@/components/SearchBar";
 import ReportGrid from "@/components/ReportGrid";
 import ReportGridSkeleton from "@/components/ReportGridSkeleton";
-import { MagnifyingGlassIcon, CheckCircleIcon, TagIcon, CalendarIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, CheckCircleIcon, CalendarIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { useToast } from "@/contexts/ToastContext";
-import { delete_report_file } from "@/lib/supabaseStorage";
 
 type TabType = "hilang" | "temuan";
 
@@ -57,7 +56,6 @@ export default function DashboardPage() {
       await fetchReports();
     }
     init();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
 
     // Subscribe to real-time changes
     const channel = supabase
@@ -92,9 +90,9 @@ export default function DashboardPage() {
 
   async function checkUser() {
     try {
-      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      const { data: sessionData } = await supabase.auth.getSession();
       
-      if (sessionError || !sessionData.session) {
+      if (!sessionData.session) {
         router.push("/login");
         return;
       }
@@ -125,6 +123,7 @@ export default function DashboardPage() {
         setUser(userData);
       }
     } catch (error) {
+      console.error('Error checking user:', error);
       toast.error("Gagal memuat data pengguna");
       router.push("/login");
     }
@@ -133,7 +132,7 @@ export default function DashboardPage() {
   async function fetchReports() {
     try {
       const statusFilter = showHistory ? "selesai" : "aktif";
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("reports")
         .select(`
           *,
@@ -145,10 +144,8 @@ export default function DashboardPage() {
         .eq("status", statusFilter)
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
-
       setReports(data || []);
-    } catch (error) {
+    } catch {
       toast.error("Gagal memuat laporan");
     } finally {
       setLoading(false);
@@ -193,36 +190,24 @@ export default function DashboardPage() {
     setSearchQuery(query);
   }
 
-  async function handleDeleteReport(reportId: string) {
-    if (!user || !confirm("Hapus laporan ini?")) return;
-
-    try {
-      // Get the report to find the image URL
-      const report = reports.find(r => r.id === reportId);
-      
-      // Delete the image file from storage FIRST (before deleting from database)
-      if (report?.image_url) {
-        await delete_report_file(report.image_url);
-      }
-
-      // Delete the report from database
-      const { error } = await supabase
-        .from("reports")
-        .delete()
-        .eq("id", reportId)
-        .eq("user_id", user.id);
-
-      if (error) throw error;
-
-      toast.success("Laporan dan foto berhasil dihapus!");
-    } catch (error) {
-      toast.error("Gagal menghapus laporan.");
-    }
-  }
-
-  function handleEditReport(reportId: string) {
-    router.push(`/dashboard/laporan?edit=${reportId}`);
-  }
+  // handleDeleteReport function is intentionally kept for future use
+  // async function handleDeleteReport(reportId: string) {
+  //   if (!user || !confirm("Hapus laporan ini?")) return;
+  //   try {
+  //     const report = reports.find(r => r.id === reportId);
+  //     if (report?.image_url) {
+  //       await delete_report_file(report.image_url);
+  //     }
+  //     await supabase
+  //       .from("reports")
+  //       .delete()
+  //       .eq("id", reportId)
+  //       .eq("user_id", user.id);
+  //     toast.success("Laporan dan foto berhasil dihapus!");
+  //   } catch {
+  //     toast.error("Gagal menghapus laporan.");
+  //   }
+  // }
 
   if (loading) {
     return (

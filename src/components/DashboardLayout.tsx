@@ -24,9 +24,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   useEffect(() => {
     async function checkUser() {
       try {
-        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+        const { data: sessionData } = await supabase.auth.getSession();
         
-        if (sessionError || !sessionData.session) {
+        if (!sessionData.session) {
           router.push("/login");
           return;
         }
@@ -64,7 +64,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         }
         
         setLoading(false);
-      } catch (error) {
+      } catch {
         router.push("/login");
       }
     }

@@ -50,7 +50,7 @@ export default function StatistikPage() {
       if (!sessionData.session) {
         router.push("/login");
       }
-    } catch (error) {
+    } catch {
       toast.error("Sesi Anda telah berakhir");
       router.push("/login");
     }
@@ -59,12 +59,10 @@ export default function StatistikPage() {
   async function fetchStatistics() {
     try {
       // Fetch all reports
-      const { data: reports, error } = await supabase
+      const { data: reports } = await supabase
         .from("reports")
         .select("*")
         .order("created_at", { ascending: false });
-
-      if (error) throw error;
 
       const allReports = reports || [];
 
@@ -135,7 +133,7 @@ export default function StatistikPage() {
         monthlyData,
         locationData,
       });
-    } catch (error) {
+    } catch {
       toast.error("Gagal memuat statistik");
     } finally {
       setLoading(false);

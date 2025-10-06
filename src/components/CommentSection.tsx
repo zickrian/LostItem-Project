@@ -121,7 +121,7 @@ export default function CommentSection({ reportId, currentUserId, isHistoryMode 
 
   async function fetchComments() {
     try {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("comments")
         .select(`
           *,
@@ -133,10 +133,8 @@ export default function CommentSection({ reportId, currentUserId, isHistoryMode 
         .eq("report_id", reportId)
         .order("created_at", { ascending: true });
 
-      if (error) throw error;
-
       setComments(data || []);
-    } catch (error) {
+    } catch {
       toast.error("Gagal memuat komentar");
     } finally {
       setLoading(false);
@@ -167,7 +165,7 @@ export default function CommentSection({ reportId, currentUserId, isHistoryMode 
     setNewComment("");
     
     try {
-      const { error } = await supabase
+      await supabase
         .from("comments")
         .insert({
           report_id: reportId,
@@ -175,12 +173,10 @@ export default function CommentSection({ reportId, currentUserId, isHistoryMode 
           content: commentContent,
         });
 
-      if (error) throw error;
-
       toast.success("Komentar berhasil ditambahkan");
       // Fetch ulang untuk mendapatkan ID yang benar dari database
       fetchComments();
-    } catch (error) {
+    } catch {
       // Rollback optimistic update jika gagal
       setComments((prev) => prev.filter((c) => c.id !== optimisticComment.id));
       setNewComment(commentContent);
@@ -190,15 +186,7 @@ export default function CommentSection({ reportId, currentUserId, isHistoryMode 
     }
   }
 
-  async function handleDeleteComment(commentId: string) {
-    // open confirm dialog
-    setConfirmDialog({
-      isOpen: true,
-      commentId,
-      title: "Hapus Komentar",
-      message: "Apakah Anda yakin ingin menghapus komentar ini? Tindakan ini tidak dapat dibatalkan.",
-    });
-  }
+
 
   async function confirmDeleteComment() {
     const commentId = confirmDialog.commentId;
@@ -209,18 +197,16 @@ export default function CommentSection({ reportId, currentUserId, isHistoryMode 
     setDeletingCommentId(commentId);
 
     try {
-      const { error } = await supabase
+      await supabase
         .from("comments")
         .delete()
         .eq("id", commentId)
         .eq("user_id", currentUserId);
 
-      if (error) throw error;
-
       // remove from local state
       setComments((prev) => prev.filter((c) => c.id !== commentId));
       toast.success("Komentar berhasil dihapus");
-    } catch (err) {
+    } catch {
       // revert: refetch comments
       toast.error("Gagal menghapus komentar.");
       fetchComments();

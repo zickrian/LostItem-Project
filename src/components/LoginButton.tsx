@@ -31,7 +31,7 @@ export default function LoginButton() {
         setLoading(false);
       }
       // Note: If successful, browser will redirect, so we don't need to setLoading(false)
-    } catch (err) {
+    } catch {
       const errorMessage = "Terjadi kesalahan tidak terduga";
       setError(errorMessage);
       toast.error(errorMessage);

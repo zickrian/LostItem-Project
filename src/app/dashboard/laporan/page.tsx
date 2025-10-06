@@ -150,24 +150,26 @@ function LaporanContent() {
       const { data: sessionData } = await supabase.auth.getSession();
       if (!sessionData.session) return;
 
-      const { data: userData } = await supabase
+      const { data: userData, error } = await supabase
         .from("users")
         .select("id")
         .eq("email", sessionData.session.user.email)
         .single();
 
-      if (!userData) return;
+      if (error || !userData) {
+        if (error) console.error('Error fetching user data:', error);
+        return;
+      }
 
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("reports")
         .select("id, title, description, category, location, type, status, created_at, image_url")
         .eq("user_id", userData.id)
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
-
       setMyReports(data || []);
     } catch (error) {
+      console.error('Error in fetchMyReports:', error);
       toast.error("Gagal memuat laporan");
     } finally {
       setLoading(false);
@@ -195,7 +197,8 @@ function LaporanContent() {
       .select("*")
       .eq("id", reportId)
       .single()
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (error) return;
         if (data) {
           setFormData({
             title: data.title,
@@ -251,7 +254,7 @@ function LaporanContent() {
 
       // Upload new image if selected
       if (imageFile) {
-        const uploadedUrl = await uploadImage(imageFile, user.id);
+        const uploadedUrl = await uploadImage(imageFile);
         if (uploadedUrl) {
           imageUrl = uploadedUrl;
         }
@@ -270,19 +273,15 @@ function LaporanContent() {
 
       if (editMode) {
         // Update existing report
-        const { error } = await supabase
+        await supabase
           .from("reports")
           .update(reportData)
           .eq("id", editingId)
           .eq("user_id", user.id);
-
-        if (error) throw error;
         toast.success("Laporan berhasil diperbarui!");
       } else {
         // Create new report
-        const { error } = await supabase.from("reports").insert(reportData);
-
-        if (error) throw error;
+        await supabase.from("reports").insert(reportData);
         toast.success("Laporan berhasil dibuat!");
       }
 
@@ -291,7 +290,7 @@ function LaporanContent() {
       setShowModal(false);
       fetchMyReports();
       router.push("/dashboard/laporan");
-    } catch (error) {
+    } catch {
       toast.error("Gagal menyimpan laporan. Silakan coba lagi.");
     } finally {
       setSubmitting(false);
@@ -335,8 +334,6 @@ function LaporanContent() {
   }
 
   function handleDeleteReport(reportId: string) {
-    if (!user) return;
-    
     setConfirmDialog({
       isOpen: true,
       reportId,
@@ -360,13 +357,11 @@ function LaporanContent() {
       }
 
       // Delete the report from database (cascade will delete comments automatically)
-      const { error } = await supabase
+      await supabase
         .from("reports")
         .delete()
         .eq("id", reportId)
         .eq("user_id", user!.id);
-
-      if (error) throw error;
 
       toast.success("Laporan, foto, dan semua komentar berhasil dihapus!");
       fetchMyReports();
@@ -374,7 +369,7 @@ function LaporanContent() {
       if (editingId === reportId) {
         resetForm();
       }
-    } catch (error) {
+    } catch {
       toast.error("Gagal menghapus laporan.");
     }
   }
@@ -398,7 +393,7 @@ function LaporanContent() {
 
       toast.success(`Status berhasil diubah menjadi ${newStatus}`);
       fetchMyReports();
-    } catch (error) {
+    } catch {
       toast.error("Gagal mengubah status laporan.");
     }
   }

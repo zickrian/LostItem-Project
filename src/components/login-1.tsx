@@ -28,10 +28,7 @@ const Login1 = ({
     alt: "logo",
     title: "shadcnblocks.com",
   },
-  buttonText = "Login",
   googleText = "Sign up with Google",
-  signupText = "Don't have an account?",
-  signupUrl = "https://shadcnblocks.com",
 }: Login1Props) => {
   const [isLoading, setIsLoading] = useState(false);
 
