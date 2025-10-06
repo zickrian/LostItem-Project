@@ -416,6 +416,16 @@ html {
   animation: fadeInUp 0.8s ease-out;
 }
 
+/* Prevent color flash on images during load */
+img {
+  background-color: transparent !important;
+}
+
+/* Smooth image loading without color flash */
+.next-image-wrapper {
+  background-color: transparent !important;
+}
+
 /* Interactive gradient effects */
 .gradient-interactive {
   transition: animation-duration 0.5s ease;

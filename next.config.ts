@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
         hostname: 'oxjfahzrzjdukwksmcem.supabase.co',
         pathname: '/storage/v1/object/public/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**',
+      },
     ],
     // Image optimization untuk LCP
     formats: ['image/avif', 'image/webp'],

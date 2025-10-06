@@ -135,17 +135,18 @@ export default function Home() {
             placeholder="blur"
             blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
             sizes="(max-width: 768px) 90vw, 360px"
+            style={{ backgroundColor: 'transparent' }}
           />
-          <div className="absolute w-8 top-8 right-16">
+          <div className="absolute w-8 top-8 right-16 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
             <Mail className="w-8 h-8 drop-shadow-lg" style={{color: '#3f7bd1'}} />
           </div>
-          <div className="absolute w-7 bottom-12 left-12">
+          <div className="absolute w-7 bottom-12 left-12 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
             <MapPin className="w-7 h-7 text-green-500 drop-shadow-lg" />
           </div>
-          <div className="absolute w-8 top-1/3 left-8">
+          <div className="absolute w-8 top-1/3 left-8 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
             <Folder className="w-8 h-8 text-purple-500 drop-shadow-lg" />
           </div>
-          <div className="absolute w-8 top-1/4 right-8">
+          <div className="absolute w-8 top-1/4 right-8 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
             <Bell className="w-8 h-8 text-orange-500 drop-shadow-lg" />
           </div>
         </div>
