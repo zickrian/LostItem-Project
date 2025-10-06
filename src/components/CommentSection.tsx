@@ -87,7 +87,6 @@ export default function CommentSection({ reportId, currentUserId, isHistoryMode 
           table: "users",
         },
         (payload) => {
-          console.log("User updated, refreshing comments:", payload.new);
           // Update current user jika yang diupdate adalah current user
           if (payload.new.id === currentUserId) {
             setCurrentUser({

@@ -1,6 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { 
+  ExclamationTriangleIcon, 
+  TrashIcon,
+  InformationCircleIcon,
+  XMarkIcon
+} from '@heroicons/react/24/outline';
 
 export interface ConfirmDialogProps {
   isOpen: boolean;
@@ -23,120 +29,148 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   onCancel,
   type = 'warning',
 }) => {
+  // Prevent body scroll when dialog is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  // Handle ESC key
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onCancel();
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isOpen, onCancel]);
+
   if (!isOpen) return null;
 
-  const getColors = () => {
+  const getStyles = () => {
     switch (type) {
       case 'danger':
         return {
-          iconBg: 'bg-red-100',
-          iconColor: 'text-red-600',
-          confirmBg: 'bg-red-600 hover:bg-red-700',
+          iconBg: 'from-red-500 to-red-600',
+          iconColor: 'text-white',
+          iconRing: 'ring-red-200',
+          confirmBg: 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800',
           confirmText: 'text-white',
+          titleColor: 'text-red-900',
+          borderColor: 'border-red-200',
         };
       case 'warning':
         return {
-          iconBg: 'bg-yellow-100',
-          iconColor: 'text-yellow-600',
-          confirmBg: 'bg-yellow-600 hover:bg-yellow-700',
+          iconBg: 'from-yellow-400 to-yellow-500',
+          iconColor: 'text-white',
+          iconRing: 'ring-yellow-200',
+          confirmBg: 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700',
           confirmText: 'text-white',
+          titleColor: 'text-yellow-900',
+          borderColor: 'border-yellow-200',
         };
       case 'info':
         return {
-          iconBg: 'bg-blue-100',
-          iconColor: 'text-blue-600',
-          confirmBg: 'bg-blue-600 hover:bg-blue-700',
+          iconBg: 'from-blue-500 to-blue-600',
+          iconColor: 'text-white',
+          iconRing: 'ring-blue-200',
+          confirmBg: 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800',
           confirmText: 'text-white',
+          titleColor: 'text-blue-900',
+          borderColor: 'border-blue-200',
         };
       default:
         return {
-          iconBg: 'bg-yellow-100',
-          iconColor: 'text-yellow-600',
-          confirmBg: 'bg-yellow-600 hover:bg-yellow-700',
+          iconBg: 'from-yellow-400 to-yellow-500',
+          iconColor: 'text-white',
+          iconRing: 'ring-yellow-200',
+          confirmBg: 'bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700',
           confirmText: 'text-white',
+          titleColor: 'text-yellow-900',
+          borderColor: 'border-yellow-200',
         };
     }
   };
 
-  const colors = getColors();
+  const styles = getStyles();
 
   const getIcon = () => {
+    const iconClass = "w-8 h-8 sm:w-10 sm:h-10";
     switch (type) {
       case 'danger':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-            />
-          </svg>
-        );
+        return <TrashIcon className={iconClass} />;
       case 'warning':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
-          </svg>
-        );
+        return <ExclamationTriangleIcon className={iconClass} />;
       case 'info':
-        return (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-        );
+        return <InformationCircleIcon className={iconClass} />;
       default:
-        return null;
+        return <ExclamationTriangleIcon className={iconClass} />;
     }
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full animate-scale-in border-2 border-gray-200">
-        <div className="p-6 sm:p-8">
-          {/* Icon */}
-          <div className="flex items-center justify-center mb-5">
-            <div className={`${colors.iconBg} ${colors.iconColor} rounded-full p-4 shadow-lg`}>
+    <div 
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fade-in"
+      onClick={onCancel}
+    >
+      <div 
+        className={`bg-white rounded-3xl shadow-2xl max-w-md w-full animate-scale-in border-4 ${styles.borderColor} overflow-hidden`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Close Button */}
+        <button
+          onClick={onCancel}
+          className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-all duration-200 group"
+          aria-label="Close dialog"
+        >
+          <XMarkIcon className="w-5 h-5 text-gray-600 group-hover:text-gray-900 transition-colors" />
+        </button>
+
+        <div className="p-6 sm:p-8 relative">
+          {/* Icon with animation */}
+          <div className="flex items-center justify-center mb-6">
+            <div className={`bg-gradient-to-br ${styles.iconBg} ${styles.iconColor} rounded-full p-5 shadow-2xl ${styles.iconRing} ring-8 animate-pulse-slow relative`}>
               {getIcon()}
+              <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${styles.iconBg} opacity-50 animate-ping`}></div>
             </div>
           </div>
 
           {/* Title */}
-          <h3 className="text-xl sm:text-2xl font-black text-gray-900 text-center mb-3">
+          <h3 className={`text-2xl sm:text-3xl font-black ${styles.titleColor} text-center mb-4 leading-tight`}>
             {title}
           </h3>
 
           {/* Message */}
-          <p className="text-gray-600 text-center mb-8 text-sm sm:text-base leading-relaxed">
+          <p className="text-gray-700 text-center mb-8 text-sm sm:text-base leading-relaxed font-medium px-2">
             {message}
           </p>
 
           {/* Buttons */}
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={onCancel}
-              className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-all duration-200 border-2 border-gray-200 hover:border-gray-300 transform hover:-translate-y-0.5"
+              className="flex-1 px-5 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-xl transition-all duration-200 border-2 border-gray-300 hover:border-gray-400 transform hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:shadow-sm"
             >
               {cancelText}
             </button>
             <button
               onClick={onConfirm}
-              className={`flex-1 px-4 py-3 ${colors.confirmBg} ${colors.confirmText} font-bold rounded-xl transition-all duration-200 shadow-md hover:shadow-xl transform hover:-translate-y-0.5`}
+              className={`flex-1 px-5 py-3.5 ${styles.confirmBg} ${styles.confirmText} font-bold rounded-xl transition-all duration-200 shadow-lg hover:shadow-2xl transform hover:-translate-y-0.5 active:translate-y-0 active:shadow-md`}
             >
               {confirmText}
             </button>
           </div>
         </div>
+
+        {/* Decorative bottom border */}
+        <div className={`h-2 bg-gradient-to-r ${styles.iconBg}`}></div>
       </div>
     </div>
   );

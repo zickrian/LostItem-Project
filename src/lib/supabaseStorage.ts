@@ -50,12 +50,8 @@ export async function uploadImage(file: File, userId: string): Promise<string | 
 export async function deleteImage(imageUrl: string, bucketName: string = REPORTS_BUCKET): Promise<boolean> {
   try {
     if (!imageUrl) {
-      console.log('No image URL provided');
       return true;
     }
-
-    console.log('Attempting to delete image:', imageUrl);
-    console.log('From bucket:', bucketName);
 
     // Extract file path from URL
     // Format URL Supabase: https://[project].supabase.co/storage/v1/object/public/[bucket]/[path]
@@ -63,29 +59,21 @@ export async function deleteImage(imageUrl: string, bucketName: string = REPORTS
     const pathParts = url.pathname.split(`/object/public/${bucketName}/`);
     
     if (pathParts.length < 2) {
-      console.error('Invalid URL format. Could not extract file path.');
-      console.error('URL pathname:', url.pathname);
-      console.error('Expected format: /storage/v1/object/public/' + bucketName + '/[filepath]');
       return false;
     }
     
     const filePath = pathParts[1];
-    console.log('Extracted file path:', filePath);
 
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from(bucketName)
       .remove([filePath]);
 
     if (error) {
-      console.error('Error deleting from storage:', error);
       return false;
     }
 
-    console.log('Successfully deleted file:', filePath);
-    console.log('Delete response:', data);
     return true;
   } catch (error) {
-    console.error('Exception while deleting image:', error);
     return false;
   }
 }
@@ -98,33 +86,19 @@ export async function deleteImage(imageUrl: string, bucketName: string = REPORTS
  */
 export async function delete_report_file(imageUrl: string): Promise<boolean> {
   if (!imageUrl) {
-    console.log('delete_report_file: No image URL provided, skipping deletion');
     return true; // No image to delete
   }
   
   try {
-    console.log('delete_report_file: Starting deletion process for:', imageUrl);
-    
     // Determine bucket name from URL
     let bucketName = REPORTS_BUCKET;
     if (imageUrl.includes(`/object/public/${AVATARS_BUCKET}/`)) {
       bucketName = AVATARS_BUCKET;
-      console.log('delete_report_file: Detected avatars bucket');
-    } else {
-      console.log('delete_report_file: Using reports bucket');
     }
     
     const result = await deleteImage(imageUrl, bucketName);
-    
-    if (result) {
-      console.log('delete_report_file: Successfully deleted file');
-    } else {
-      console.error('delete_report_file: Failed to delete file');
-    }
-    
     return result;
   } catch (error) {
-    console.error('delete_report_file: Exception occurred:', error);
     return false;
   }
 }

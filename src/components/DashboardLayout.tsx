@@ -93,7 +93,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               filter: `email=eq.${sessionData.session.user.email}`,
             },
             (payload) => {
-              console.log("User profile updated:", payload.new);
               // Update user state with new data
               setUser((prevUser) => {
                 if (!prevUser) return null;

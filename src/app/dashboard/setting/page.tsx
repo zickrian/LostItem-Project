@@ -6,6 +6,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import SettingSkeleton from "@/components/SettingSkeleton";
 import { useToast } from "@/contexts/ToastContext";
 import { delete_report_file } from "@/lib/supabaseStorage";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { 
   Cog6ToothIcon, 
   UserCircleIcon, 
@@ -56,6 +57,7 @@ export default function SettingPage() {
 
   // Danger zone state
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   useEffect(() => {
     async function init() {
@@ -151,7 +153,7 @@ export default function SettingPage() {
     }
   }
 
-  async function handleDeleteAccount() {
+  function handleDeleteAccountClick() {
     if (!user) return;
 
     if (deleteConfirmText !== "HAPUS AKUN") {
@@ -159,9 +161,15 @@ export default function SettingPage() {
       return;
     }
 
-    if (!confirm("Apakah Anda yakin ingin menghapus akun? Tindakan ini tidak dapat dibatalkan dan akan menghapus semua laporan, komentar, dan foto yang pernah Anda upload!")) {
-      return;
-    }
+    // Show confirmation dialog
+    setShowDeleteDialog(true);
+  }
+
+  async function handleDeleteAccount() {
+    if (!user) return;
+
+    // Close dialog
+    setShowDeleteDialog(false);
 
     try {
       // 1. Get all user's reports to delete associated images
@@ -548,7 +556,7 @@ export default function SettingPage() {
             </div>
 
             <button
-              onClick={handleDeleteAccount}
+              onClick={handleDeleteAccountClick}
               disabled={deleteConfirmText !== "HAPUS AKUN"}
               className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-4 rounded-xl hover:from-red-700 hover:to-red-800 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-300 font-black shadow-lg hover:shadow-xl disabled:shadow-none transform hover:-translate-y-0.5 disabled:transform-none"
             >
@@ -567,6 +575,18 @@ export default function SettingPage() {
           </div>
         </div>
       </div>
+
+      {/* Confirm Delete Dialog */}
+      <ConfirmDialog
+        isOpen={showDeleteDialog}
+        title="Hapus Akun Permanen?"
+        message="Apakah Anda yakin ingin menghapus akun? Tindakan ini tidak dapat dibatalkan dan akan menghapus SEMUA laporan, komentar, dan foto yang pernah Anda upload!"
+        confirmText="Ya, Hapus Akun"
+        cancelText="Batal"
+        type="danger"
+        onConfirm={handleDeleteAccount}
+        onCancel={() => setShowDeleteDialog(false)}
+      />
     </DashboardLayout>
   );
 }
