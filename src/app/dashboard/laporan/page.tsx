@@ -549,8 +549,8 @@ function LaporanContent() {
 
         {/* Modal Popup for Create/Edit Report - Improved */}
         {showModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/40 backdrop-blur-md animate-fade-in">
-            <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto border-2 border-gray-200 animate-scale-in">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/40 backdrop-blur-md">
+        <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto border-2 border-gray-200">
               <div className="sticky top-0 px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between rounded-t-2xl sm:rounded-t-3xl z-10 shadow-lg" style={{ backgroundColor: 'rgba(17, 77, 145)' }}>
                 <div className="flex items-center gap-2">
                   {editMode ? (
