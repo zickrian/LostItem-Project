@@ -567,10 +567,10 @@ function LaporanContent() {
             </div>
           </div>
 
-        {/* Modal Popup for Create/Edit Report - Improved */}
+        {/* Modal Popup for Create/Edit Report - 2 Column Layout (No Vertical Scroll) */}
         {showModal && (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/40 backdrop-blur-md">
-        <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto border-2 border-gray-200">
+        <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl max-w-6xl w-full max-h-[95vh] overflow-hidden border-2 border-gray-200 flex flex-col">
               <div className="sticky top-0 px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between rounded-t-2xl sm:rounded-t-3xl z-10 shadow-lg" style={{ backgroundColor: 'rgba(17, 77, 145)' }}>
                 <div className="flex items-center gap-2">
                   {editMode ? (
@@ -600,10 +600,15 @@ function LaporanContent() {
                 </button>
               </div>
 
-              <div className="p-4 sm:p-6 bg-gray-50">
-                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-                  {/* Title */}
-                  <div>
+              <div className="p-4 sm:p-6 bg-gray-50 overflow-y-auto flex-1">
+                <form onSubmit={handleSubmit} className="h-full flex flex-col">
+                  {/* 2 Column Grid Layout */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1">
+                    
+                    {/* LEFT COLUMN - Judul, Deskripsi, Kategori */}
+                    <div className="space-y-4">
+                      {/* Title */}
+                      <div>
                     <label className="flex items-center justify-between text-sm font-bold text-gray-900 mb-2">
                       <span className="flex items-center gap-2">
                         <BookmarkIcon className="w-4 h-4" />
@@ -691,10 +696,13 @@ function LaporanContent() {
                         </option>
                       ))}
                     </select>
-                  </div>
+                      </div>
+                    </div>
 
-                  {/* Location */}
-                  <div>
+                    {/* RIGHT COLUMN - Lokasi, Tipe, Upload Foto */}
+                    <div className="space-y-4">
+                      {/* Location */}
+                      <div>
                     <label className="flex items-center gap-2 text-sm font-bold text-gray-900 mb-2">
                       <MapPinIcon className="w-4 h-4" />
                       Lokasi
@@ -785,10 +793,12 @@ function LaporanContent() {
                       </div>
                     )}
                     <p className="text-xs text-gray-600 mt-2 font-medium">Maksimal 5MB, format: JPG, PNG, WEBP</p>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Buttons */}
-                  <div className="flex gap-3 pt-4">
+                  {/* Buttons - Full Width Below Columns */}
+                  <div className="flex gap-3 pt-6 border-t-2 border-gray-200 mt-6">
                     <button
                       type="submit"
                       disabled={submitting}
