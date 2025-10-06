@@ -1,168 +1,685 @@
+"use client";
+
 import Link from "next/link";
-import { Search, FileEdit, BarChart3, Shield, Clock, Users } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, FileEdit, BarChart3, Shield, Clock, Users, GraduationCap, Github, Twitter, Instagram, Facebook, Linkedin, Mail, MapPin, Folder, Bell, Wallet, Smartphone, Book, Key, Headphones, Laptop } from "lucide-react";
+
+interface CountUpProps {
+  target: number;
+  duration?: number;
+  className?: string;
+}
+
+function CountUp({ target, duration = 2000, className = "text-4xl font-extrabold text-white" }: CountUpProps) {
+  const [count, setCount] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible) return;
+    const start = Date.now();
+    const animate = () => {
+      const now = Date.now();
+      const progress = Math.min((now - start) / duration, 1);
+      const easedProgress = 1 - Math.pow(1 - progress, 3); // ease-out
+      setCount(Math.floor(easedProgress * target));
+      if (progress < 1) requestAnimationFrame(animate);
+    };
+    animate();
+  }, [isVisible, target, duration]);
+
+  return <span ref={ref} className={className}>{count}</span>;
+}
 
 export default function Home() {
+  const [scrolled, setScrolled] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const categories = [
+    { icon: Wallet, title: "Dompet", subtitle: "Jumlah yang ditemukan", count: 150, iconBg: "#FEF08A" },
+    { icon: Smartphone, title: "Handphone", subtitle: "Jumlah yang ditemukan", count: 85, iconBg: "#A7F3D0" },
+    { icon: Book, title: "Buku", subtitle: "Jumlah yang ditemukan", count: 250, iconBg: "#FBCFE8" },
+    { icon: Key, title: "Kunci", subtitle: "Jumlah yang ditemukan", count: 120, iconBg: "#BFDBFE" },
+    { icon: Headphones, title: "Headphone", subtitle: "Jumlah yang ditemukan", count: 60, iconBg: "#FECACA" },
+    { icon: Laptop, title: "Laptop", subtitle: "Jumlah yang ditemukan", count: 30, iconBg: "#DDD6FE" },
+  ];
+
+  const foundItems = [
+    { icon: Wallet, title: "Dompet Kulit", location: "Gedung A Lt.2", date: "3 Okt 2025", iconBg: "#FEF08A" },
+    { icon: Smartphone, title: "Handphone Samsung", location: "Perpustakaan", date: "2 Okt 2025", iconBg: "#A7F3D0" },
+    { icon: Book, title: "Buku Matematika", location: "Kelas 101", date: "1 Okt 2025", iconBg: "#FBCFE8" },
+    { icon: Key, title: "Kunci Motor", location: "Parkiran Utama", date: "30 Sep 2025", iconBg: "#BFDBFE" },
+    { icon: Headphones, title: "Headphone Sony", location: "Kantin", date: "29 Sep 2025", iconBg: "#FECACA" },
+    { icon: Laptop, title: "Laptop Asus", location: "Lab Komputer", date: "28 Sep 2025", iconBg: "#DDD6FE" },
+  ];
+
+  const statistics = [
+    { icon: "📢", title: "Barang Hilang Dilaporkan", count: 300, gradient: "from-rose-400 to-pink-500" },
+    { icon: "🔍", title: "Barang Ditemukan", count: 250, gradient: "from-sky-400 to-blue-600" },
+    { icon: "✅", title: "Barang Diklaim", count: 200, gradient: "from-emerald-400 to-green-500" },
+  ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen relative overflow-hidden bg-white text-gray-900 font-sans">
+
       {/* Navbar */}
-      <nav className="bg-white shadow-sm fixed top-0 left-0 right-0 z-50 border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-14 sm:h-16">
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/80 transition-all duration-300 ${
+          scrolled ? "border-b border-gray-200" : ""
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <span className="text-lg sm:text-xl md:text-2xl font-bold text-blue-600">Lost&Found</span>
+              <span className="text-xl sm:text-2xl font-bold text-gray-900 select-none">FindNUS</span>
             </div>
-            <Link
-              href="/login"
-              className="bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg font-medium text-sm sm:text-base"
-            >
-              Login
-            </Link>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 via-blue-100 to-white">
-        <div className="max-w-5xl mx-auto text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-gray-900 mb-4 sm:mb-6 leading-tight px-2">
-            Sistem Barang Hilang<br />
-            <span className="text-blue-600">Mahasiswa</span>
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 mb-6 sm:mb-8 md:mb-10 max-w-3xl mx-auto leading-relaxed px-4">
-            Platform untuk melaporkan dan menemukan barang hilang dengan mudah
-          </p>
-          <Link
-            href="/login"
-            className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+      <section className="relative flex flex-col md:flex-row items-center justify-between px-10 lg:px-20 py-24 bg-white overflow-hidden">
+        {/* Floating bubbles background */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="bubble-particle w-16 h-16 absolute top-20 left-10"></div>
+          <div className="bubble-particle w-10 h-10 absolute top-40 right-20 delay-2"></div>
+          <div className="bubble-particle w-12 h-12 absolute bottom-20 left-1/4 delay-4"></div>
+          <div className="bubble-particle w-8 h-8 absolute top-60 right-1/3 delay-6"></div>
+          <div className="bubble-particle w-14 h-14 absolute bottom-40 right-10 delay-8"></div>
+        </div>
+
+        {/* Text */}
+        <div className="z-10 max-w-xl space-y-6">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-5xl font-extrabold text-gray-900 leading-tight"
+            >
+              Temukan Kembali <br/>
+              <span className="animated-gradient-text">Barang Anda</span><br/>
+              Dengan Mudah
+            </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 1 }}
+            className="text-gray-600"
           >
-            <FileEdit className="w-4 h-4 sm:w-5 sm:h-5" />
-            Mulai Lapor
-          </Link>
+            Sistem pelaporan barang hilang yang cepat dan aman untuk mahasiswa.
+            Bantu kami menghubungkan kembali Anda dengan barang yang hilang.
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5, duration: 0.5, type: "spring", stiffness: 200 }}
+            className="flex gap-4"
+          >
+            <Link
+              href="/login"
+              className="px-6 py-3 text-white font-semibold rounded-lg shadow-md transition-all hover:-translate-y-0.5"
+              style={{backgroundColor: '#3f7bd1', boxShadow: '0 4px 6px rgba(63, 123, 209, 0.5)'}}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#3461a8'}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#3f7bd1'}
+            >
+              Coba Sekarang
+            </Link>
+            <a
+              href="#features"
+              className="px-6 py-3 border rounded-lg font-medium transition"
+              style={{borderColor: '#3f7bd1', color: '#3f7bd1'}}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#e6f0ff'}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              Pelajari Lebih Lanjut
+            </a>
+          </motion.div>
+        </div>
+
+        {/* Phone + floating icons */}
+        <div className="relative mt-10 md:mt-0">
+          <motion.img
+            src="/phone.png"
+            alt="App Preview"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.7, duration: 0.8 }}
+            className="w-[400px] drop-shadow-xl"
+          />
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.0, duration: 0.6 }}
+            className="absolute w-10 top-8 right-20 float-mail"
+          >
+            <Mail className="w-10 h-10 drop-shadow-lg" style={{color: '#3f7bd1'}} />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.1, duration: 0.6 }}
+            className="absolute w-8 bottom-12 left-16 float-location"
+          >
+            <MapPin className="w-8 h-8 text-green-500 drop-shadow-lg" />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.2, duration: 0.6 }}
+            className="absolute w-9 top-1/3 left-10 float-folder"
+          >
+            <Folder className="w-9 h-9 text-purple-500 drop-shadow-lg" />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.3, duration: 0.6 }}
+            className="absolute w-9 top-1/4 right-10 float-bell"
+          >
+            <Bell className="w-9 h-9 text-orange-500 drop-shadow-lg" />
+          </motion.div>
         </div>
       </section>
+
+      {/* Curved divider */}
+      <div className="relative">
+        <svg className="absolute bottom-0 overflow-hidden" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" version="1.1" viewBox="0 0 2560 100" x="0" y="0">
+          <polygon className="fill-white" points="2560 0 2560 100 0 100"></polygon>
+        </svg>
+      </div>
 
       {/* Features Section */}
-      <section className="py-12 sm:py-16 md:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12 md:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 px-2">
-              Fitur Utama
-            </h2>
-            <p className="text-gray-600 text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-4">
-              Solusi lengkap untuk mengelola barang hilang di kampus
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
-            {/* Feature 1 */}
-            <div className="group bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl border-2 border-gray-100 hover:border-blue-500 transition-all duration-300 hover:shadow-xl">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-100 rounded-lg sm:rounded-xl flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-blue-600 transition-colors duration-300">
-                <Search className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600 group-hover:text-white transition-colors duration-300" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">
-                Cari Barang Hilang
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                Filter dan cari laporan barang hilang dengan mudah berdasarkan kategori, lokasi, dan waktu.
-              </p>
+      <section id="features" className="relative py-24 overflow-hidden">
+        {/* Animated background */}
+        <div className="absolute inset-0 bg-[conic-gradient(from_0deg,_#1E3A8A,_#3B82F6,_#1E40AF,_#1E3A8A)] blur-3xl opacity-25 animate-spinGradient"></div>
+
+        {/* Header */}
+        <div className="relative z-10 text-center mb-12">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-5xl font-bold text-slate-900"
+          >
+            Fitur Utama
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-gray-700 mt-2"
+          >
+            Kemudahan dalam melaporkan, mencari, dan mengklaim barang hilang
+          </motion.p>
+        </div>
+
+        {/* Infinite Scroll Container */}
+        <div className="relative z-10 overflow-x-auto scrollbar-hide">
+          <div className={`flex gap-6 ${isPaused ? '' : 'animate-scrollLeft'} cursor-grab active:cursor-grabbing`} onMouseDown={() => setIsPaused(true)} onMouseUp={() => setIsPaused(false)} onTouchStart={() => setIsPaused(true)} onTouchEnd={() => setIsPaused(false)}>
+            {/* Group 1 */}
+            <div className="flex gap-6">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+                className="w-[220px] md:w-[260px] h-[200px] md:h-[230px] flex-shrink-0 bg-white/25 backdrop-blur-lg border border-white/20 rounded-2xl p-5 md:p-6 text-center shadow-md hover:shadow-blue-400/30 transition-all hover:-translate-y-1 hover:scale-[1.03]"
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-xl flex items-center justify-center">
+                    <Search className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-slate-900 font-semibold text-base md:text-lg mb-2">Cari Barang Hilang</h3>
+                <p className="text-gray-700 text-sm leading-snug line-clamp-3 break-words">
+                  Filter dan cari laporan barang hilang dengan mudah berdasarkan kategori, lokasi, dan waktu.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                viewport={{ once: true }}
+                className="w-[220px] md:w-[260px] h-[200px] md:h-[230px] flex-shrink-0 bg-white/25 backdrop-blur-lg border border-white/20 rounded-2xl p-5 md:p-6 text-center shadow-md hover:shadow-blue-400/30 transition-all hover:-translate-y-1 hover:scale-[1.03]"
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-xl flex items-center justify-center">
+                    <FileEdit className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-slate-900 font-semibold text-base md:text-lg mb-2">Lapor Barang Hilang</h3>
+                <p className="text-gray-700 text-sm leading-snug line-clamp-3 break-words">
+                  Form laporan cepat dan mudah untuk melaporkan barang yang hilang atau ditemukan.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+                className="w-[220px] md:w-[260px] h-[200px] md:h-[230px] flex-shrink-0 bg-white/25 backdrop-blur-lg border border-white/20 rounded-2xl p-5 md:p-6 text-center shadow-md hover:shadow-blue-400/30 transition-all hover:-translate-y-1 hover:scale-[1.03]"
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-xl flex items-center justify-center">
+                    <BarChart3 className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-slate-900 font-semibold text-base md:text-lg mb-2">Statistik Laporan</h3>
+                <p className="text-gray-700 text-sm leading-snug line-clamp-3 break-words">
+                  Lihat data dan statistik barang hilang dan temuan kampus secara real-time.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                viewport={{ once: true }}
+                className="w-[220px] md:w-[260px] h-[200px] md:h-[230px] flex-shrink-0 bg-white/25 backdrop-blur-lg border border-white/20 rounded-2xl p-5 md:p-6 text-center shadow-md hover:shadow-blue-400/30 transition-all hover:-translate-y-1 hover:scale-[1.03]"
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-xl flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-slate-900 font-semibold text-base md:text-lg mb-2">Keamanan Terjamin</h3>
+                <p className="text-gray-700 text-sm leading-snug line-clamp-3 break-words">
+                  Data laporan dan informasi pengguna dilindungi dengan sistem keamanan terbaik.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                viewport={{ once: true }}
+                className="w-[220px] md:w-[260px] h-[200px] md:h-[230px] flex-shrink-0 bg-white/25 backdrop-blur-lg border border-white/20 rounded-2xl p-5 md:p-6 text-center shadow-md hover:shadow-blue-400/30 transition-all hover:-translate-y-1 hover:scale-[1.03]"
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-xl flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-slate-900 font-semibold text-base md:text-lg mb-2">Notifikasi Real-time</h3>
+                <p className="text-gray-700 text-sm leading-snug line-clamp-3 break-words">
+                  Dapatkan pemberitahuan langsung ketika ada update tentang barang yang Anda cari.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                viewport={{ once: true }}
+                className="w-[220px] md:w-[260px] h-[200px] md:h-[230px] flex-shrink-0 bg-white/25 backdrop-blur-lg border border-white/20 rounded-2xl p-5 md:p-6 text-center shadow-md hover:shadow-blue-400/30 transition-all hover:-translate-y-1 hover:scale-[1.03]"
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-xl flex items-center justify-center">
+                    <Users className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-slate-900 font-semibold text-base md:text-lg mb-2">Komunitas Kampus</h3>
+                <p className="text-gray-700 text-sm leading-snug line-clamp-3 break-words">
+                  Bergabung dengan komunitas mahasiswa yang saling membantu menemukan barang hilang.
+                </p>
+              </motion.div>
             </div>
 
-            {/* Feature 2 */}
-            <div className="group bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl border-2 border-gray-100 hover:border-blue-500 transition-all duration-300 hover:shadow-xl">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-100 rounded-lg sm:rounded-xl flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-blue-600 transition-colors duration-300">
-                <FileEdit className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600 group-hover:text-white transition-colors duration-300" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">
-                Lapor Barang Hilang
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                Form laporan cepat dan mudah untuk melaporkan barang yang hilang atau ditemukan.
-              </p>
-            </div>
+            {/* Group 2 (duplicate for infinite loop) */}
+            <div className="flex gap-6">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+                className="w-[220px] md:w-[260px] h-[200px] md:h-[230px] flex-shrink-0 bg-white/25 backdrop-blur-lg border border-white/20 rounded-2xl p-5 md:p-6 text-center shadow-md hover:shadow-blue-400/30 transition-all hover:-translate-y-1 hover:scale-[1.03]"
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-xl flex items-center justify-center">
+                    <Search className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-slate-900 font-semibold text-base md:text-lg mb-2">Cari Barang Hilang</h3>
+                <p className="text-gray-700 text-sm leading-snug line-clamp-3 break-words">
+                  Filter dan cari laporan barang hilang dengan mudah berdasarkan kategori, lokasi, dan waktu.
+                </p>
+              </motion.div>
 
-            {/* Feature 3 */}
-            <div className="group bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl border-2 border-gray-100 hover:border-blue-500 transition-all duration-300 hover:shadow-xl">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-100 rounded-lg sm:rounded-xl flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-blue-600 transition-colors duration-300">
-                <BarChart3 className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600 group-hover:text-white transition-colors duration-300" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">
-                Statistik Laporan
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                Lihat data dan statistik barang hilang dan temuan di kampus secara real-time.
-              </p>
-            </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                viewport={{ once: true }}
+                className="w-[220px] md:w-[260px] h-[200px] md:h-[230px] flex-shrink-0 bg-white/25 backdrop-blur-lg border border-white/20 rounded-2xl p-5 md:p-6 text-center shadow-md hover:shadow-blue-400/30 transition-all hover:-translate-y-1 hover:scale-[1.03]"
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-xl flex items-center justify-center">
+                    <FileEdit className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-slate-900 font-semibold text-base md:text-lg mb-2">Lapor Barang Hilang</h3>
+                <p className="text-gray-700 text-sm leading-snug line-clamp-3 break-words">
+                  Form laporan cepat dan mudah untuk melaporkan barang yang hilang atau ditemukan.
+                </p>
+              </motion.div>
 
-            {/* Feature 4 */}
-            <div className="group bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl border-2 border-gray-100 hover:border-blue-500 transition-all duration-300 hover:shadow-xl">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-100 rounded-lg sm:rounded-xl flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-blue-600 transition-colors duration-300">
-                <Shield className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600 group-hover:text-white transition-colors duration-300" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">
-                Keamanan Terjamin
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                Data laporan dan informasi pengguna dilindungi dengan sistem keamanan terbaik.
-              </p>
-            </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                viewport={{ once: true }}
+                className="w-[220px] md:w-[260px] h-[200px] md:h-[230px] flex-shrink-0 bg-white/25 backdrop-blur-lg border border-white/20 rounded-2xl p-5 md:p-6 text-center shadow-md hover:shadow-blue-400/30 transition-all hover:-translate-y-1 hover:scale-[1.03]"
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-xl flex items-center justify-center">
+                    <BarChart3 className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-slate-900 font-semibold text-base md:text-lg mb-2">Statistik Laporan</h3>
+                <p className="text-gray-700 text-sm leading-snug line-clamp-3 break-words">
+                  Lihat data dan statistik barang hilang dan temuan kampus secara real-time.
+                </p>
+              </motion.div>
 
-            {/* Feature 5 */}
-            <div className="group bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl border-2 border-gray-100 hover:border-blue-500 transition-all duration-300 hover:shadow-xl">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-100 rounded-lg sm:rounded-xl flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-blue-600 transition-colors duration-300">
-                <Clock className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600 group-hover:text-white transition-colors duration-300" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">
-                Notifikasi Real-time
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                Dapatkan pemberitahuan langsung ketika ada update tentang barang yang Anda cari.
-              </p>
-            </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                viewport={{ once: true }}
+                className="w-[220px] md:w-[260px] h-[200px] md:h-[230px] flex-shrink-0 bg-white/25 backdrop-blur-lg border border-white/20 rounded-2xl p-5 md:p-6 text-center shadow-md hover:shadow-blue-400/30 transition-all hover:-translate-y-1 hover:scale-[1.03]"
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-xl flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-slate-900 font-semibold text-base md:text-lg mb-2">Keamanan Terjamin</h3>
+                <p className="text-gray-700 text-sm leading-snug line-clamp-3 break-words">
+                  Data laporan dan informasi pengguna dilindungi dengan sistem keamanan terbaik.
+                </p>
+              </motion.div>
 
-            {/* Feature 6 */}
-            <div className="group bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl border-2 border-gray-100 hover:border-blue-500 transition-all duration-300 hover:shadow-xl">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-100 rounded-lg sm:rounded-xl flex items-center justify-center mb-4 sm:mb-6 group-hover:bg-blue-600 transition-colors duration-300">
-                <Users className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600 group-hover:text-white transition-colors duration-300" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3">
-                Komunitas Kampus
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-                Bergabung dengan komunitas mahasiswa yang saling membantu menemukan barang hilang.
-              </p>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                viewport={{ once: true }}
+                className="w-[220px] md:w-[260px] h-[200px] md:h-[230px] flex-shrink-0 bg-white/25 backdrop-blur-lg border border-white/20 rounded-2xl p-5 md:p-6 text-center shadow-md hover:shadow-blue-400/30 transition-all hover:-translate-y-1 hover:scale-[1.03]"
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-xl flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-slate-900 font-semibold text-base md:text-lg mb-2">Notifikasi Real-time</h3>
+                <p className="text-gray-700 text-sm leading-snug line-clamp-3 break-words">
+                  Dapatkan pemberitahuan langsung ketika ada update tentang barang yang Anda cari.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                viewport={{ once: true }}
+                className="w-[220px] md:w-[260px] h-[200px] md:h-[230px] flex-shrink-0 bg-white/25 backdrop-blur-lg border border-white/20 rounded-2xl p-5 md:p-6 text-center shadow-md hover:shadow-blue-400/30 transition-all hover:-translate-y-1 hover:scale-[1.03]"
+              >
+                <div className="flex justify-center mb-4">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-xl flex items-center justify-center">
+                    <Users className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-slate-900 font-semibold text-base md:text-lg mb-2">Komunitas Kampus</h3>
+                <p className="text-gray-700 text-sm leading-snug line-clamp-3 break-words">
+                  Bergabung dengan komunitas mahasiswa yang saling membantu menemukan barang hilang.
+                </p>
+              </motion.div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* About Section */}
-      <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 px-2">Tentang Aplikasi</h2>
-          <p className="text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed opacity-95 px-4">
-            Aplikasi ini dibuat khusus untuk memudahkan mahasiswa Universitas Dian Nuswantoro 
-            dalam menjaga dan melacak barang-barang mereka. Dengan sistem yang terintegrasi, 
-            kita bisa saling membantu menemukan barang yang hilang dengan cepat dan efisien.
-          </p>
-          <div className="mt-6 sm:mt-8 md:mt-10 pt-6 sm:pt-8 md:pt-10 border-t border-blue-500/30">
-            <p className="text-blue-200 text-xs sm:text-sm px-4">
-              Dikembangkan dengan ❤️ untuk mahasiswa UDINUS
-            </p>
+      {/* Categories Section */}
+      <section className="py-24 bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="text-center mb-16">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="text-4xl md:text-5xl font-bold mb-4"
+            >
+              Barang Yang Sering Ditemukan
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              viewport={{ once: true }}
+              className="text-gray-300 text-lg"
+            >
+              Statistik barang hilang yang berhasil ditemukan di kampus kami
+            </motion.p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {categories.map((category, index) => (
+              <motion.div
+                key={category.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl p-6 text-center hover:bg-gray-800/70 transition-all hover:-translate-y-1"
+              >
+                <div className="flex justify-center mb-4">
+                  <div
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center"
+                    style={{ backgroundColor: category.iconBg }}
+                  >
+                    <category.icon className="w-8 h-8 text-gray-900" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-semibold mb-2">{category.title}</h3>
+                <p className="text-gray-400 text-sm mb-4">{category.subtitle}</p>
+                <CountUp target={category.count} />
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
+
+      {/* Found Items Section */}
+      <section className="relative py-24 bg-white overflow-hidden">
+        {/* Floating bubbles background */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="bubble-particle w-16 h-16 absolute top-20 left-10 animate-floatBubbles"></div>
+          <div className="bubble-particle w-10 h-10 absolute top-40 right-20 animate-floatBubbles-delay"></div>
+          <div className="bubble-particle w-12 h-12 absolute bottom-20 left-1/4 animate-floatBubbles"></div>
+          <div className="bubble-particle w-8 h-8 absolute top-60 right-1/3 animate-floatBubbles-delay"></div>
+          <div className="bubble-particle w-14 h-14 absolute bottom-40 right-10 animate-floatBubbles"></div>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+          <div className="text-center mb-16">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+              className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 animate-fadeInUp"
+            >
+              Barang yang Ditemukan
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              viewport={{ once: true }}
+              className="text-gray-600 text-lg"
+            >
+              Barang-barang yang berhasil ditemukan dan dikembalikan kepada pemiliknya
+            </motion.p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {foundItems.map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-2 hover:scale-[1.02]"
+              >
+                <div className="flex items-center mb-4">
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center mr-4"
+                    style={{ backgroundColor: item.iconBg }}
+                  >
+                    <item.icon className="w-6 h-6 text-gray-900" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">{item.title}</h3>
+                    <div className="flex items-center text-sm text-gray-600 mt-1">
+                      <MapPin className="w-4 h-4 mr-1" />
+                      <span>{item.location}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center text-sm text-gray-500">
+                  <Clock className="w-4 h-4 mr-1" />
+                  <span>Ditemukan pada {item.date}</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Statistics Platform Section */}
+      <section id="statistik-platform" className="relative py-24 overflow-hidden">
+        {/* Animated background */}
+        <div className="absolute inset-0 bg-[conic-gradient(from_0deg,_#1E3A8A,_#3B82F6,_#1E40AF,_#1E3A8A)] blur-3xl opacity-25 animate-spinGradient"></div>
+
+        {/* Content */}
+        <div className="relative z-10 text-center mb-12">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-5xl font-bold text-black"
+          >
+            Statistik Platform
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-gray-600 mt-2"
+          >
+            Data terkini sistem Lost & Found UDINUS
+          </motion.p>
+        </div>
+
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto px-6">
+          {statistics.map((stat, index) => (
+            <motion.div
+              key={stat.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+              viewport={{ once: true }}
+              className="bg-[rgba(255,255,255,0.6)] backdrop-blur-lg rounded-2xl p-8 border border-white/30 shadow-lg hover:-translate-y-5 hover:scale-[1.03] hover:shadow-xl transition-all duration-500 ease-in-out flex flex-col items-center justify-center min-h-[200px]"
+            >
+              <div className={`w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br ${stat.gradient} animate-pulse mb-4`}>
+                <span className="text-4xl">{stat.icon}</span>
+              </div>
+              <h3 className="text-gray-700 font-semibold text-lg">{stat.title}</h3>
+              <CountUp target={stat.count} className="text-5xl font-extrabold text-gray-900" />
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+
 
       {/* Footer */}
-      <footer className="bg-gray-100 py-8 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <p className="text-gray-600 mb-2 font-medium">
-              &copy; 2025 Lost&Found – Universitas Dian Nuswantoro
-            </p>
-            <p className="text-gray-500 text-sm">
-              Hubungi Developer: <a href="mailto:support@lostfound.dinus.ac.id" className="text-blue-600 hover:underline">support@lostfound.dinus.ac.id</a>
-            </p>
+      <footer className="relative overflow-hidden py-16 bg-gradient-to-t from-[#0b0f19] to-[#111827] text-[#ffffff]">
+        {/* Animated background orbs */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute w-72 h-72 bg-blue-400/10 rounded-full top-10 left-20 blur-3xl animate-[floatBubblesFooter_14s_ease-in-out_infinite_alternate]"></div>
+          <div className="absolute w-80 h-80 bg-indigo-400/10 rounded-full bottom-16 right-10 blur-3xl animate-[floatBubblesFooter_16s_ease-in-out_infinite_alternate]"></div>
+        </div>
+
+        <div className="relative z-10 max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-10">
+          {/* Left */}
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center shadow-lg">
+                <span className="text-[#ffffff] font-bold text-lg">F</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-2xl bg-gradient-to-r from-[#3b82f6] to-[#3b82f6] bg-clip-text text-transparent">Lost & Found</h3>
+                <p className="text-[#3b82f6] text-sm">UDINUS</p>
+              </div>
+            </div>
+            <p className="text-[#cbd5e1] max-w-md">Platform resmi untuk menemukan dan melaporkan barang hilang di kampus Universitas Dian Nuswantoro.</p>
           </div>
+
+          {/* Right */}
+          <div>
+            <h4 className="text-[#ffffff] font-semibold text-lg mb-3">Hubungi Kami</h4>
+            <p className="text-[#cbd5e1] hover:text-[#3b82f6] transition">+62 24 3517261</p>
+            <p className="text-[#cbd5e1] hover:text-[#3b82f6] transition">lostandfound@dinus.ac.id</p>
+            <p className="text-[#cbd5e1] hover:text-[#3b82f6] transition">Jl. Imam Bonjol No.207, Semarang</p>
+
+            <h4 className="text-[#ffffff] font-semibold text-lg mt-6 mb-3">Media Sosial</h4>
+            <div className="flex gap-4">
+              <a href="#" className="bg-white/10 p-3 rounded-full hover:bg-blue-500/30 hover:text-[#3b82f6] transition transform hover:scale-110">
+                <Instagram className="w-5 h-5 text-[#e2e8f0]" />
+              </a>
+              <a href="#" className="bg-white/10 p-3 rounded-full hover:bg-blue-500/30 hover:text-[#3b82f6] transition transform hover:scale-110">
+                <Facebook className="w-5 h-5 text-[#e2e8f0]" />
+              </a>
+              <a href="#" className="bg-white/10 p-3 rounded-full hover:bg-blue-500/30 hover:text-[#3b82f6] transition transform hover:scale-110">
+                <Linkedin className="w-5 h-5 text-[#e2e8f0]" />
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="relative z-10 text-center mt-10 border-t border-blue-400/20 pt-6 text-[#cbd5e1] text-sm">
+          2025 Lost & Found UDINUS. All rights reserved. <br/>
+          Dibuat dengan <span className="text-red-400 animate-pulse">❤</span> untuk Mahasiswa UDINUS.
         </div>
       </footer>
     </div>
