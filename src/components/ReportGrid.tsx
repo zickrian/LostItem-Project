@@ -140,6 +140,31 @@ export default function ReportGrid({
               )}
             </div>
 
+            {/* Title */}
+            <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2 line-clamp-2 leading-tight">
+              {report.title}
+            </h3>
+
+            {/* Description */}
+            {report.description && (
+              <div className="mb-3">
+                <p className={`text-sm text-gray-600 leading-relaxed ${
+                  expandedReports.has(report.id) ? '' : 'line-clamp-2'
+                }`}>
+                  {report.description}
+                </p>
+                {report.description.length > 100 && (
+                  <button
+                    onClick={() => toggleDescription(report.id)}
+                    className="text-xs font-semibold mt-1 px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+                    style={{ color: 'rgba(17, 77, 145)' }}
+                  >
+                    {expandedReports.has(report.id) ? 'Lihat lebih sedikit' : 'Lihat selengkapnya'}
+                  </button>
+                )}
+              </div>
+            )}
+
             {/* Date */}
             <div className="text-[10px] sm:text-xs text-gray-500 mb-3">
               {formatDate(report.created_at)}
