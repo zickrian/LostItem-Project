@@ -48,8 +48,14 @@ export default function AuthCallbackPage() {
           const errorMsg = "Pastikan Login menggunakan email kampus!";
           setError(errorMsg);
           toast.error(errorMsg);
+          
+          // Tunggu sampai signOut selesai
           await supabase.auth.signOut();
-          setTimeout(() => router.push("/login"), 8000);
+          
+          // Setelah 5 detik, redirect ke halaman login
+          setTimeout(() => {
+            router.push("/login");
+          }, 5000);  // 5 detik
           return;
         }
 
