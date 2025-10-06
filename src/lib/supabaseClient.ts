@@ -5,12 +5,13 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+// Menggunakan variabel server-side (tanpa NEXT_PUBLIC_) untuk keamanan lebih baik
+const supabaseUrl = process.env.SUPABASE_URL || "";
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || "";
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn("⚠️ Missing Supabase environment variables in supabaseClient.ts");
-  console.warn("Consider migrating to supabaseBrowser.ts or supabaseServer.ts");
+  console.warn("Make sure SUPABASE_URL and SUPABASE_ANON_KEY are set in .env.local");
 }
 
 export const supabase = createClient(
