@@ -19,6 +19,7 @@ interface Comment {
 interface CommentSectionProps {
   reportId: string;
   currentUserId: string;
+  isHistoryMode?: boolean;
 }
 
 interface CurrentUser {
@@ -26,7 +27,7 @@ interface CurrentUser {
   avatar_url?: string;
 }
 
-export default function CommentSection({ reportId, currentUserId }: CommentSectionProps) {
+export default function CommentSection({ reportId, currentUserId, isHistoryMode = false }: CommentSectionProps) {
   const toast = useToast();
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState("");
@@ -296,41 +297,50 @@ export default function CommentSection({ reportId, currentUserId }: CommentSecti
         )}
       </div>
 
-  {/* Comment Form */}
-      <form onSubmit={handleSubmitComment} className="flex gap-1.5 sm:gap-2">
-        <input
-          type="text"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          placeholder="Tulis komentar..."
-          className="flex-1 px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-transparent text-xs sm:text-sm text-black placeholder:text-gray-400"
-          onFocus={(e) => {
-            e.currentTarget.style.boxShadow = '0 0 0 2px rgba(17, 77, 145, 0.5)';
-          }}
-          onBlur={(e) => {
-            e.currentTarget.style.boxShadow = 'none';
-          }}
-          disabled={submitting}
-        />
-        <button
-          type="submit"
-          disabled={!newComment.trim() || submitting}
-          className="px-3 sm:px-4 py-1.5 sm:py-2 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 text-xs sm:text-sm font-medium whitespace-nowrap"
-          style={{ backgroundColor: !newComment.trim() || submitting ? undefined : 'rgba(17, 77, 145)' }}
-          onMouseEnter={(e) => {
-            if (newComment.trim() && !submitting) {
-              e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.9)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (newComment.trim() && !submitting) {
-              e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)';
-            }
-          }}
-        >
-          {submitting ? "..." : "Kirim"}
-        </button>
-      </form>
+  {/* Comment Form - Hidden in History Mode */}
+      {!isHistoryMode && (
+        <form onSubmit={handleSubmitComment} className="flex gap-1.5 sm:gap-2">
+          <input
+            type="text"
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            placeholder="Tulis komentar..."
+            className="flex-1 px-2.5 sm:px-3 py-1.5 sm:py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-transparent text-xs sm:text-sm text-black placeholder:text-gray-400"
+            onFocus={(e) => {
+              e.currentTarget.style.boxShadow = '0 0 0 2px rgba(17, 77, 145, 0.5)';
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+            disabled={submitting}
+          />
+          <button
+            type="submit"
+            disabled={!newComment.trim() || submitting}
+            className="px-3 sm:px-4 py-1.5 sm:py-2 text-white rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 text-xs sm:text-sm font-medium whitespace-nowrap"
+            style={{ backgroundColor: !newComment.trim() || submitting ? undefined : 'rgba(17, 77, 145)' }}
+            onMouseEnter={(e) => {
+              if (newComment.trim() && !submitting) {
+                e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.9)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (newComment.trim() && !submitting) {
+                e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)';
+              }
+            }}
+          >
+            {submitting ? "..." : "Kirim"}
+          </button>
+        </form>
+      )}
+      {isHistoryMode && (
+        <div className="text-center py-2 px-3 bg-blue-50 rounded-lg border border-blue-200">
+          <p className="text-xs sm:text-sm text-blue-700 font-medium">
+            📌 Barang sudah kembali ke pemilik. Komentar tidak bisa ditambahkan.
+          </p>
+        </div>
+      )}
       {/* Confirm Dialog for deletion */}
       <ConfirmDialog
         isOpen={confirmDialog.isOpen}

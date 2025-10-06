@@ -28,9 +28,10 @@ interface ReportCardProps {
   onDelete?: (reportId: string) => void;
   onEdit?: (reportId: string) => void;
   priority?: boolean;
+  isHistoryMode?: boolean;
 }
 
-export default function ReportCard({ report, currentUserId, onDelete, onEdit, priority = false }: ReportCardProps) {
+export default function ReportCard({ report, currentUserId, onDelete, onEdit, priority = false, isHistoryMode = false }: ReportCardProps) {
   const [showComments, setShowComments] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const isOwner = report.user_id === currentUserId;
@@ -56,7 +57,11 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit, pr
   };
 
   return (
-  <div className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
+  <div className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 relative">
+    {/* Gray Overlay for History Mode */}
+    {isHistoryMode && (
+      <div className="absolute inset-0 z-10 pointer-events-none rounded-2xl" style={{ backgroundColor: 'rgba(107, 114, 128, 0.1)' }}></div>
+    )}
       {/* Card Header */}
       <div className="p-4 sm:p-5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
         <div className="flex items-center justify-between">
@@ -127,12 +132,14 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit, pr
           <h3 className="text-lg sm:text-xl font-bold text-gray-900 leading-tight flex-1">{report.title}</h3>
           <span
             className={`px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm flex-shrink-0 ${
-              report.type === "hilang"
+              isHistoryMode
+                ? "bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border border-blue-200"
+                : report.type === "hilang"
                 ? "bg-gradient-to-r from-red-100 to-pink-100 text-red-700 border border-red-200"
                 : "bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border border-green-200"
             }`}
           >
-            {report.type === "hilang" ? "🔍 Hilang" : "✅ Temuan"}
+            {isHistoryMode ? "✓ Sudah Kembali" : report.type === "hilang" ? "🔍 Hilang" : "✅ Temuan"}
           </span>
         </div>
 
@@ -291,7 +298,7 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit, pr
       {/* Comment Section */}
       {showComments && (
         <div className="border-t-2 border-gray-100 bg-gray-50">
-          <CommentSection reportId={report.id} currentUserId={currentUserId} />
+          <CommentSection reportId={report.id} currentUserId={currentUserId} isHistoryMode={isHistoryMode} />
         </div>
       )}
     </div>

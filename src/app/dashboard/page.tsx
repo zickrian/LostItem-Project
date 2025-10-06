@@ -6,7 +6,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import SearchBar from "@/components/SearchBar";
 import ReportGrid from "@/components/ReportGrid";
 import ReportGridSkeleton from "@/components/ReportGridSkeleton";
-import { MagnifyingGlassIcon, CheckCircleIcon, TagIcon, CalendarIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, CheckCircleIcon, TagIcon, CalendarIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { useToast } from "@/contexts/ToastContext";
 import { delete_report_file } from "@/lib/supabaseStorage";
 
@@ -48,6 +48,7 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [startDate, setStartDate] = useState<string>("");
+  const [showHistory, setShowHistory] = useState(false);
   const monthInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -83,6 +84,11 @@ export default function DashboardPage() {
     filterReports();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reports, activeTab, searchQuery, selectedCategory, startDate]);
+
+  useEffect(() => {
+    fetchReports();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showHistory]);
 
   async function checkUser() {
     try {
@@ -126,6 +132,7 @@ export default function DashboardPage() {
 
   async function fetchReports() {
     try {
+      const statusFilter = showHistory ? "selesai" : "aktif";
       const { data, error } = await supabase
         .from("reports")
         .select(`
@@ -135,7 +142,7 @@ export default function DashboardPage() {
             avatar_url
           )
         `)
-        .eq("status", "aktif")
+        .eq("status", statusFilter)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -341,6 +348,30 @@ export default function DashboardPage() {
                   />
                   <div className="w-full h-full border-2 border-gray-300 rounded-xl pointer-events-none absolute inset-0 hover:shadow-md transition-shadow"></div>
                 </div>
+
+                {/* History Button */}
+                <button
+                  onClick={() => setShowHistory(!showHistory)}
+                  className="relative w-[52px] h-[52px] flex-shrink-0 cursor-pointer transition-all duration-300"
+                  title={showHistory ? "Tampilkan barang aktif" : "Tampilkan riwayat (barang yang sudah ketemu pemiliknya)"}
+                  style={{
+                    backgroundColor: showHistory ? 'rgba(17, 77, 145)' : 'white',
+                    borderRadius: '0.75rem',
+                    border: showHistory ? '2px solid rgba(17, 77, 145)' : '2px solid rgb(209, 213, 219)',
+                    boxShadow: showHistory ? '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)' : '0 1px 2px 0 rgb(0 0 0 / 0.05)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow = '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = showHistory ? '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)' : '0 1px 2px 0 rgb(0 0 0 / 0.05)';
+                  }}
+                >
+                  <ClockIcon 
+                    className="w-5 h-5 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-colors"
+                    style={{ color: showHistory ? '#ffffff' : '#374151' }}
+                  />
+                </button>
               </div>
             </div>
 
@@ -373,7 +404,7 @@ export default function DashboardPage() {
 
               {/* Month Filter - Mobile */}
               <div
-                className="relative h-[48px] flex-1 cursor-pointer"
+                className="relative h-[48px] w-[48px] flex-shrink-0 cursor-pointer"
                 onClick={() => {
                   if (monthInputRef.current) {
                     try {
@@ -397,12 +428,48 @@ export default function DashboardPage() {
                 />
                 <div className="w-full h-full border-2 border-gray-300 rounded-xl pointer-events-none absolute inset-0 hover:shadow-md transition-shadow"></div>
               </div>
+
+              {/* History Button - Mobile */}
+              <button
+                onClick={() => setShowHistory(!showHistory)}
+                className="relative w-[48px] h-[48px] flex-shrink-0 cursor-pointer transition-all duration-300"
+                title={showHistory ? "Tampilkan barang aktif" : "Tampilkan riwayat (barang yang sudah ketemu pemiliknya)"}
+                style={{
+                  backgroundColor: showHistory ? 'rgba(17, 77, 145)' : 'white',
+                  borderRadius: '0.75rem',
+                  border: showHistory ? '2px solid rgba(17, 77, 145)' : '2px solid rgb(209, 213, 219)',
+                  boxShadow: showHistory ? '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)' : '0 1px 2px 0 rgb(0 0 0 / 0.05)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = showHistory ? '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)' : '0 1px 2px 0 rgb(0 0 0 / 0.05)';
+                }}
+              >
+                <ClockIcon 
+                  className="w-5 h-5 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-colors"
+                  style={{ color: showHistory ? '#ffffff' : '#374151' }}
+                />
+              </button>
             </div>
           </div>
 
           {/* Active Filters Display */}
-          {(selectedCategory !== "all" || startDate) && (
+          {(selectedCategory !== "all" || startDate || showHistory) && (
             <div className="flex flex-wrap gap-2 mt-3">
+              {showHistory && (
+                <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-purple-100 text-purple-700 rounded-lg text-sm font-semibold">
+                  <ClockIcon className="w-4 h-4" />
+                  Riwayat (Barang Selesai)
+                  <button
+                    onClick={() => setShowHistory(false)}
+                    className="ml-1 hover:text-purple-900"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
               {selectedCategory !== "all" && (
                 <span className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-sm font-semibold">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
@@ -433,6 +500,7 @@ export default function DashboardPage() {
                 onClick={() => {
                   setSelectedCategory("all");
                   setStartDate("");
+                  setShowHistory(false);
                 }}
                 className="inline-flex items-center gap-1 px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-sm font-semibold hover:bg-red-200"
               >
@@ -548,6 +616,7 @@ export default function DashboardPage() {
               }))}
               showActions={false}
               currentUserId={user?.id}
+              isHistoryMode={showHistory}
             />
           </div>
         )}

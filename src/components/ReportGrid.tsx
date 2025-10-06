@@ -25,6 +25,7 @@ interface ReportGridProps {
   onEdit?: (reportId: string) => void;
   onComplete?: (reportId: string, currentStatus: "aktif" | "selesai") => void;
   onDelete?: (reportId: string) => void;
+  isHistoryMode?: boolean;
 }
 
 export default function ReportGrid({
@@ -35,6 +36,7 @@ export default function ReportGrid({
   onEdit,
   onComplete,
   onDelete,
+  isHistoryMode = false,
 }: ReportGridProps) {
   const [expandedReports, setExpandedReports] = useState<Set<string>>(new Set());
   const [openComments, setOpenComments] = useState<Set<string>>(new Set());
@@ -91,8 +93,12 @@ export default function ReportGrid({
       {reports.map((report, index) => (
         <div
           key={report.id}
-          className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group w-full"
+          className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group w-full relative"
         >
+          {/* Gray Overlay for History Mode */}
+          {isHistoryMode && (
+            <div className="absolute inset-0 z-10 pointer-events-none rounded-xl" style={{ backgroundColor: 'rgba(107, 114, 128, 0.1)' }}></div>
+          )}
           {/* Image Thumbnail - Optimized for LCP with priority loading for first 3 images */}
           <div className="relative w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200">
             {report.image_url ? (
@@ -236,7 +242,7 @@ export default function ReportGrid({
           {/* Comment Section */}
           {showComments && currentUserId && openComments.has(report.id) && (
             <div className="border-t">
-              <CommentSection reportId={report.id} currentUserId={currentUserId} />
+              <CommentSection reportId={report.id} currentUserId={currentUserId} isHistoryMode={isHistoryMode} />
             </div>
           )}
         </div>
