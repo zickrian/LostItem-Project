@@ -511,10 +511,10 @@ export default function DashboardPage() {
         </div>
 
         {/* Tab Switcher dengan design modern */}
-        <div className="flex gap-2 sm:gap-3 mb-6 sm:mb-8 bg-gray-100 p-1.5 rounded-xl overflow-x-auto">
+        <div className="flex gap-2 sm:gap-3 mb-6 sm:mb-8 bg-gray-100 p-1.5 rounded-xl">
           <button
             onClick={() => setActiveTab("hilang")}
-            className="flex-1 min-w-fit flex items-center justify-center gap-2 py-3 px-4 font-bold transition-all duration-300 rounded-lg whitespace-nowrap text-sm sm:text-base"
+            className="w-1/2 sm:flex-1 flex items-center justify-center gap-1 sm:gap-2 py-3 px-2 sm:px-4 font-bold transition-all duration-300 rounded-lg text-sm sm:text-base"
             style={{
               backgroundColor: activeTab === "hilang" ? 'rgba(17, 77, 145)' : 'transparent',
               color: activeTab === "hilang" ? 'white' : 'rgb(107, 114, 128)',
@@ -533,15 +533,15 @@ export default function DashboardPage() {
               }
             }}
           >
-            <MagnifyingGlassIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-            <span>Barang Hilang</span>
-            <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs font-bold">
+            <MagnifyingGlassIcon className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
+            <span className="truncate">Barang Hilang</span>
+            <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs font-bold flex-shrink-0">
               {reports.filter(r => r.type === "hilang").length}
             </span>
           </button>
           <button
             onClick={() => setActiveTab("temuan")}
-            className="flex-1 min-w-fit flex items-center justify-center gap-2 py-3 px-4 font-bold transition-all duration-300 rounded-lg whitespace-nowrap text-sm sm:text-base"
+            className="w-1/2 sm:flex-1 flex items-center justify-center gap-1 sm:gap-2 py-3 px-2 sm:px-4 font-bold transition-all duration-300 rounded-lg text-sm sm:text-base"
             style={{
               backgroundColor: activeTab === "temuan" ? 'rgba(17, 77, 145)' : 'transparent',
               color: activeTab === "temuan" ? 'white' : 'rgb(107, 114, 128)',
@@ -560,9 +560,9 @@ export default function DashboardPage() {
               }
             }}
           >
-            <CheckCircleIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-            <span>Barang Temuan</span>
-            <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs font-bold">
+            <CheckCircleIcon className="h-5 w-5 sm:h-6 sm:w-6 flex-shrink-0" />
+            <span className="truncate">Barang Temuan</span>
+            <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs font-bold flex-shrink-0">
               {reports.filter(r => r.type === "temuan").length}
             </span>
           </button>

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { PencilIcon, CheckIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { PencilIcon, CheckIcon } from "@heroicons/react/24/solid";
 import CommentSection from "@/components/CommentSection";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getCategoryEmoji } from "@/lib/categoryEmoji";
@@ -93,7 +93,7 @@ export default function ReportGrid({
       {reports.map((report, index) => (
         <div
           key={report.id}
-          className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group w-full relative"
+          className="bg-white rounded-xl shadow-md overflow-hidden w-full relative"
         >
           {/* Gray Overlay for History Mode */}
           {isHistoryMode && (
@@ -107,7 +107,7 @@ export default function ReportGrid({
                 alt={report.title}
                 fill
                 priority={index < 3}
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                className="object-cover"
                 fallbackEmoji={getCategoryEmoji(report.category)}
               />
             ) : (
@@ -162,7 +162,7 @@ export default function ReportGrid({
                 {report.description.length > 100 && (
                   <button
                     onClick={() => toggleDescription(report.id)}
-                    className="text-xs font-semibold mt-1 px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+                    className="text-xs font-semibold mt-1 px-2 py-1 rounded"
                     style={{ color: 'rgba(17, 77, 145)' }}
                   >
                     {expandedReports.has(report.id) ? 'Lihat lebih sedikit' : 'Lihat selengkapnya'}
@@ -180,7 +180,7 @@ export default function ReportGrid({
             {showComments && currentUserId && (
               <button
                 onClick={() => toggleComments(report.id)}
-                className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors mb-3 text-sm"
+                className="flex items-center gap-2 text-gray-600 mb-3 text-sm"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
@@ -198,15 +198,15 @@ export default function ReportGrid({
 
             {/* Action Buttons (only show if showActions is true) */}
             {showActions && (
-              <div className="flex items-center justify-center gap-3 pt-3 border-t border-gray-100">
+              <div className="flex flex-col gap-2 pt-3 border-t border-gray-100">
                 {/* Edit Button */}
                 {onEdit && (
                   <button
                     onClick={() => onEdit(report.id)}
-                    className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-500 hover:bg-blue-600 text-white transition-all duration-200 shadow-md hover:shadow-lg hover:scale-110"
-                    title="Edit laporan"
+                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold"
                   >
-                    <PencilIcon className="w-5 h-5" />
+                    <PencilIcon className="w-4 h-4" />
+                    <span>Edit</span>
                   </button>
                 )}
 
@@ -214,14 +214,14 @@ export default function ReportGrid({
                 {onComplete && (
                   <button
                     onClick={() => onComplete(report.id, report.status)}
-                    className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 shadow-md hover:shadow-lg hover:scale-110 ${
+                    className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold ${
                       report.status === "aktif"
                         ? "bg-green-500 hover:bg-green-600 text-white"
                         : "bg-gray-400 hover:bg-gray-500 text-white"
                     }`}
-                    title={report.status === "aktif" ? "Tandai selesai" : "Aktifkan kembali"}
                   >
-                    <CheckIcon className="w-5 h-5" />
+                    <CheckIcon className="w-4 h-4" />
+                    <span>Selesai</span>
                   </button>
                 )}
 
@@ -229,10 +229,12 @@ export default function ReportGrid({
                 {onDelete && (
                   <button
                     onClick={() => onDelete(report.id)}
-                    className="flex items-center justify-center w-10 h-10 rounded-full bg-red-500 hover:bg-red-600 text-white transition-all duration-200 shadow-md hover:shadow-lg hover:scale-110"
-                    title="Hapus laporan"
+                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-semibold"
                   >
-                    <TrashIcon className="w-5 h-5" />
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    <span>Hapus</span>
                   </button>
                 )}
               </div>

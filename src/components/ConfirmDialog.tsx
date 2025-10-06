@@ -134,11 +134,10 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         </button>
 
         <div className="p-6 sm:p-8 relative">
-          {/* Icon with animation */}
+          {/* Icon */}
           <div className="flex items-center justify-center mb-6">
-            <div className={`bg-gradient-to-br ${styles.iconBg} ${styles.iconColor} rounded-full p-5 shadow-2xl ${styles.iconRing} ring-8 animate-pulse-slow relative`}>
+            <div className={`bg-gradient-to-br ${styles.iconBg} ${styles.iconColor} rounded-full p-5 shadow-lg`}>
               {getIcon()}
-              <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${styles.iconBg} opacity-50 animate-ping`}></div>
             </div>
           </div>
 
@@ -168,9 +167,6 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             </button>
           </div>
         </div>
-
-        {/* Decorative bottom border */}
-        <div className={`h-2 bg-gradient-to-r ${styles.iconBg}`}></div>
       </div>
     </div>
   );

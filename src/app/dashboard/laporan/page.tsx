@@ -465,7 +465,7 @@ function LaporanContent() {
                   setEditMode(false);
                   setShowModal(true);
                 }}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-sm sm:text-base whitespace-nowrap bg-white hover:bg-blue-50 border-2 border-white"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold shadow-lg text-sm sm:text-base whitespace-nowrap bg-white border-2 border-white"
                 style={{ color: '#114D91' }}
               >
                 <PlusIcon className="w-5 h-5" />
@@ -477,7 +477,7 @@ function LaporanContent() {
 
         {/* Full Width Reports Section - Improved */}
         <div className="space-y-4">
-          <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-5 sm:p-7 hover:shadow-lg transition-all duration-300">
+          <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-5 sm:p-7">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
               <div>
                 <h2 className="text-2xl sm:text-3xl font-black text-gray-900 mb-1">Semua Laporan</h2>
@@ -489,23 +489,11 @@ function LaporanContent() {
             <div className="flex gap-2 sm:gap-3 mb-6 bg-gray-100 p-1.5 rounded-xl overflow-x-auto">
               <button
                 onClick={() => setStatusFilter("aktif")}
-                className="flex-1 min-w-fit px-4 py-2.5 rounded-lg text-sm font-bold transition-all duration-300 whitespace-nowrap"
+                className="flex-1 min-w-fit px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap"
                 style={{
                   backgroundColor: statusFilter === "aktif" ? 'rgba(17, 77, 145)' : 'transparent',
                   color: statusFilter === "aktif" ? 'white' : 'rgb(107, 114, 128)',
                   boxShadow: statusFilter === "aktif" ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)' : 'none'
-                }}
-                onMouseEnter={(e) => {
-                  if (statusFilter !== "aktif") {
-                    e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.1)';
-                    e.currentTarget.style.color = 'rgba(17, 77, 145, 0.9)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (statusFilter !== "aktif") {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.color = 'rgb(107, 114, 128)';
-                  }
                 }}
               >
                 Aktif
@@ -515,23 +503,11 @@ function LaporanContent() {
               </button>
               <button
                 onClick={() => setStatusFilter("selesai")}
-                className="flex-1 min-w-fit px-4 py-2.5 rounded-lg text-sm font-bold transition-all duration-300 whitespace-nowrap"
+                className="flex-1 min-w-fit px-4 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap"
                 style={{
                   backgroundColor: statusFilter === "selesai" ? 'rgba(17, 77, 145)' : 'transparent',
                   color: statusFilter === "selesai" ? 'white' : 'rgb(107, 114, 128)',
                   boxShadow: statusFilter === "selesai" ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)' : 'none'
-                }}
-                onMouseEnter={(e) => {
-                  if (statusFilter !== "selesai") {
-                    e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.1)';
-                    e.currentTarget.style.color = 'rgba(17, 77, 145, 0.9)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (statusFilter !== "selesai") {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.color = 'rgb(107, 114, 128)';
-                  }
                 }}
               >
                 Selesai
@@ -592,7 +568,7 @@ function LaporanContent() {
                     setShowModal(false);
                     if (!editMode) resetForm();
                   }}
-                  className="text-white hover:text-blue-100 transition-all bg-white/20 hover:bg-white/30 rounded-full p-2 transform hover:scale-110"
+                  className="text-white bg-white/20 rounded-full p-2"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />

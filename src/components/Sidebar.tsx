@@ -84,15 +84,15 @@ export default function Sidebar({ user }: SidebarProps) {
             <p className="text-xs font-semibold text-gray-500 mt-1">Mahasiswa Portal</p>
           </div>
 
-          {/* User Info - Modern Card Style */}
+          {/* User Info - Modern Card Style with Vertical Layout */}
           <div className="px-5 py-6 border-b border-gray-100">
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 hover:shadow-md transition-all duration-300">
+            <div className="flex flex-col items-center gap-3 p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 hover:shadow-md transition-all duration-300">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 key={user.avatar_url}
                 src={user.avatar_url || "/default-avatar.svg"}
                 alt="Avatar"
-                className="h-12 w-12 rounded-xl object-cover ring-2 ring-white shadow-sm"
+                className="h-16 w-16 rounded-full object-cover ring-4 ring-white shadow-lg"
                 loading="lazy"
                 referrerPolicy="no-referrer"
                 onError={(event) => {
@@ -100,9 +100,9 @@ export default function Sidebar({ user }: SidebarProps) {
                   event.currentTarget.src = "/default-avatar.svg";
                 }}
               />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
-                <p className="text-xs text-gray-600 truncate font-medium">{user.email}</p>
+              <div className="flex flex-col items-center text-center w-full">
+                <p className="text-sm font-black text-gray-900 truncate w-full">{user.name}</p>
+                <p className="text-xs text-gray-600 truncate font-medium w-full mt-1">{user.email}</p>
               </div>
             </div>
           </div>

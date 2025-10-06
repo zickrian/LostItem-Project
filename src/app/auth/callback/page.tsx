@@ -45,7 +45,7 @@ export default function AuthCallbackPage() {
         
         // Validasi domain email
         if (!email.endsWith("@mhs.dinus.ac.id")) {
-          const errorMsg = "❌ Pastikan Login menggunakan email kampus!";
+          const errorMsg = "Pastikan Login menggunakan email kampus!";
           setError(errorMsg);
           toast.error(errorMsg);
           await supabase.auth.signOut();
@@ -110,24 +110,84 @@ export default function AuthCallbackPage() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-red-50 to-white">
-        <div className="text-center max-w-md p-8 bg-white rounded-xl shadow-lg">
-          <div className="text-6xl mb-4">❌</div>
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Login Gagal</h2>
-          <p className="text-gray-700 mb-4">{error}</p>
-          <p className="text-gray-500 text-sm">Mengalihkan ke halaman login...</p>
+      <section className="bg-gradient-to-b from-blue-50 to-white h-screen relative overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-72 h-72 bg-red-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+          <div className="absolute top-40 right-10 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+          <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-red-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
         </div>
-      </div>
+
+        <div className="flex h-full items-center justify-center px-4 relative z-10">
+          <div className="bg-white/95 backdrop-blur-xl flex w-full max-w-md flex-col items-center gap-y-6 rounded-3xl border-2 border-red-200 px-6 sm:px-8 py-12 shadow-2xl">
+            {/* Error Icon */}
+            <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center shadow-lg">
+              <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </div>
+            
+            {/* Error Title */}
+            <h2 className="text-3xl font-black text-red-600">Login Gagal</h2>
+            
+            {/* Error Message */}
+            <div className="w-full bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-xl p-5">
+              <p className="text-gray-800 text-center font-semibold leading-relaxed">
+                {error}
+              </p>
+            </div>
+
+            {/* Info */}
+            <div className="flex items-center gap-2 text-gray-600">
+              <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <p className="text-sm font-medium">Mengalihkan ke halaman login...</p>
+            </div>
+          </div>
+        </div>
+      </section>
     );
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-white">
-      <div className="text-center">
-        <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-4"></div>
-        <p className="text-xl text-gray-700 font-semibold">Memproses login...</p>
-        <p className="text-gray-500 mt-2">Mohon tunggu sebentar</p>
+    <section className="bg-gradient-to-b from-blue-50 to-white h-screen relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+        <div className="absolute top-40 right-10 w-72 h-72 bg-cyan-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
       </div>
-    </div>
+
+      <div className="flex h-full items-center justify-center px-4 relative z-10">
+        <div className="bg-white/95 backdrop-blur-xl flex w-full max-w-md flex-col items-center gap-y-6 rounded-3xl border-2 border-blue-100 px-6 sm:px-8 py-12 shadow-2xl">
+          {/* Loading Icon */}
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center shadow-lg">
+            <svg className="w-10 h-10 text-white animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+          </div>
+          
+          {/* Loading Title */}
+          <h2 className="text-3xl font-black bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">Memproses Login</h2>
+          
+          {/* Loading Message */}
+          <div className="w-full bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-xl p-5">
+            <p className="text-gray-700 text-center font-medium">
+              Mohon tunggu sebentar, kami sedang memverifikasi akun Anda...
+            </p>
+          </div>
+
+          {/* Progress Dots */}
+          <div className="flex gap-2">
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+            <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
