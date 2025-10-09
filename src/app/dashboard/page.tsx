@@ -102,7 +102,10 @@ export default function DashboardPage() {
 
       const currentUser = sessionData.session.user;
       
-      if (!currentUser.email?.endsWith("@mhs.dinus.ac.id")) {
+      if (
+            !currentUser.email?.endsWith("@mhs.dinus.ac.id") &&
+            currentUser.email !== "gagah_athallah@sbm-itb.ac.id"
+          ) {
         await supabase.auth.signOut();
         router.push("/login");
         return;
