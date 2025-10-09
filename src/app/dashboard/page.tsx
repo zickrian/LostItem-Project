@@ -603,8 +603,10 @@ export default function DashboardPage() {
                 created_at: report.created_at,
                 latitude: report.latitude,
                 longitude: report.longitude,
+                user: report.user,
               }))}
               showActions={false}
+              showUserProfile={true}
               currentUserId={user?.id}
               isHistoryMode={showHistory}
             />

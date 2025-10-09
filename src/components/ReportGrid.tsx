@@ -17,12 +17,17 @@ export interface GridReport {
   created_at: string;
   latitude?: number;
   longitude?: number;
+  user?: {
+    name: string;
+    avatar_url?: string;
+  };
 }
 
 interface ReportGridProps {
   reports: GridReport[];
   showActions?: boolean;
   showComments?: boolean;
+  showUserProfile?: boolean; // New prop to control profile header display
   currentUserId?: string;
   onEdit?: (reportId: string) => void;
   onComplete?: (reportId: string, currentStatus: "aktif" | "selesai") => void;
@@ -34,6 +39,7 @@ export default function ReportGrid({
   reports,
   showActions = false,
   showComments = true,
+  showUserProfile = false, // Default to false
   currentUserId,
   onEdit,
   onComplete,
@@ -136,6 +142,33 @@ export default function ReportGrid({
 
           {/* Card Content */}
           <div className="p-3 sm:p-4">
+            {/* User Profile Header - Only show if showUserProfile is true */}
+            {showUserProfile && report.user && (
+              <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-100">
+                <div className="flex items-center gap-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={report.user.avatar_url || "/default-avatar.svg"}
+                    alt={report.user.name}
+                    className="w-8 h-8 rounded-full border-2 object-cover"
+                    style={{ borderColor: 'rgba(17, 77, 145)' }}
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                    onError={(event) => {
+                      event.currentTarget.onerror = null;
+                      event.currentTarget.src = "/default-avatar.svg";
+                    }}
+                  />
+                  <div>
+                    <p className="font-bold text-gray-900 text-xs sm:text-sm">{report.user.name}</p>
+                  </div>
+                </div>
+                <div className="text-[10px] sm:text-xs text-gray-500 font-medium">
+                  {formatDate(report.created_at)}
+                </div>
+              </div>
+            )}
+            
             {/* Category & Location */}
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-2">
               <span className="inline-flex items-center px-2 py-0.5 sm:px-2.5 sm:py-1 bg-blue-50 text-blue-700 text-[10px] sm:text-xs font-medium rounded-md break-words max-w-full">
@@ -209,11 +242,6 @@ export default function ReportGrid({
                 </p>
               </div>
             )}
-
-            {/* Date */}
-            <div className="text-[10px] sm:text-xs text-gray-500 mb-3">
-              {formatDate(report.created_at)}
-            </div>
 
             {/* Comment Toggle Button */}
             {showComments && currentUserId && (

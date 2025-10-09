@@ -580,6 +580,10 @@ function LaporanContent() {
                     created_at: report.created_at,
                     latitude: fullReport?.latitude,
                     longitude: fullReport?.longitude,
+                    user: user ? {
+                      name: user.name,
+                      avatar_url: user.avatar_url
+                    } : undefined,
                   };
                 })}
                 showActions={true}
