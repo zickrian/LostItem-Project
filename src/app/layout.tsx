@@ -38,8 +38,8 @@ export default function RootLayout({
     <html lang="id">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
-        {/* Preload critical LCP image */}
-        <link rel="preload" as="image" href="/phone.png" fetchPriority="high" />
+  {/* Preload critical LCP image (remote Cloudinary AVIF) */}
+  <link rel="preload" as="image" href="https://res.cloudinary.com/dujp9ydkx/image/upload/v1760019516/phone_aw3azc.avif" fetchPriority="high" />
         {/* Preconnect untuk external resources */}
         <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />

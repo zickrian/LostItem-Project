@@ -127,7 +127,7 @@ export default function Home() {
           {/* Container card to ensure any unexpected transparent/colored pixels behind the image are hidden */}
           <div className="bg-white rounded-2xl p-4 md:p-6 drop-shadow-xl inline-block">
             <Image
-              src="/phone.png"
+              src="https://res.cloudinary.com/dujp9ydkx/image/upload/v1760019516/phone_aw3azc.avif"
               alt="App Preview"
               width={360}
               height={720}
