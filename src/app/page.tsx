@@ -124,22 +124,20 @@ export default function Home() {
 
         {/* Phone + floating icons (LCP optimized) */}
         <div className="relative mt-10 md:mt-0">
-          {/* Container card to ensure any unexpected transparent/colored pixels behind the image are hidden */}
-          <div className="bg-white rounded-2xl p-4 md:p-6 drop-shadow-xl inline-block" style={{ backgroundColor: '#ffffff' }}>
-            <Image
-              src="https://res.cloudinary.com/dujp9ydkx/image/upload/v1760019516/phone_aw3azc.avif"
-              alt="App Preview"
-              width={360}
-              height={720}
-              priority
-              quality={85}
-              className="w-[320px] md:w-[360px]"
-              placeholder="empty"
-              sizes="(max-width: 768px) 90vw, 360px"
-              style={{ backgroundColor: 'transparent' }}
-              loading="eager"
-            />
-          </div>
+          {/* Render image without white background card */}
+          <Image
+            src="https://res.cloudinary.com/dujp9ydkx/image/upload/v1760019516/phone_aw3azc.avif"
+            alt="App Preview"
+            width={360}
+            height={720}
+            priority
+            quality={85}
+            className="w-[320px] md:w-[360px]"
+            placeholder="empty"
+            sizes="(max-width: 768px) 90vw, 360px"
+            style={{ backgroundColor: 'transparent' }}
+            loading="eager"
+          />
           <div className="absolute w-8 top-8 right-16 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
             <Mail className="w-8 h-8 drop-shadow-lg" style={{color: '#3f7bd1'}} />
           </div>
