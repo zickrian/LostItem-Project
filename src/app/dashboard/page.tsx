@@ -30,6 +30,8 @@ interface Report {
   image_url?: string;
   status: "aktif" | "selesai";
   created_at: string;
+  latitude?: number;
+  longitude?: number;
   user: {
     name: string;
     avatar_url?: string;
@@ -599,6 +601,8 @@ export default function DashboardPage() {
                 status: report.status,
                 image_url: report.image_url,
                 created_at: report.created_at,
+                latitude: report.latitude,
+                longitude: report.longitude,
               }))}
               showActions={false}
               currentUserId={user?.id}

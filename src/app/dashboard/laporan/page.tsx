@@ -33,6 +33,8 @@ interface UserReport {
   status: ReportStatus;
   created_at: string;
   image_url?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 const CATEGORIES = [
@@ -102,6 +104,8 @@ function LaporanContent() {
   });
   const [titleError, setTitleError] = useState<string>("");
   const [descriptionError, setDescriptionError] = useState<string>("");
+  const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number; accuracy: number } | null>(null);
+  const [locationError, setLocationError] = useState<string>("");
 
   const MAX_TITLE_LENGTH = 50;
   const MAX_DESCRIPTION_LENGTH = 200;
@@ -164,7 +168,7 @@ function LaporanContent() {
 
       const { data } = await supabase
         .from("reports")
-        .select("id, title, description, category, location, type, status, created_at, image_url")
+        .select("id, title, description, category, location, type, status, created_at, image_url, latitude, longitude")
         .eq("user_id", userData.id)
         .order("created_at", { ascending: false });
 
@@ -229,6 +233,47 @@ function LaporanContent() {
     setImagePreview(URL.createObjectURL(file));
   }
 
+  function getUserLocation() {
+    setLocationError("");
+    
+    if (!navigator.geolocation) {
+      setLocationError("Browser Anda tidak mendukung geolokasi");
+      toast.error("Browser Anda tidak mendukung geolokasi");
+      return;
+    }
+    
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude, accuracy } = position.coords;
+        setCoordinates({ latitude, longitude, accuracy });
+        toast.success(`Lokasi berhasil diambil! (Akurasi: ${Math.round(accuracy)}m)`);
+      },
+      (error) => {
+        let errorMessage = "Gagal mengambil lokasi";
+        
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "Anda menolak akses lokasi. Silakan aktifkan di pengaturan browser.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "Informasi lokasi tidak tersedia";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "Waktu permintaan lokasi habis";
+            break;
+        }
+        
+        setLocationError(errorMessage);
+        toast.error(errorMessage);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
+    );
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!user || submitting) return;
@@ -270,6 +315,10 @@ function LaporanContent() {
         location: formData.location.trim(),
         image_url: imageUrl || null,
         status: "aktif",
+        latitude: coordinates?.latitude || null,
+        longitude: coordinates?.longitude || null,
+        accuracy_m: coordinates?.accuracy || null,
+        reported_at: new Date().toISOString(),
       };
 
       if (editMode) {
@@ -312,6 +361,8 @@ function LaporanContent() {
     setEditingId("");
     setTitleError("");
     setDescriptionError("");
+    setCoordinates(null);
+    setLocationError("");
   }
 
   function handleTitleChange(value: string) {
@@ -515,17 +566,22 @@ function LaporanContent() {
 
               {/* Reports Grid */}
               <ReportGrid
-                reports={filteredReports.map((report) => ({
-                  id: report.id,
-                  title: report.title,
-                  description: myReports.find(r => r.id === report.id)?.description,
-                  category: report.category,
-                  location: myReports.find(r => r.id === report.id)?.location,
-                  type: report.type,
-                  status: report.status,
-                  image_url: report.image_url,
-                  created_at: report.created_at,
-                }))}
+                reports={filteredReports.map((report) => {
+                  const fullReport = myReports.find(r => r.id === report.id);
+                  return {
+                    id: report.id,
+                    title: report.title,
+                    description: fullReport?.description,
+                    category: report.category,
+                    location: fullReport?.location,
+                    type: report.type,
+                    status: report.status,
+                    image_url: report.image_url,
+                    created_at: report.created_at,
+                    latitude: fullReport?.latitude,
+                    longitude: fullReport?.longitude,
+                  };
+                })}
                 showActions={true}
                 showComments={false}
                 currentUserId={user?.id}
@@ -694,6 +750,44 @@ function LaporanContent() {
                         </option>
                       ))}
                     </select>
+                    
+                    {/* Geolocation Button */}
+                    <button
+                      type="button"
+                      onClick={getUserLocation}
+                      className="mt-3 w-full flex items-center justify-center gap-2 px-4 py-3 border-2 rounded-xl font-semibold text-sm transition-all duration-200 shadow-sm hover:shadow-md"
+                      style={{
+                        backgroundColor: coordinates ? 'rgba(16, 185, 129, 0.1)' : 'rgba(17, 77, 145, 0.05)',
+                        color: coordinates ? 'rgb(16, 185, 129)' : 'rgba(17, 77, 145)',
+                        borderColor: coordinates ? 'rgba(16, 185, 129, 0.3)' : 'rgba(17, 77, 145, 0.2)'
+                      }}
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      {coordinates ? `✓ Lokasi Terekam (${Math.round(coordinates.accuracy)}m)` : "Ambil Koordinat Lokasi"}
+                    </button>
+                    
+                    {coordinates && (
+                      <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <p className="text-xs text-green-700 font-semibold">
+                          📍 {coordinates.latitude.toFixed(6)}, {coordinates.longitude.toFixed(6)}
+                        </p>
+                        <p className="text-xs text-green-600 mt-1">
+                          🎯 Akurasi: ±{Math.round(coordinates.accuracy)} meter
+                        </p>
+                      </div>
+                    )}
+                    
+                    {locationError && (
+                      <p className="text-xs text-red-600 mt-2 font-semibold flex items-center gap-1">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        {locationError}
+                      </p>
+                    )}
                   </div>
 
                   {/* Type */}

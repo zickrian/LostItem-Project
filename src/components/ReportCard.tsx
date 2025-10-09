@@ -17,6 +17,8 @@ export interface Report {
   image_url?: string;
   status: "aktif" | "selesai";
   created_at: string;
+  latitude?: number;
+  longitude?: number;
   user: {
     name: string;
     avatar_url?: string;
@@ -65,7 +67,7 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit, pr
     )}
       {/* Card Header */}
       <div className="p-4 sm:p-5 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
-        <div className="flex items-center justify-between">
+        <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className="relative h-11 w-11 rounded-full border-3 overflow-hidden shadow-sm" style={{ borderColor: 'rgba(17, 77, 145)', borderWidth: '3px' }}>
               <Image
@@ -79,51 +81,53 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit, pr
             </div>
             <div>
               <p className="font-bold text-gray-900 text-sm sm:text-base">{report.user.name}</p>
-              <p className="text-xs text-gray-500 font-medium">{formatDate(report.created_at)}</p>
             </div>
           </div>
-          {isOwner && report.status === "aktif" && (
-            <div className="flex gap-1.5">
-              {onEdit && (
-                <button
-                  onClick={() => onEdit(report.id)}
-                  className="p-2 rounded-lg transition-all duration-200 hover:shadow-md group/btn relative"
-                  style={{ 
-                    backgroundColor: 'rgba(17, 77, 145, 0.1)', 
-                    color: 'rgba(17, 77, 145)' 
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)';
-                    e.currentTarget.style.color = 'white';
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.1)';
-                    e.currentTarget.style.color = 'rgba(17, 77, 145)';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                  }}
-                  title="Edit Laporan"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                </button>
-              )}
-              {onDelete && (
-                <button
-                  onClick={() => onDelete(report.id)}
-                  className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200 hover:shadow-md group/btn"
-                  onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                  title="Hapus Laporan"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                </button>
-              )}
-            </div>
-          )}
+          <div className="flex flex-col items-end gap-2">
+            <p className="text-xs text-gray-500 font-medium">{formatDate(report.created_at)}</p>
+            {isOwner && report.status === "aktif" && (
+              <div className="flex gap-1.5">
+                {onEdit && (
+                  <button
+                    onClick={() => onEdit(report.id)}
+                    className="p-2 rounded-lg transition-all duration-200 hover:shadow-md group/btn relative"
+                    style={{ 
+                      backgroundColor: 'rgba(17, 77, 145, 0.1)', 
+                      color: 'rgba(17, 77, 145)' 
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145)';
+                      e.currentTarget.style.color = 'white';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(17, 77, 145, 0.1)';
+                      e.currentTarget.style.color = 'rgba(17, 77, 145)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
+                    title="Edit Laporan"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+                )}
+                {onDelete && (
+                  <button
+                    onClick={() => onDelete(report.id)}
+                    className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-200 hover:shadow-md group/btn"
+                    onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                    onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                    title="Hapus Laporan"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -190,6 +194,45 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit, pr
                 </>
               )}
             </button>
+          )}
+          
+          {/* Coordinates Section */}
+          {report.latitude && report.longitude && (
+            <div className="mt-3">
+              <a
+                href={`https://www.google.com/maps?q=${report.latitude},${report.longitude}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 hover:shadow-md"
+                style={{
+                  backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                  color: 'rgb(16, 185, 129)',
+                  border: '2px solid rgba(16, 185, 129, 0.3)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgb(16, 185, 129)';
+                  e.currentTarget.style.color = 'white';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+                  e.currentTarget.style.color = 'rgb(16, 185, 129)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>Lihat Lokasi di Google Maps</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+              <p className="text-xs text-gray-500 mt-2 font-mono">
+                📍 {report.latitude.toFixed(6)}, {report.longitude.toFixed(6)}
+              </p>
+            </div>
           )}
         </div>
 
