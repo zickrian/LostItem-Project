@@ -44,7 +44,10 @@ export default function AuthCallbackPage() {
         const email = user.email!;
         
         // Validasi domain email
-        if (!email.endsWith("@mhs.dinus.ac.id")) {
+        if (
+          !email.endsWith("@mhs.dinus.ac.id") &&
+          email !== "gagah_athallah@sbm-itb.ac.id"
+        ) {
           const errorMsg = "Pastikan Login menggunakan email kampus!";
           setError(errorMsg);
           toast.error(errorMsg);
