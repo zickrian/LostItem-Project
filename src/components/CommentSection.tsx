@@ -275,7 +275,6 @@ export default function CommentSection({ reportId, currentUserId, isHistoryMode 
                   </div>
                   <p className="text-xs sm:text-sm text-gray-700 break-words">{comment.content}</p>
                 </div>
-                <p className="text-[10px] sm:text-xs text-gray-500 mt-1 ml-2 sm:ml-3">{formatDate(comment.created_at)}</p>
               </div>
             </div>
           ))
