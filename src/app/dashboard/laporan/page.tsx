@@ -15,7 +15,9 @@ import {
   MapPinIcon, 
   BookmarkIcon, 
   CameraIcon, 
-  PlusIcon 
+  PlusIcon,
+  ExclamationTriangleIcon,
+  CheckCircleIcon
 } from '@heroicons/react/24/outline';
 
 type ReportType = "hilang" | "temuan";
@@ -140,7 +142,7 @@ function LaporanContent() {
         .single();
 
       setUser(userData);
-    } catch (error) {
+    } catch {
       toast.error("Gagal memuat data pengguna");
     }
   }
@@ -710,7 +712,7 @@ function LaporanContent() {
                           className="peer sr-only"
                         />
                         <div className="flex items-center justify-center gap-2 p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 peer-checked:border-blue-600 peer-checked:bg-blue-50 hover:border-gray-400">
-                          <span className="text-2xl">🔍</span>
+                          <ExclamationTriangleIcon className="w-6 h-6 text-red-500" />
                           <span className="font-bold text-gray-700 peer-checked:text-blue-600">Hilang</span>
                         </div>
                       </label>
@@ -723,7 +725,7 @@ function LaporanContent() {
                           className="peer sr-only"
                         />
                         <div className="flex items-center justify-center gap-2 p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 peer-checked:border-green-600 peer-checked:bg-green-50 hover:border-gray-400">
-                          <span className="text-2xl">✅</span>
+                          <CheckCircleIcon className="w-6 h-6 text-green-500" />
                           <span className="font-bold text-gray-700 peer-checked:text-green-600">Ditemukan</span>
                         </div>
                       </label>

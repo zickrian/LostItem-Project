@@ -4,6 +4,7 @@ import Image from "next/image";
 import CommentSection from "@/components/CommentSection";
 import OptimizedImage from "@/components/OptimizedImage";
 import { getCategoryEmoji } from "@/lib/categoryEmoji";
+import { ExclamationTriangleIcon, CheckCircleIcon, CheckIcon } from '@heroicons/react/24/outline';
 
 export interface Report {
   id: string;
@@ -131,7 +132,7 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit, pr
         <div className="flex items-start justify-between mb-4 gap-3">
           <h3 className="text-lg sm:text-xl font-bold text-gray-900 leading-tight flex-1">{report.title}</h3>
           <span
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm flex-shrink-0 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm flex-shrink-0 flex items-center gap-1.5 ${
               isHistoryMode
                 ? "bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 border border-blue-200"
                 : report.type === "hilang"
@@ -139,7 +140,22 @@ export default function ReportCard({ report, currentUserId, onDelete, onEdit, pr
                 : "bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border border-green-200"
             }`}
           >
-            {isHistoryMode ? "✓ Sudah Kembali" : report.type === "hilang" ? "🔍 Hilang" : "✅ Temuan"}
+            {isHistoryMode ? (
+              <>
+                <CheckIcon className="w-4 h-4" />
+                Sudah Kembali
+              </>
+            ) : report.type === "hilang" ? (
+              <>
+                <ExclamationTriangleIcon className="w-4 h-4" />
+                Hilang
+              </>
+            ) : (
+              <>
+                <CheckCircleIcon className="w-4 h-4" />
+                Temuan
+              </>
+            )}
           </span>
         </div>
 
