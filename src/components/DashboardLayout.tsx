@@ -33,7 +33,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
         const currentUser = sessionData.session.user;
         
-        if (!currentUser.email?.endsWith("@mhs.dinus.ac.id")) {
+        if (
+            !currentUser.email?.endsWith("@mhs.dinus.ac.id") &&
+            currentUser.email !== "19023002@mahasiswa.itb.ac.id"
+          ) {
           await supabase.auth.signOut();
           router.push("/login");
           return;
