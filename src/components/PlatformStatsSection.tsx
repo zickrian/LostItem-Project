@@ -11,40 +11,46 @@ export default function PlatformStatsSection() {
   }, []);
 
   return (
-    <section id="statistik-platform" className="relative py-24 overflow-hidden" style={{contentVisibility: 'auto', containIntrinsicSize: '0 400px'}}>
-      {/* Animated background */}
-      <div className="absolute inset-0 bg-[conic-gradient(from_0deg,_#1E3A8A,_#3B82F6,_#1E40AF,_#1E3A8A)] blur-3xl opacity-25 animate-spinGradient"></div>
+    <section
+      id="platform-stats"
+      className="relative bg-gradient-to-b from-[#e6f0ff] via-white to-[#f7faff] pt-24 md:pt-28 pb-16 -mt-4 overflow-hidden"
+    >
+      {/* Background bubble animation (opsional, jika ingin konsisten dengan fitur utama) */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="bubble-particle w-24 h-24 top-10 left-12" />
+        <div className="bubble-particle w-20 h-20 top-24 right-20 delay-2" />
+        <div className="bubble-particle w-28 h-28 bottom-16 left-1/4 delay-4" />
+      </div>
 
-      {/* Content */}
       <div className="relative z-10 text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-bold text-black">
+        <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight">
           Statistik Platform
         </h2>
-        <p className="text-gray-600 mt-2">
-          Data terkini sistem Lost & Found UDINUS
+        <p className="mt-4 text-slate-500 text-base md:text-lg">
+          Data terkini <span className="font-semibold">SITEMU - UDINUS</span>
         </p>
       </div>
 
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto px-6">
-        <div className="bg-[rgba(255,255,255,0.6)] backdrop-blur-lg rounded-2xl p-8 border border-white/30 shadow-lg hover:-translate-y-5 hover:scale-[1.03] hover:shadow-xl transition-all duration-500 ease-in-out flex flex-col items-center justify-center min-h-[200px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+        <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-lg hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl transition-all duration-500 ease-in-out flex flex-col items-center justify-center min-h-[200px]">
           <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-rose-400 to-pink-500 animate-pulse mb-4">
             <span className="text-4xl">📢</span>
           </div>
-          <h3 className="text-gray-700 font-semibold text-lg">Barang Hilang Dilaporkan</h3>
+          <h3 className="text-gray-800 font-semibold text-lg">Barang Hilang Dilaporkan</h3>
           <CountUp target={stats.hilang} className="text-5xl font-extrabold text-gray-900" />
         </div>
-        <div className="bg-[rgba(255,255,255,0.6)] backdrop-blur-lg rounded-2xl p-8 border border-white/30 shadow-lg hover:-translate-y-5 hover:scale-[1.03] hover:shadow-xl transition-all duration-500 ease-in-out flex flex-col items-center justify-center min-h-[200px]">
+        <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-lg hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl transition-all duration-500 ease-in-out flex flex-col items-center justify-center min-h-[200px]">
           <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-sky-400 to-blue-600 animate-pulse mb-4">
             <span className="text-4xl">🔍</span>
           </div>
-          <h3 className="text-gray-700 font-semibold text-lg">Barang Ditemukan</h3>
+          <h3 className="text-gray-800 font-semibold text-lg">Barang Ditemukan</h3>
           <CountUp target={stats.ditemukan} className="text-5xl font-extrabold text-gray-900" />
         </div>
-        <div className="bg-[rgba(255,255,255,0.6)] backdrop-blur-lg rounded-2xl p-8 border border-white/30 shadow-lg hover:-translate-y-5 hover:scale-[1.03] hover:shadow-xl transition-all duration-500 ease-in-out flex flex-col items-center justify-center min-h-[200px]">
+        <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-lg hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl transition-all duration-500 ease-in-out flex flex-col items-center justify-center min-h-[200px]">
           <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-green-500 animate-pulse mb-4">
             <span className="text-4xl">✅</span>
           </div>
-          <h3 className="text-gray-700 font-semibold text-lg">Barang Diklaim</h3>
+          <h3 className="text-gray-800 font-semibold text-lg">Barang Diklaim</h3>
           <CountUp target={stats.diklaim} className="text-5xl font-extrabold text-gray-900" />
         </div>
       </div>
