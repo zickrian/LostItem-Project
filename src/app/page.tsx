@@ -4,7 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Search, FileEdit, BarChart3, Shield, Clock, Users, Mail, MapPin, Folder, Bell, Wallet, Smartphone, Book, Key, Headphones, Laptop, Instagram, Facebook, Linkedin } from "lucide-react";
+import { Search, FileEdit, BarChart3, Shield, Clock, Users, Mail, MapPin, Folder, Bell, Wallet, Smartphone, Book, Key, Headphones, Laptop, IdCard, Instagram, Facebook, Linkedin } from "lucide-react";
+import { getFoundItemStats } from '@/lib/getFoundItemStats';
+import FoundItemsSection from "@/components/FoundItemsSection";
+import PlatformStatsSection from "@/components/PlatformStatsSection";
 
 interface CountUpProps {
   target: number;
@@ -48,30 +51,22 @@ function CountUp({ target, duration = 2000, className = "text-4xl font-extrabold
 
 export default function Home() {
   const [isPaused, setIsPaused] = useState(false);
+  const [foundItemStats, setFoundItemStats] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    getFoundItemStats().then(setFoundItemStats);
+  }, []);
 
   const categories = [
-    { icon: Wallet, title: "Dompet", subtitle: "Jumlah yang ditemukan", count: 150, iconBg: "#FEF08A" },
-    { icon: Smartphone, title: "Handphone", subtitle: "Jumlah yang ditemukan", count: 85, iconBg: "#A7F3D0" },
-    { icon: Book, title: "Buku", subtitle: "Jumlah yang ditemukan", count: 250, iconBg: "#FBCFE8" },
-    { icon: Key, title: "Kunci", subtitle: "Jumlah yang ditemukan", count: 120, iconBg: "#BFDBFE" },
-    { icon: Headphones, title: "Headphone", subtitle: "Jumlah yang ditemukan", count: 60, iconBg: "#FECACA" },
-    { icon: Laptop, title: "Laptop", subtitle: "Jumlah yang ditemukan", count: 30, iconBg: "#DDD6FE" },
+    { icon: IdCard, title: "STNK", subtitle: "Jumlah yang ditemukan", count: foundItemStats["STNK"] || 0, iconBg: "#FECACA" },
+    { icon: Smartphone, title: "Handphone", subtitle: "Jumlah yang ditemukan", count: foundItemStats["Handphone"] || 0, iconBg: "#A7F3D0" },
+    { icon: Book, title: "Buku", subtitle: "Jumlah yang ditemukan", count: foundItemStats["Buku"] || 0, iconBg: "#FBCFE8" },
+    { icon: Key, title: "Kunci", subtitle: "Jumlah yang ditemukan", count: foundItemStats["Kunci"] || 0, iconBg: "#BFDBFE" },
+    { icon: Wallet, title: "Dompet", subtitle: "Jumlah yang ditemukan", count: foundItemStats["Dompet"] || 0, iconBg: "#FEF08A" },
+    { icon: Laptop, title: "Laptop", subtitle: "Jumlah yang ditemukan", count: foundItemStats["Laptop"] || 0, iconBg: "#DDD6FE" },
   ];
 
-  const foundItems = [
-    { icon: Wallet, title: "Dompet Kulit", location: "Gedung A Lt.2", date: "3 Okt 2025", iconBg: "#FEF08A" },
-    { icon: Smartphone, title: "Handphone Samsung", location: "Perpustakaan", date: "2 Okt 2025", iconBg: "#A7F3D0" },
-    { icon: Book, title: "Buku Matematika", location: "Kelas 101", date: "1 Okt 2025", iconBg: "#FBCFE8" },
-    { icon: Key, title: "Kunci Motor", location: "Parkiran Utama", date: "30 Sep 2025", iconBg: "#BFDBFE" },
-    { icon: Headphones, title: "Headphone Sony", location: "Kantin", date: "29 Sep 2025", iconBg: "#FECACA" },
-    { icon: Laptop, title: "Laptop Asus", location: "Lab Komputer", date: "28 Sep 2025", iconBg: "#DDD6FE" },
-  ];
 
-  const statistics = [
-    { icon: "📢", title: "Barang Hilang Dilaporkan", count: 300, gradient: "from-rose-400 to-pink-500" },
-    { icon: "🔍", title: "Barang Ditemukan", count: 250, gradient: "from-sky-400 to-blue-600" },
-    { icon: "✅", title: "Barang Diklaim", count: 200, gradient: "from-emerald-400 to-green-500" },
-  ];
 
 
 
@@ -449,122 +444,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Found Items Section */}
-      <section className="relative py-24 bg-white overflow-hidden" style={{contentVisibility: 'auto', containIntrinsicSize: '0 600px'}}>
-        {/* Floating bubbles background */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="bubble-particle w-16 h-16 absolute top-20 left-10 animate-floatBubbles"></div>
-          <div className="bubble-particle w-10 h-10 absolute top-40 right-20 animate-floatBubbles-delay"></div>
-          <div className="bubble-particle w-12 h-12 absolute bottom-20 left-1/4 animate-floatBubbles"></div>
-          <div className="bubble-particle w-8 h-8 absolute top-60 right-1/3 animate-floatBubbles-delay"></div>
-          <div className="bubble-particle w-14 h-14 absolute bottom-40 right-10 animate-floatBubbles"></div>
-        </div>
+      <FoundItemsSection />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="text-center mb-16">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 animate-fadeInUp"
-            >
-              Barang yang Ditemukan
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-              viewport={{ once: true }}
-              className="text-gray-600 text-lg"
-            >
-              Barang-barang yang berhasil ditemukan dan dikembalikan kepada pemiliknya
-            </motion.p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {foundItems.map((item, index) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-2 hover:scale-[1.02]"
-              >
-                <div className="flex items-center mb-4">
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center mr-4"
-                    style={{ backgroundColor: item.iconBg }}
-                  >
-                    <item.icon className="w-6 h-6 text-gray-900" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">{item.title}</h3>
-                    <div className="flex items-center text-sm text-gray-600 mt-1">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      <span>{item.location}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center text-sm text-gray-500">
-                  <Clock className="w-4 h-4 mr-1" />
-                  <span>Ditemukan pada {item.date}</span>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Statistics Platform Section */}
-      <section id="statistik-platform" className="relative py-24 overflow-hidden" style={{contentVisibility: 'auto', containIntrinsicSize: '0 400px'}}>
-        {/* Animated background */}
-        <div className="absolute inset-0 bg-[conic-gradient(from_0deg,_#1E3A8A,_#3B82F6,_#1E40AF,_#1E3A8A)] blur-3xl opacity-25 animate-spinGradient"></div>
-
-        {/* Content */}
-        <div className="relative z-10 text-center mb-12">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-4xl md:text-5xl font-bold text-black"
-          >
-            Statistik Platform
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-gray-600 mt-2"
-          >
-            Data terkini sistem Lost & Found UDINUS
-          </motion.p>
-        </div>
-
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto px-6">
-          {statistics.map((stat, index) => (
-            <motion.div
-              key={stat.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              viewport={{ once: true }}
-              className="bg-[rgba(255,255,255,0.6)] backdrop-blur-lg rounded-2xl p-8 border border-white/30 shadow-lg hover:-translate-y-5 hover:scale-[1.03] hover:shadow-xl transition-all duration-500 ease-in-out flex flex-col items-center justify-center min-h-[200px]"
-            >
-              <div className={`w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br ${stat.gradient} animate-pulse mb-4`}>
-                <span className="text-4xl">{stat.icon}</span>
-              </div>
-              <h3 className="text-gray-700 font-semibold text-lg">{stat.title}</h3>
-              <CountUp target={stat.count} className="text-5xl font-extrabold text-gray-900" />
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-
+      <PlatformStatsSection />
 
       {/* Footer */}
       <footer className="relative overflow-hidden py-16 bg-gradient-to-t from-[#0b0f19] to-[#111827] text-[#ffffff]" style={{contentVisibility: 'auto', containIntrinsicSize: '0 400px'}}>
