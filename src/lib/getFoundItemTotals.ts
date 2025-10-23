@@ -6,9 +6,7 @@ export async function getFoundItemTotals(): Promise<Totals> {
   const res = await fetch(`${base}/rest/v1/rpc/get_found_item_totals`, {
     method: 'POST',
     headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-    cache: 'no-store',
-    // @ts-expect-error Next.js specific option
-    next: { revalidate: 0 }
+    cache: 'no-store'
   });
   const raw = await res.text();
   if (!res.ok) throw new Error(`get_found_item_totals ${res.status}: ${raw}`);

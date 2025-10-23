@@ -1,4 +1,4 @@
-import { Target, ShieldCheck, Users, Sparkles, Mail } from "lucide-react";
+import { Target, ShieldCheck, Users, Mail } from "lucide-react";
 
 const TEAM = [
   {
@@ -8,7 +8,7 @@ const TEAM = [
   },
   {
     name: "Amanda Devyana",
-    role: "UI/UX Designer",
+    role: "UI/UX Designer & Ide Konseptual",
     initials: "AD",
   },
   {
@@ -57,7 +57,6 @@ export default function AboutSection() {
           {/* Visi / Nilai */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-sm p-6 md:p-8">
             <div className="flex items-center gap-3 mb-4">
-              <Sparkles className="h-6 w-6 text-sky-500" />
               <h3 className="text-xl font-semibold text-slate-900">Visi Kami</h3>
             </div>
             <p className="text-slate-600 leading-relaxed">

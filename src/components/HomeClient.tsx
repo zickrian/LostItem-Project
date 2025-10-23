@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Search, FileEdit, BarChart3, Shield, Clock, Users, Mail, MapPin, Folder, Bell, Wallet, Smartphone, Book, Key, Headphones, Laptop, IdCard, Instagram, Facebook, Linkedin } from "lucide-react";
+import { Search, FileEdit, BarChart3, Shield, Clock, Users, Mail, MapPin, Folder, Bell, Wallet, Smartphone, Book, Key, Laptop, IdCard } from "lucide-react";
 import { getFoundItemStats } from '@/lib/getFoundItemStats';
 
 interface CountUpProps {

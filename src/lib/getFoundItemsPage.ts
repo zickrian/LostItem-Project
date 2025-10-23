@@ -29,8 +29,6 @@ export async function getFoundItemsPage(page = 1, limit = 6): Promise<FoundItems
     },
     body: JSON.stringify({ limit_rows: Number(limit), page_no: Number(page) }),
     cache: 'no-store',
-    // @ts-expect-error: Next.js fetch options type mismatch
-    next: { revalidate: 0 },
   });
 
   const raw = await res.text();

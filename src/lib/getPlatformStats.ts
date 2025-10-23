@@ -7,9 +7,7 @@ export async function getPlatformStats() {
       Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
       'Content-Type': 'application/json',
     },
-    cache: 'no-store',
-    // @ts-expect-error: Next.js App Router specific option
-    next: { revalidate: 0 }
+    cache: 'no-store'
   });
   if (!res.ok) throw new Error('Bad status ' + res.status);
   const json = await res.json();

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { Instagram, Facebook, Linkedin, Mail, Phone, MapPin, ChevronRight } from "lucide-react";
 
 export default function Footer() {

@@ -8,7 +8,7 @@ import AboutSection from '@/components/AboutSection';
 import Footer from '@/components/Footer';
 import { getFoundItemsPage } from '@/lib/getFoundItemsPage';
 
-export default async function Page({ searchParams }: { searchParams?: { page?: string } }) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const searchParamsResolved = await searchParams;
   const page = Math.max(1, Number(searchParamsResolved?.page ?? '1') || 1);
   const found = await getFoundItemsPage(page, 6);
