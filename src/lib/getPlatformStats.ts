@@ -24,9 +24,11 @@ export async function getPlatformStats() {
   });
   if (!res.ok) throw new Error('Bad status ' + res.status);
   const json = await res.json();
+  console.log('📊 Platform Stats Response:', json);
+  
   return {
-    hilang: Number(json?.BarangHilangDilaporkan ?? 0),
-    ditemukan: Number(json?.BarangDitemukan ?? 0),
-    diklaim: Number(json?.BarangDiklaim ?? 0),
+    hilang: Number(json?.reported ?? 0),
+    ditemukan: Number(json?.found ?? 0),
+    diklaim: Number(json?.claimed ?? 0),
   };
 }

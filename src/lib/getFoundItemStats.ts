@@ -25,8 +25,15 @@ export async function getFoundItemStats() {
     },
     cache: 'no-store',
   });
-  if (!res.ok) throw new Error('Bad status ' + res.status);
+  if (!res.ok) {
+    console.error('❌ getFoundItemStats API Error:', res.status, res.statusText);
+    const errorText = await res.text();
+    console.error('❌ Error response:', errorText);
+    throw new Error(`getFoundItemStats ${res.status}: ${errorText}`);
+  }
   const json = await res.json();
+  console.log('📊 Found Item Stats Response:', json);
+  
   const cats = ['STNK','Handphone','Buku','Kunci','Dompet','Laptop'] as const;
   const out: Record<string, number> = {};
   for (const c of cats) out[c] = Number(json?.[c] ?? 0); // default 0

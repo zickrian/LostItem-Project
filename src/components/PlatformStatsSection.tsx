@@ -1,6 +1,5 @@
 "use client";
 
-import { getPlatformStats } from '@/lib/getPlatformStats';
 import { useEffect, useState, useRef } from 'react';
 import { Reveal, RevealStagger } from '@/components/Reveal';
 
@@ -8,7 +7,17 @@ export default function PlatformStatsSection() {
   const [stats, setStats] = useState({ hilang: 0, ditemukan: 0, diklaim: 0 });
 
   useEffect(() => {
-    getPlatformStats().then(setStats);
+    // Fetch stats from API route instead of direct Supabase call
+    fetch('/api/stats/platform', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        console.log('📊 Platform stats received:', data);
+        setStats(data);
+      })
+      .catch(err => {
+        console.error('❌ Error fetching platform stats:', err);
+        setStats({ hilang: 0, ditemukan: 0, diklaim: 0 });
+      });
   }, []);
 
   return (

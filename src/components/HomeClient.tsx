@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Search, FileEdit, BarChart3, Shield, Clock, Users, Mail, MapPin, Folder, Bell, Wallet, Smartphone, Book, Key, Laptop, IdCard } from "lucide-react";
-import { getFoundItemStats } from '@/lib/getFoundItemStats';
 
 interface CountUpProps {
   target: number;
@@ -52,7 +51,24 @@ export default function HomeClient() {
   const [foundItemStats, setFoundItemStats] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    getFoundItemStats().then(setFoundItemStats);
+    // Fetch stats from API route instead of direct Supabase call
+    fetch('/api/stats/found-items', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        console.log('📊 Found items stats received:', data);
+        setFoundItemStats(data);
+      })
+      .catch(err => {
+        console.error('❌ Error fetching found items stats:', err);
+        setFoundItemStats({
+          'STNK': 0,
+          'Handphone': 0,
+          'Buku': 0,
+          'Kunci': 0,
+          'Dompet': 0,
+          'Laptop': 0,
+        });
+      });
   }, []);
 
   const categories = [
