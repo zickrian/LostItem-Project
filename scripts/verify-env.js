@@ -4,8 +4,8 @@
  */
 
 // Load environment variables from .env.local
-const fs = require('fs');
-const path = require('path');
+const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-require-imports
+const path = require('path'); // eslint-disable-line @typescript-eslint/no-require-imports
 
 const envPath = path.join(__dirname, '..', '.env.local');
 console.log(`📂 Looking for: ${envPath}\n`);
@@ -13,12 +13,12 @@ console.log(`📂 Looking for: ${envPath}\n`);
 if (fs.existsSync(envPath)) {
   console.log('✅ .env.local found! Loading variables...\n');
   const envContent = fs.readFileSync(envPath, 'utf8');
-  
-  envContent.split(/\r?\n/).forEach((line, index) => {
+
+  envContent.split(/\r?\n/).forEach((line, index) => { // eslint-disable-line @typescript-eslint/no-unused-vars
     // Skip empty lines and comments
     const trimmed = line.trim();
     if (!trimmed || trimmed.startsWith('#')) return;
-    
+
     // Match KEY=VALUE pattern
     const match = trimmed.match(/^([A-Z_][A-Z0-9_]*)=(.*)$/i);
     if (match) {
