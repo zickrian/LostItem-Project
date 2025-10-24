@@ -5,11 +5,18 @@ export const revalidate = 0;
 
 export async function GET() {
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    // Use server-side env vars (without NEXT_PUBLIC_) in API routes
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
       console.error('❌ Missing Supabase environment variables in /api/stats/platform');
+      console.error('Available env vars:', {
+        hasPublicUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+        hasUrl: !!process.env.SUPABASE_URL,
+        hasPublicKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+        hasKey: !!process.env.SUPABASE_ANON_KEY
+      });
       return NextResponse.json(
         { 
           hilang: 0, 
