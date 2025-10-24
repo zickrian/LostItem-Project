@@ -109,7 +109,7 @@ export default function AboutSection() {
               {TEAM.map((member, i) => (
                 <Reveal key={member.name} preset="zoom" delay={i * 0.05}>
                   <div className="bg-gray-50 rounded-2xl shadow-sm hover:shadow-md transition-all p-6 text-center">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-sky-400 flex items-center justify-center text-white font-semibold text-lg">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-sky-400 flex items-center justify-center text-white font-semibold text-lg animate-gradient-shift">
                       {member.initials}
                     </div>
                     <h3 className="text-lg font-bold text-slate-900">{member.name}</h3>
