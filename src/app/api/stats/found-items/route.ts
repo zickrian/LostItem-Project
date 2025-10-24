@@ -90,7 +90,7 @@ export async function GET() {
     targetCategories.forEach(cat => categoryCounts[cat] = 0);
     
     // Count reports by category
-    reports.forEach((report: any) => {
+    reports.forEach((report: { category: string }) => {
       const reportCategory = report.category;
       
       if (targetCategories.includes(reportCategory)) {
