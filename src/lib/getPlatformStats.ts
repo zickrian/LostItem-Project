@@ -1,10 +1,23 @@
 export async function getPlatformStats() {
-  const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/rpc/get_platform_stats`;
+  // Safety check for environment variables
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  
+  if (!supabaseUrl || !supabaseKey) {
+    console.warn('⚠️ Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY in getPlatformStats');
+    return {
+      hilang: 0,
+      ditemukan: 0,
+      diklaim: 0,
+    };
+  }
+
+  const url = `${supabaseUrl}/rest/v1/rpc/get_platform_stats`;
   const res = await fetch(url, {
     method: 'POST',
     headers: {
-      apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
       'Content-Type': 'application/json',
     },
     cache: 'no-store'

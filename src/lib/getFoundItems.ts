@@ -8,11 +8,20 @@ export type FoundItem = {
 
 export async function getFoundItems(): Promise<FoundItem[]> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/rpc/get_found_items`, {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    // Safety check for environment variables
+    if (!supabaseUrl || !supabaseKey) {
+      console.warn('⚠️ Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY in getFoundItems');
+      return [];
+    }
+
+    const res = await fetch(`${supabaseUrl}/rest/v1/rpc/get_found_items`, {
       method: 'GET',
       headers: {
-        'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''}`,
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`,
       },
       cache: 'no-store',
 

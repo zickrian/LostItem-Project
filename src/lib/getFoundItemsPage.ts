@@ -15,8 +15,21 @@ export type FoundItemsPage = {
 };
 
 export async function getFoundItemsPage(page = 1, limit = 6): Promise<FoundItemsPage> {
-  const base = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const key  = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key  = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  
+  // Safety check for environment variables
+  if (!base || !key) {
+    console.warn('⚠️ Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY in getFoundItemsPage');
+    return {
+      items: [],
+      total: 0,
+      page,
+      limit,
+      totalPages: 0,
+    };
+  }
+
   // Gunakan RPC yang ada: get_found_items_paged (filter: type='temuan', status='aktif' dikerjakan di SQL fungsi itu).
   const url = `${base}/rest/v1/rpc/get_found_items_paged`;
 
