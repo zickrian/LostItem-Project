@@ -1,3 +1,5 @@
+"use client";
+
 import { Target, ShieldCheck, Users, Mail } from "lucide-react";
 import { Reveal, RevealStagger } from "./Reveal";
 
@@ -6,28 +8,50 @@ const TEAM = [
     name: "Firdaus Khotibul Zickrian",
     role: "Pengembang Sisi Admin & Database",
     initials: "FZ",
+    instagram: "https://instagram.com/firdauszickrian",
   },
   {
     name: "Amanda Devyana",
     role: "UI/UX Designer & Ide Konseptual",
     initials: "AD",
+    instagram: "https://instagram.com/amandadevyanaa",
   },
   {
     name: "Maulida Cahya Kurnia",
     role: "Pengembang Landing Page & Integrasi Statistik",
     initials: "MC",
+    instagram: "https://instagram.com/maulidacahyaa",
   },
   {
     name: "Andika Apriyanto",
     role: "Perancang Fitur & Ide Konseptual",
     initials: "AA",
+    instagram: "https://instagram.com/andikkaapr",
   },
   {
     name: "Ryandika Syauqi Ramadhani",
     role: "Penulis Dokumentasi & Jurnal Tim",
     initials: "RS",
+    instagram: "https://instagram.com/ryandikasr",
   },
 ];
+
+function TeamMemberCard({ member, delay }: { member: typeof TEAM[0]; delay: number }) {
+  return (
+    <Reveal preset="zoom" delay={delay}>
+      <div
+        className="bg-gray-50 rounded-2xl shadow-sm hover:shadow-md transition-all p-6 text-center cursor-pointer"
+        onClick={() => window.open(member.instagram, '_blank')}
+      >
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 via-sky-400 to-cyan-500 flex items-center justify-center text-white font-semibold text-lg animate-gradient-shift">
+          {member.initials}
+        </div>
+        <h3 className="text-lg font-bold text-slate-900">{member.name}</h3>
+        <p className="text-sky-600 font-medium">{member.role}</p>
+      </div>
+    </Reveal>
+  );
+}
 
 export default function AboutSection() {
   return (
@@ -107,15 +131,7 @@ export default function AboutSection() {
             </h3>
             <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {TEAM.map((member, i) => (
-                <Reveal key={member.name} preset="zoom" delay={i * 0.05}>
-                  <div className="bg-gray-50 rounded-2xl shadow-sm hover:shadow-md transition-all p-6 text-center">
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-sky-400 flex items-center justify-center text-white font-semibold text-lg animate-gradient-shift">
-                      {member.initials}
-                    </div>
-                    <h3 className="text-lg font-bold text-slate-900">{member.name}</h3>
-                    <p className="text-sky-600 font-medium">{member.role}</p>
-                  </div>
-                </Reveal>
+                <TeamMemberCard key={member.name} member={member} delay={i * 0.05} />
               ))}
             </RevealStagger>
 

@@ -4,7 +4,7 @@ import { PropsWithChildren, useRef } from "react";
 import { motion, Variants, useInView, useReducedMotion } from "framer-motion";
 
 type RevealProps = PropsWithChildren<{
-  as?: keyof JSX.IntrinsicElements;          // "h2" | "p" | "div" | ...
+  as?: keyof React.JSX.IntrinsicElements;          // "h2" | "p" | "div" | ...
   preset?: "fadeUp" | "slideLeft" | "slideRight" | "zoom";
   delay?: number;
   className?: string;
@@ -25,7 +25,7 @@ export function Reveal({
   children,
 }: RevealProps) {
   const Comp = motion[Tag as "div"];
-  const ref = useRef<HTMLElement | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const prefersReduced = useReducedMotion();
 
   // Lebih sensitif & robust
@@ -37,7 +37,7 @@ export function Reveal({
 
   return (
     <Comp
-      ref={ref as any}
+      ref={ref}
       className={`reveal ${className || ""}`}      // <-- class untuk fallback CSS
       data-visible={inView ? "true" : "false"}     // <-- penanda fallback
       style={{ willChange: "transform, opacity" }}
@@ -57,7 +57,7 @@ export function RevealStagger({
   children,
   delay = 0,
 }: PropsWithChildren<{ className?: string; delay?: number }>) {
-  const ref = useRef<HTMLDivElement | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, {
     once: true,
     amount: 0.1,
