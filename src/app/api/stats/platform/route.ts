@@ -44,12 +44,18 @@ export async function GET() {
 
     const json = await res.json();
     console.log('📊 Platform Stats API Response:', json);
+    console.log('📊 Raw values - reported:', json?.reported, 'found:', json?.found, 'claimed:', json?.claimed);
+    console.log('📊 Raw values (ID) - BarangHilangDilaporkan:', json?.BarangHilangDilaporkan, 'BarangDitemukan:', json?.BarangDitemukan, 'BarangDiklaim:', json?.BarangDiklaim);
 
-    return NextResponse.json({
-      hilang: Number(json?.reported ?? 0),
-      ditemukan: Number(json?.found ?? 0),
-      diklaim: Number(json?.claimed ?? 0),
-    });
+    const stats = {
+      hilang: Number(json?.reported ?? json?.BarangHilangDilaporkan ?? 0),
+      ditemukan: Number(json?.found ?? json?.BarangDitemukan ?? 0),
+      diklaim: Number(json?.claimed ?? json?.BarangDiklaim ?? 0),
+    };
+    
+    console.log('📊 Processed stats:', stats);
+    
+    return NextResponse.json(stats);
   } catch (error) {
     console.error('❌ Error in /api/stats/platform:', error);
     return NextResponse.json(

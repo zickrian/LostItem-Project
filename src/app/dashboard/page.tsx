@@ -304,7 +304,6 @@ export default function DashboardPage() {
                     <option value="Dokumen" className="text-gray-900 font-semibold">📄 Dokumen</option>
                     <option value="Kunci" className="text-gray-900 font-semibold">🔑 Kunci</option>
                     <option value="Tas & Dompet" className="text-gray-900 font-semibold">👜 Tas & Dompet</option>
-                    <option value="Pakaian" className="text-gray-900 font-semibold">👕 Pakaian</option>
                     <option value="Aksesoris" className="text-gray-900 font-semibold">⌚ Aksesoris</option>
                     <option value="Buku & Alat Tulis" className="text-gray-900 font-semibold">📚 Buku & Alat Tulis</option>
                     <option value="Lainnya" className="text-gray-900 font-semibold">📦 Lainnya</option>
@@ -385,7 +384,6 @@ export default function DashboardPage() {
                   <option value="Dokumen" className="text-gray-900 font-semibold">📄 Dokumen</option>
                   <option value="Kunci" className="text-gray-900 font-semibold">🔑 Kunci</option>
                   <option value="Tas & Dompet" className="text-gray-900 font-semibold">👜 Tas & Dompet</option>
-                  <option value="Pakaian" className="text-gray-900 font-semibold">👕 Pakaian</option>
                   <option value="Aksesoris" className="text-gray-900 font-semibold">⌚ Aksesoris</option>
                   <option value="Buku & Alat Tulis" className="text-gray-900 font-semibold">📚 Buku & Alat Tulis</option>
                   <option value="Lainnya" className="text-gray-900 font-semibold">📦 Lainnya</option>

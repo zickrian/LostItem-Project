@@ -6,12 +6,12 @@ export async function getFoundItemStats() {
   if (!supabaseUrl || !supabaseKey) {
     console.warn('⚠️ Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY in getFoundItemStats');
     return {
-      'STNK': 0,
-      'Handphone': 0,
-      'Buku': 0,
+      'Elektronik': 0,
+      'Dokumen': 0,
       'Kunci': 0,
-      'Dompet': 0,
-      'Laptop': 0,
+      'Tas & Dompet': 0,
+      'Buku & Alat Tulis': 0,
+      'Aksesoris': 0,
     };
   }
 
@@ -34,7 +34,7 @@ export async function getFoundItemStats() {
   const json = await res.json();
   console.log('📊 Found Item Stats Response:', json);
   
-  const cats = ['STNK','Handphone','Buku','Kunci','Dompet','Laptop'] as const;
+  const cats = ['Elektronik','Dokumen','Kunci','Tas & Dompet','Buku & Alat Tulis','Aksesoris'] as const;
   const out: Record<string, number> = {};
   for (const c of cats) out[c] = Number(json?.[c] ?? 0); // default 0
   return out;

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { Search, FileEdit, BarChart3, Shield, Clock, Users, Mail, MapPin, Folder, Bell, Wallet, Smartphone, Book, Key, Laptop, IdCard } from "lucide-react";
+import { Search, FileEdit, BarChart3, Shield, Clock, Users, Mail, MapPin, Folder, Bell, Wallet, Smartphone, Book, Key, IdCard } from "lucide-react";
 
 interface CountUpProps {
   target: number;
@@ -49,35 +49,71 @@ function CountUp({ target, duration = 2000, className = "text-4xl font-extrabold
 export default function HomeClient() {
   const [isPaused, setIsPaused] = useState(false);
   const [foundItemStats, setFoundItemStats] = useState<Record<string, number>>({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Fetch stats from API route instead of direct Supabase call
-    fetch('/api/stats/found-items', { cache: 'no-store' })
-      .then(res => res.json())
-      .then(data => {
+    const fetchStats = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch('/api/stats/found-items', {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
         console.log('📊 Found items stats received:', data);
-        setFoundItemStats(data);
-      })
-      .catch(err => {
+        
+        // Ensure all expected categories exist, even if they're 0
+        const defaultStats = {
+          'Elektronik': 0,
+          'Dokumen': 0,
+          'Kunci': 0,
+          'Tas & Dompet': 0,
+          'Buku & Alat Tulis': 0,
+          'Aksesoris': 0,
+        };
+        
+        // Merge with received data, defaulting to 0 for missing categories
+        const mergedStats = { ...defaultStats, ...data };
+        setFoundItemStats(mergedStats);
+      } catch (err) {
         console.error('❌ Error fetching found items stats:', err);
         setFoundItemStats({
-          'STNK': 0,
-          'Handphone': 0,
-          'Buku': 0,
+          'Elektronik': 0,
+          'Dokumen': 0,
           'Kunci': 0,
-          'Dompet': 0,
-          'Laptop': 0,
+          'Tas & Dompet': 0,
+          'Buku & Alat Tulis': 0,
+          'Aksesoris': 0,
         });
-      });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchStats();
+    
+    // Optional: Refetch data every 30 seconds to keep stats fresh
+    const interval = setInterval(fetchStats, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const categories = [
-    { icon: IdCard, title: "STNK", subtitle: "Jumlah yang ditemukan", count: foundItemStats["STNK"] || 0, iconBg: "#FECACA" },
-    { icon: Smartphone, title: "Handphone", subtitle: "Jumlah yang ditemukan", count: foundItemStats["Handphone"] || 0, iconBg: "#A7F3D0" },
-    { icon: Book, title: "Buku", subtitle: "Jumlah yang ditemukan", count: foundItemStats["Buku"] || 0, iconBg: "#FBCFE8" },
-    { icon: Key, title: "Kunci", subtitle: "Jumlah yang ditemukan", count: foundItemStats["Kunci"] || 0, iconBg: "#BFDBFE" },
-    { icon: Wallet, title: "Dompet", subtitle: "Jumlah yang ditemukan", count: foundItemStats["Dompet"] || 0, iconBg: "#FEF08A" },
-    { icon: Laptop, title: "Laptop", subtitle: "Jumlah yang ditemukan", count: foundItemStats["Laptop"] || 0, iconBg: "#DDD6FE" },
+    { icon: Smartphone, title: "Elektronik", subtitle: "Jumlah laporan", count: foundItemStats["Elektronik"] || 0, iconBg: "#FECACA" },
+    { icon: IdCard, title: "Dokumen", subtitle: "Jumlah laporan", count: foundItemStats["Dokumen"] || 0, iconBg: "#A7F3D0" },
+    { icon: Key, title: "Kunci", subtitle: "Jumlah laporan", count: foundItemStats["Kunci"] || 0, iconBg: "#FBCFE8" },
+    { icon: Wallet, title: "Tas & Dompet", subtitle: "Jumlah laporan", count: foundItemStats["Tas & Dompet"] || 0, iconBg: "#BFDBFE" },
+    { icon: Book, title: "Buku & Alat Tulis", subtitle: "Jumlah laporan", count: foundItemStats["Buku & Alat Tulis"] || 0, iconBg: "#FEF08A" },
+    { icon: Folder, title: "Aksesoris", subtitle: "Jumlah laporan", count: foundItemStats["Aksesoris"] || 0, iconBg: "#DDD6FE" },
   ];
 
   return (
@@ -430,7 +466,7 @@ export default function HomeClient() {
               viewport={{ once: true }}
               className="text-4xl md:text-5xl font-extrabold text-white leading-tight tracking-tight mb-4"
             >
-              Barang Yang Sering Ditemukan
+              Statistik Laporan Barang
             </motion.h2>
             <motion.p
               initial={{ opacity: 0 }}
@@ -439,7 +475,7 @@ export default function HomeClient() {
               viewport={{ once: true }}
               className="text-gray-300 text-base md:text-lg"
             >
-              Statistik barang hilang yang berhasil ditemukan di kampus kami
+              Jumlah laporan barang hilang dan temuan di kampus kami
             </motion.p>
           </div>
 
@@ -463,7 +499,11 @@ export default function HomeClient() {
                 </div>
                 <h3 className="text-xl font-semibold mb-2">{category.title}</h3>
                 <p className="text-gray-400 text-sm mb-4">{category.subtitle}</p>
-                <CountUp target={category.count} />
+                {isLoading ? (
+                  <div className="text-4xl font-extrabold text-white animate-pulse">0</div>
+                ) : (
+                  <CountUp target={category.count} />
+                )}
               </motion.div>
             ))}
           </div>

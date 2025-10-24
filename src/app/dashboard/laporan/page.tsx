@@ -42,7 +42,6 @@ const CATEGORIES = [
   "Dokumen",
   "Kunci",
   "Tas & Dompet",
-  "Pakaian",
   "Aksesoris",
   "Buku & Alat Tulis",
   "Lainnya",

@@ -1,4 +1,4 @@
--- Function to get found item totals by category
+-- Update function to get found item totals by new category structure
 create or replace function get_found_item_totals()
 returns json as $$
 declare
@@ -19,6 +19,6 @@ begin
 end;
 $$ language plpgsql security definer;
 
--- Grant execute permission to authenticated users and anon
+-- Ensure permissions are set
 grant execute on function get_found_item_totals() to authenticated;
 grant execute on function get_found_item_totals() to anon;

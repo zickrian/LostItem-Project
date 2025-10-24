@@ -8,10 +8,21 @@ export default function PlatformStatsSection() {
 
   useEffect(() => {
     // Fetch stats from API route instead of direct Supabase call
-    fetch('/api/stats/platform', { cache: 'no-store' })
-      .then(res => res.json())
+    console.log('🔄 Fetching platform stats...');
+    fetch('/api/stats/platform', { 
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      }
+    })
+      .then(res => {
+        console.log('📡 Platform stats response status:', res.status);
+        return res.json();
+      })
       .then(data => {
         console.log('📊 Platform stats received:', data);
+        console.log('📊 Stats values - Hilang:', data.hilang, 'Ditemukan:', data.ditemukan, 'Diklaim:', data.diklaim);
         setStats(data);
       })
       .catch(err => {
