@@ -536,3 +536,25 @@ img {
   width: 40px;
   height: 40px;
 }
+
+/* Fallback untuk elemen yang punya class .reveal */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  transition: opacity .45s ease-out, transform .45s ease-out;
+}
+
+.reveal[data-visible="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Varian fallback ringan jika ingin beda-beda preset (opsional) */
+.reveal.slide-left { transform: translate3d(22px, 0, 0); }
+.reveal.slide-left[data-visible="true"] { transform: translate3d(0, 0, 0); }
+
+.reveal.slide-right { transform: translate3d(-22px, 0, 0); }
+.reveal.slide-right[data-visible="true"] { transform: translate3d(0, 0, 0); }
+
+.reveal.zoom { transform: scale(.96); }
+.reveal.zoom[data-visible="true"] { transform: scale(1); }

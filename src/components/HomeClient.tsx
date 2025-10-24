@@ -127,17 +127,33 @@ export default function HomeClient() {
             style={{ backgroundColor: 'transparent' }}
             loading="eager"
           />
-          <div className="absolute w-8 top-8 right-16 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.3s', animationFillMode: 'both' }}>
-            <Mail className="w-8 h-8 drop-shadow-lg" style={{color: '#3f7bd1'}} />
+
+          {/* Ikon KANAN-ATAS (posisi fix, animasi di child) */}
+          <div className="pointer-events-none absolute top-6 right-8 md:top-8 md:right-12 lg:top-10 lg:right-16 z-10">
+            <span className="block transform-gpu will-change-transform motion-safe:animate-float-bubble">
+              <Mail className="w-7 h-7 text-sky-500 drop-shadow" />
+            </span>
           </div>
-          <div className="absolute w-7 bottom-12 left-12 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.5s', animationFillMode: 'both' }}>
-            <MapPin className="w-7 h-7 text-green-500 drop-shadow-lg" />
+
+          {/* Ikon KIRI-BAWAH */}
+          <div className="pointer-events-none absolute bottom-10 left-8 md:bottom-12 md:left-12 lg:bottom-14 lg:left-16 z-10">
+            <span className="block transform-gpu will-change-transform motion-safe:animate-float-bubble-slow">
+              <MapPin className="w-7 h-7 text-green-500 drop-shadow" />
+            </span>
           </div>
-          <div className="absolute w-8 top-1/3 left-8 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
-            <Folder className="w-8 h-8 text-purple-500 drop-shadow-lg" />
+
+          {/* Ikon TENGAH-KIRI */}
+          <div className="pointer-events-none absolute top-1/3 left-6 md:top-1/3 md:left-8 lg:top-1/3 lg:left-10 z-10">
+            <span className="block transform-gpu will-change-transform motion-safe:animate-float-bubble">
+              <Folder className="w-7 h-7 text-purple-500 drop-shadow" />
+            </span>
           </div>
-          <div className="absolute w-8 top-1/4 right-8 opacity-0 animate-fadeInUp" style={{ animationDelay: '0.6s', animationFillMode: 'both' }}>
-            <Bell className="w-8 h-8 text-orange-500 drop-shadow-lg" />
+
+          {/* Ikon TENGAH-KANAN */}
+          <div className="pointer-events-none absolute top-1/4 right-6 md:top-1/4 md:right-8 lg:top-1/4 lg:right-10 z-10">
+            <span className="block transform-gpu will-change-transform motion-safe:animate-float-bubble-slow">
+              <Bell className="w-7 h-7 text-orange-500 drop-shadow" />
+            </span>
           </div>
         </div>
       </section>

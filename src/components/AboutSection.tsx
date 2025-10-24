@@ -1,4 +1,5 @@
 import { Target, ShieldCheck, Users, Mail } from "lucide-react";
+import { Reveal, RevealStagger } from "./Reveal";
 
 const TEAM = [
   {
@@ -41,15 +42,15 @@ export default function AboutSection() {
       <div className="relative max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20 md:py-24">
         {/* Header */}
         <div className="relative z-10 text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight">
+          <Reveal as="h2" preset="fadeUp" className="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight">
             Tentang Kami
-          </h2>
-          <p className="mt-4 text-slate-500 text-base md:text-lg">
+          </Reveal>
+          <Reveal as="p" preset="slideLeft" delay={0.1} className="mt-4 text-slate-500 text-base md:text-lg">
             Kami adalah tim pengembang muda dari Universitas Dian Nuswantoro
             yang berkolaborasi membangun <strong>SITEMU</strong> -
             sistem Lost &amp; Found kampus berbasis digital dengan pendekatan
             kolaboratif dan modern.
-          </p>
+          </Reveal>
         </div>
 
         {/* Dua kolom: deskripsi + tim */}
@@ -104,20 +105,19 @@ export default function AboutSection() {
             <h3 className="text-lg font-semibold text-slate-900 mb-6">
               Tim Pengembang SITEMU
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {TEAM.map((m) => (
-                <div
-                  key={m.name}
-                  className="rounded-xl border border-slate-200 p-4 text-center hover:shadow-md transition"
-                >
-                  <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-sky-100 text-sky-700 font-semibold">
-                    {m.initials}
+            <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {TEAM.map((member, i) => (
+                <Reveal key={member.name} preset="zoom" delay={i * 0.05}>
+                  <div className="bg-gray-50 rounded-2xl shadow-sm hover:shadow-md transition-all p-6 text-center">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-sky-400 flex items-center justify-center text-white font-semibold text-lg">
+                      {member.initials}
+                    </div>
+                    <h3 className="text-lg font-bold text-slate-900">{member.name}</h3>
+                    <p className="text-sky-600 font-medium">{member.role}</p>
                   </div>
-                  <p className="font-semibold text-slate-900">{m.name}</p>
-                  <p className="text-xs text-slate-500">{m.role}</p>
-                </div>
+                </Reveal>
               ))}
-            </div>
+            </RevealStagger>
 
             <div className="mt-8 text-center">
               <a

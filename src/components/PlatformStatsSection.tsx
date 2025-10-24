@@ -2,6 +2,7 @@
 
 import { getPlatformStats } from '@/lib/getPlatformStats';
 import { useEffect, useState, useRef } from 'react';
+import { Reveal, RevealStagger } from '@/components/Reveal';
 
 export default function PlatformStatsSection() {
   const [stats, setStats] = useState({ hilang: 0, ditemukan: 0, diklaim: 0 });
@@ -23,37 +24,43 @@ export default function PlatformStatsSection() {
       </div>
 
       <div className="relative z-10 text-center mb-12">
-        <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight">
+        <Reveal as="h2" className="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight">
           Statistik Platform
-        </h2>
-        <p className="mt-4 text-slate-500 text-base md:text-lg">
+        </Reveal>
+        <Reveal as="p" delay={0.1} className="mt-4 text-slate-500 text-base md:text-lg">
           Data terkini <span className="font-semibold">SITEMU - UDINUS</span>
-        </p>
+        </Reveal>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-        <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-lg hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl transition-all duration-500 ease-in-out flex flex-col items-center justify-center min-h-[200px]">
-          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-rose-400 to-pink-500 animate-pulse mb-4">
-            <span className="text-4xl">📢</span>
+      <RevealStagger className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+        <Reveal>
+          <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-lg hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl transition-all duration-500 ease-in-out flex flex-col items-center justify-center min-h-[200px]">
+            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-rose-400 to-pink-500 animate-pulse mb-4">
+              <span className="text-4xl">📢</span>
+            </div>
+            <h3 className="text-gray-800 font-semibold text-lg">Barang Hilang Dilaporkan</h3>
+            <CountUp target={stats.hilang} className="text-5xl font-extrabold text-gray-900" />
           </div>
-          <h3 className="text-gray-800 font-semibold text-lg">Barang Hilang Dilaporkan</h3>
-          <CountUp target={stats.hilang} className="text-5xl font-extrabold text-gray-900" />
-        </div>
-        <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-lg hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl transition-all duration-500 ease-in-out flex flex-col items-center justify-center min-h-[200px]">
-          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-sky-400 to-blue-600 animate-pulse mb-4">
-            <span className="text-4xl">🔍</span>
+        </Reveal>
+        <Reveal>
+          <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-lg hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl transition-all duration-500 ease-in-out flex flex-col items-center justify-center min-h-[200px]">
+            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-sky-400 to-blue-600 animate-pulse mb-4">
+              <span className="text-4xl">🔍</span>
+            </div>
+            <h3 className="text-gray-800 font-semibold text-lg">Barang Ditemukan</h3>
+            <CountUp target={stats.ditemukan} className="text-5xl font-extrabold text-gray-900" />
           </div>
-          <h3 className="text-gray-800 font-semibold text-lg">Barang Ditemukan</h3>
-          <CountUp target={stats.ditemukan} className="text-5xl font-extrabold text-gray-900" />
-        </div>
-        <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-lg hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl transition-all duration-500 ease-in-out flex flex-col items-center justify-center min-h-[200px]">
-          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-green-500 animate-pulse mb-4">
-            <span className="text-4xl">✅</span>
+        </Reveal>
+        <Reveal>
+          <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-lg hover:-translate-y-2 hover:scale-[1.02] hover:shadow-xl transition-all duration-500 ease-in-out flex flex-col items-center justify-center min-h-[200px]">
+            <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-green-500 animate-pulse mb-4">
+              <span className="text-4xl">✅</span>
+            </div>
+            <h3 className="text-gray-800 font-semibold text-lg">Barang Diklaim</h3>
+            <CountUp target={stats.diklaim} className="text-5xl font-extrabold text-gray-900" />
           </div>
-          <h3 className="text-gray-800 font-semibold text-lg">Barang Diklaim</h3>
-          <CountUp target={stats.diklaim} className="text-5xl font-extrabold text-gray-900" />
-        </div>
-      </div>
+        </Reveal>
+      </RevealStagger>
     </section>
   );
 }
