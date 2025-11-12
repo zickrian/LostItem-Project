@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/contexts/ToastContext";
@@ -8,9 +8,15 @@ export default function AuthCallbackPage() {
   const router = useRouter();
   const toast = useToast();
   const [error, setError] = useState<string | null>(null);
+  const hasProcessedAuth = useRef(false);
 
   useEffect(() => {
     async function handleAuth() {
+      // Prevent duplicate execution in React Strict Mode
+      if (hasProcessedAuth.current) {
+        return;
+      }
+      hasProcessedAuth.current = true;
       try {
         // Check for error in URL params
         const params = new URLSearchParams(window.location.search);
