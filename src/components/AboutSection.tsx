@@ -32,7 +32,7 @@ const TEAM = [
     name: "Ryandika Syauqi Ramadhani",
     role: "Penulis Dokumentasi & Jurnal Tim",
     initials: "RS",
-    instagram: "https://instagram.com/ryandikasr",
+    instagram: "https://www.instagram.com/ryandika44.5_?igsh=cjA5NDlwamh3MWRj",
   },
 ];
 

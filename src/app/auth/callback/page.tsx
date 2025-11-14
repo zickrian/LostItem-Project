@@ -115,7 +115,8 @@ export default function AuthCallbackPage() {
     }
 
     handleAuth();
-  }, [router, toast]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (error) {
     return (
