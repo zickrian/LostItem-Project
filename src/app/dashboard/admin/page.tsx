@@ -107,6 +107,7 @@ export default function AdminPage() {
     }
 
     init();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   const filteredReports = useMemo(() => {
@@ -148,20 +149,23 @@ export default function AdminPage() {
 
       if (error) throw error;
 
-      const mapped: AdminReport[] = (data || []).map((item: any) => ({
-        id: item.id,
-        title: item.title,
-        description: item.description,
-        category: item.category,
-        location: item.location,
-        type: item.type,
-        status: item.status,
-        image_url: item.image_url,
-        created_at: item.created_at,
-        latitude: item.latitude ?? undefined,
-        longitude: item.longitude ?? undefined,
-        user: item.user,
-      }));
+      const mapped = (data || []).map((item) => {
+        const userObj = Array.isArray(item.user) && item.user.length > 0 ? item.user[0] : item.user;
+        return {
+          id: item.id,
+          title: item.title,
+          description: item.description,
+          category: item.category,
+          location: item.location,
+          type: item.type,
+          status: item.status,
+          image_url: item.image_url,
+          created_at: item.created_at,
+          latitude: item.latitude ?? undefined,
+          longitude: item.longitude ?? undefined,
+          user: userObj || undefined,
+        } as AdminReport;
+      });
 
       setReports(mapped);
     } catch (error) {
@@ -245,7 +249,6 @@ export default function AdminPage() {
   }
 
   function handleDeleteReport(reportId: string) {
-    const report = reports.find((r) => r.id === reportId);
     setConfirmDialog({
       isOpen: true,
       reportId,
