@@ -12,6 +12,7 @@ import {
   UsersIcon,
   MagnifyingGlassIcon,
   AdjustmentsHorizontalIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/24/solid";
 
 interface User {
@@ -351,23 +352,53 @@ export default function AdminPage() {
         <div className="flex gap-2 mb-6">
           <button
             onClick={() => setActiveTab("laporan")}
-            className={`px-6 py-3 rounded-xl font-bold text-sm transition-all ${
-              activeTab === "laporan"
-                ? "bg-blue-600 text-white shadow-md"
-                : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
-            }`}
+            className="flex items-center gap-2 px-6 py-3.5 rounded-2xl font-bold text-sm transition-all duration-200"
+            style={{
+              backgroundColor: activeTab === "laporan" ? '#114D91' : 'white',
+              color: activeTab === "laporan" ? '#FFFFFF' : '#6B7280',
+              boxShadow: activeTab === "laporan" ? '0 2px 8px rgba(17, 77, 145, 0.15)' : 'none',
+              border: activeTab === "laporan" ? 'none' : '1px solid #E5E7EB',
+            }}
+            onMouseEnter={(e) => {
+              if (activeTab !== "laporan") {
+                e.currentTarget.style.backgroundColor = '#EAF2FF';
+                e.currentTarget.style.color = '#114D91';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== "laporan") {
+                e.currentTarget.style.backgroundColor = 'white';
+                e.currentTarget.style.color = '#6B7280';
+              }
+            }}
           >
-            📋 Laporan
+            <DocumentTextIcon className="w-5 h-5" />
+            Laporan
           </button>
           <button
             onClick={() => setActiveTab("pengguna")}
-            className={`px-6 py-3 rounded-xl font-bold text-sm transition-all ${
-              activeTab === "pengguna"
-                ? "bg-blue-600 text-white shadow-md"
-                : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
-            }`}
+            className="flex items-center gap-2 px-6 py-3.5 rounded-2xl font-bold text-sm transition-all duration-200"
+            style={{
+              backgroundColor: activeTab === "pengguna" ? '#114D91' : 'white',
+              color: activeTab === "pengguna" ? '#FFFFFF' : '#6B7280',
+              boxShadow: activeTab === "pengguna" ? '0 2px 8px rgba(17, 77, 145, 0.15)' : 'none',
+              border: activeTab === "pengguna" ? 'none' : '1px solid #E5E7EB',
+            }}
+            onMouseEnter={(e) => {
+              if (activeTab !== "pengguna") {
+                e.currentTarget.style.backgroundColor = '#EAF2FF';
+                e.currentTarget.style.color = '#114D91';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== "pengguna") {
+                e.currentTarget.style.backgroundColor = 'white';
+                e.currentTarget.style.color = '#6B7280';
+              }
+            }}
           >
-            👥 Pengguna
+            <UsersIcon className="w-5 h-5" />
+            Pengguna
           </button>
         </div>
 
