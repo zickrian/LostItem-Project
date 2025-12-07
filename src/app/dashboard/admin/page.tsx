@@ -57,6 +57,7 @@ export default function AdminPage() {
   const [reports, setReports] = useState<AdminReport[]>([]);
   const [users, setUsers] = useState<AdminUserRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<"laporan" | "pengguna">("laporan");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"aktif" | "selesai" | "all">("all");
   const [typeFilter, setTypeFilter] = useState<"all" | "hilang" | "temuan">("all");
@@ -335,12 +336,9 @@ export default function AdminPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <div className="mb-6 sm:mb-8 rounded-2xl shadow-lg border border-blue-100 overflow-hidden" style={{ background: "linear-gradient(135deg, #114D91 0%, #3B82F6 50%, #93C5FD 100%)" }}>
           <div className="p-6 sm:p-8 flex flex-col gap-3 sm:gap-4">
-            <div className="flex items-center gap-3">
-              <ShieldCheckIcon className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
-              <div>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">Admin</h1>
-                <p className="text-sm sm:text-base text-white/90">Kelola semua laporan dan pengguna</p>
-              </div>
+            <div>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">Admin</h1>
+              <p className="text-sm sm:text-base text-white/90">Kelola semua laporan dan pengguna</p>
             </div>
             <div className="flex flex-wrap gap-3 text-white/90 text-sm font-semibold">
               <span className="px-3 py-1 rounded-full bg-white/15 border border-white/20">Total laporan: {reports.length}</span>
@@ -349,64 +347,94 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
-          <div className="lg:col-span-2 flex items-center gap-3 px-4 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm">
-            <MagnifyingGlassIcon className="w-5 h-5 text-gray-500" />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari judul, kategori, lokasi, atau email"
-              className="w-full bg-transparent outline-none text-sm"
-            />
-          </div>
-
-          <div className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm">
-            <AdjustmentsHorizontalIcon className="w-5 h-5 text-gray-500" />
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
-              className="flex-1 bg-transparent text-sm outline-none"
-            >
-              <option value="all">Semua status</option>
-              <option value="aktif">Aktif</option>
-              <option value="selesai">Selesai</option>
-            </select>
-          </div>
-
-          <div className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm">
-            <AdjustmentsHorizontalIcon className="w-5 h-5 text-gray-500" />
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value as typeof typeFilter)}
-              className="flex-1 bg-transparent text-sm outline-none"
-            >
-              <option value="all">Semua tipe</option>
-              <option value="hilang">Hilang</option>
-              <option value="temuan">Temuan</option>
-            </select>
-          </div>
+        {/* Tab Navigation */}
+        <div className="flex gap-2 mb-6">
+          <button
+            onClick={() => setActiveTab("laporan")}
+            className={`px-6 py-3 rounded-xl font-bold text-sm transition-all ${
+              activeTab === "laporan"
+                ? "bg-blue-600 text-white shadow-md"
+                : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
+            }`}
+          >
+            📋 Laporan
+          </button>
+          <button
+            onClick={() => setActiveTab("pengguna")}
+            className={`px-6 py-3 rounded-xl font-bold text-sm transition-all ${
+              activeTab === "pengguna"
+                ? "bg-blue-600 text-white shadow-md"
+                : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
+            }`}
+          >
+            👥 Pengguna
+          </button>
         </div>
 
-        {/* Reports */}
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 sm:p-6 mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900">Semua Laporan</h2>
-            <span className="text-sm text-gray-500">{filteredReports.length} laporan</span>
-          </div>
-          <ReportGrid
-            reports={filteredReports}
-            showActions
-            showComments={false}
-            showUserProfile
-            onEdit={handleEdit}
-            onComplete={handleToggleStatus}
-            onDelete={handleDeleteReport}
-          />
-        </div>
+        {/* Laporan Tab */}
+        {activeTab === "laporan" && (
+          <>
+            {/* Filters */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-6">
+              <div className="lg:col-span-2 flex items-center gap-3 px-4 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm">
+                <MagnifyingGlassIcon className="w-5 h-5 text-gray-500" />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Cari judul, kategori, lokasi, atau email"
+                  className="w-full bg-transparent outline-none text-sm text-gray-900"
+                />
+              </div>
 
-        {/* Users */}
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 sm:p-6">
+              <div className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm">
+                <AdjustmentsHorizontalIcon className="w-5 h-5 text-gray-500" />
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
+                  className="flex-1 bg-transparent text-sm outline-none text-gray-900"
+                >
+                  <option value="all">Semua status</option>
+                  <option value="aktif">Aktif</option>
+                  <option value="selesai">Selesai</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm">
+                <AdjustmentsHorizontalIcon className="w-5 h-5 text-gray-500" />
+                <select
+                  value={typeFilter}
+                  onChange={(e) => setTypeFilter(e.target.value as typeof typeFilter)}
+                  className="flex-1 bg-transparent text-sm outline-none text-gray-900"
+                >
+                  <option value="all">Semua tipe</option>
+                  <option value="hilang">Hilang</option>
+                  <option value="temuan">Temuan</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Reports */}
+            <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 sm:p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-gray-900">Semua Laporan</h2>
+                <span className="text-sm text-gray-500">{filteredReports.length} laporan</span>
+              </div>
+              <ReportGrid
+                reports={filteredReports}
+                showActions
+                showComments={false}
+                showUserProfile
+                onEdit={handleEdit}
+                onComplete={handleToggleStatus}
+                onDelete={handleDeleteReport}
+              />
+            </div>
+          </>
+        )}
+
+        {/* Pengguna Tab */}
+        {activeTab === "pengguna" && (
+          <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 sm:p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <UsersIcon className="w-6 h-6 text-blue-600" />
@@ -450,7 +478,8 @@ export default function AdminPage() {
               </tbody>
             </table>
           </div>
-        </div>
+          </div>
+        )}
       </div>
 
       {/* Edit Modal */}
