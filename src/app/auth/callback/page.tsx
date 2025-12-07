@@ -44,10 +44,7 @@ export default function AuthCallbackPage() {
         const email = user.email!;
         
         // Validasi domain email
-        if (
-          !email.endsWith("@mhs.dinus.ac.id") &&
-          email !== "gagah_athallah@sbm-itb.ac.id"
-        ) {
+        if (!email.endsWith("@mhs.dinus.ac.id")) {
           const errorMsg = "Pastikan Login menggunakan email kampus!";
           setError(errorMsg);
           toast.error(errorMsg);
@@ -68,7 +65,7 @@ export default function AuthCallbackPage() {
         // Ambil data user yang sudah ada untuk menjaga perubahan manual
         const { data: existingUser } = await supabase
           .from("users")
-          .select("id, name, avatar_url")
+          .select("id, name, avatar_url, role")
           .eq("auth_id", user.id)
           .maybeSingle();
 
@@ -80,6 +77,7 @@ export default function AuthCallbackPage() {
 
         const nameToUse = existingUser?.name?.trim() ? existingUser.name : fallbackName;
         const avatarToUse = googleAvatar || existingUser?.avatar_url || null;
+        const roleToUse = existingUser?.role || "student";
 
         // Simpan atau update user ke tabel public.users
         const { error: upsertError } = await supabase
@@ -90,6 +88,7 @@ export default function AuthCallbackPage() {
               name: nameToUse,
               email: user.email,
               avatar_url: avatarToUse,
+              role: roleToUse,
               last_login: new Date().toISOString(),
             },
             {

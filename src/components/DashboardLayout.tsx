@@ -21,6 +21,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const isAdmin = user?.role === "admin";
+
   useEffect(() => {
     async function checkUser() {
       try {
@@ -33,10 +35,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
         const currentUser = sessionData.session.user;
         
-        if (
-            !currentUser.email?.endsWith("@mhs.dinus.ac.id") &&
-            currentUser.email !== "gagah_athallah@sbm-itb.ac.id"
-          ) {
+        if (!currentUser.email?.endsWith("@mhs.dinus.ac.id")) {
           await supabase.auth.signOut();
           router.push("/login");
           return;
@@ -62,8 +61,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             role: "student",
           });
         } else {
-          // User found in database, use avatar from database (Google photo)
-          setUser(userData);
+          // User found in database, ensure role fallback if missing
+          setUser({
+            ...userData,
+            role: userData.role || "student",
+          });
         }
         
         setLoading(false);
@@ -131,7 +133,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="flex min-h-screen overflow-x-hidden" style={{ backgroundColor: '#F8FAFC' }}>
-      {user && <Sidebar user={user} />}
+      {user && <Sidebar user={user} isAdmin={isAdmin} />}
       <main className="flex-1 w-full lg:ml-0 pt-16 lg:pt-0 overflow-x-hidden">
         <div className="w-full max-w-full min-h-screen">
           {children}

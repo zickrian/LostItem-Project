@@ -8,6 +8,7 @@ import {
   DocumentTextIcon,
   ChartBarIcon,
   Cog6ToothIcon,
+  ShieldCheckIcon,
   ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/solid";
 
@@ -17,16 +18,17 @@ interface SidebarProps {
     email: string;
     avatar_url?: string;
   };
+  isAdmin?: boolean;
 }
 
-const menuItems = [
+const baseMenuItems = [
   { name: "Dashboard", path: "/dashboard", Icon: HomeIcon },
   { name: "Buat Laporan", path: "/dashboard/laporan", Icon: DocumentTextIcon },
   { name: "Statistik", path: "/dashboard/statistik", Icon: ChartBarIcon },
   { name: "Setting", path: "/dashboard/setting", Icon: Cog6ToothIcon },
 ];
 
-export default function Sidebar({ user }: SidebarProps) {
+export default function Sidebar({ user, isAdmin }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -113,7 +115,13 @@ export default function Sidebar({ user }: SidebarProps) {
               <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-3">Navigation</p>
             </div>
             <ul className="space-y-1">
-              {menuItems.map((item) => {
+              {[...
+                baseMenuItems.slice(0, 3),
+                ...(isAdmin
+                  ? [{ name: "Admin", path: "/dashboard/admin", Icon: ShieldCheckIcon }]
+                  : []),
+                ...baseMenuItems.slice(3),
+              ].map((item) => {
                 const isActive = pathname === item.path;
                 const IconComponent = item.Icon;
                 return (
